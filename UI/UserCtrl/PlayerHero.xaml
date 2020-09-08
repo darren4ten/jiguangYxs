@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="WpfApp1.UserCtrl.PlayerHero"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfApp1.UserCtrl"
+             mc:Ignorable="d" 
+             d:DesignHeight="148" d:DesignWidth="120">
+    <Grid  Width="120" Height="148" RenderTransformOrigin="0.5,0.5">
+        <Rectangle Height="148" Stroke="DarkGreen"  Width="120"/>
+        <Image Source="C:\P4\MyTest\WPFDemo\WpfApp1\Resources\hero_direnjie.jpg" Margin="0,0,0,0" />
+        <Ellipse Fill="Bisque" Height="24"   Stroke="Black" Margin="2,123,96,1" RenderTransformOrigin="0.773,1.875"/>
+        <Ellipse Fill="Bisque"  Height="24" Stroke="Black"  Width="24" Margin="94,122,2,2" />
+        <!--<Image  HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="20"/>
+        <Image HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="20"/>
+        <Image HorizontalAlignment="Left" Height="25"  VerticalAlignment="Top" Width="20"/>-->
+        <!--<Image HorizontalAlignment="Left" Height="25"  VerticalAlignment="Top" Width="20" Margin="1,1,0,0"/>-->
+        <Label Name="LblCurrentLife" 
+               Content="{Binding Path=CurrentLife,Mode=TwoWay}" VerticalAlignment="Top" Height="24" Margin="1,123,0,0" RenderTransformOrigin="2.35,2.167" HorizontalAlignment="Left" Width="23"/>
+        <Label Name="LblCardsCount" Content="{Binding Path=Cards.Count}" Height="24" Margin="94,123,5,1" RenderTransformOrigin="0.85,2.208"/>
+    </Grid>
+</UserControl>

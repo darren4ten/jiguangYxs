@@ -26,9 +26,8 @@ namespace Logic.Cards.BaseCards
 
             var canPlayZhudong = this.CardContext.FromPlayer.IsMyRound
                 && this.CardContext.FromPlayer.UserHero.GetMaxShaCount() > this.CardContext.FromPlayer.UserHero.ShaedCount;
-            var canPlayBeidong = this.CardContext.ToPlayer.IsMyTurn;
 
-            return canPlayZhudong || canPlayBeidong;
+            return canPlayZhudong;
         }
 
         public override void PlayCard()
@@ -39,7 +38,7 @@ namespace Logic.Cards.BaseCards
         public override bool IsTargetSelectable(CardContext cardContext)
         {
             var playerDist = Math.Abs(cardContext.ToPlayer.PlayerIndex - cardContext.FromPlayer.PlayerIndex) + cardContext.ToPlayer.GetDefenseDistance();
-            var can = (cardContext.FromPlayer.IsMyRound || cardContext.FromPlayer.IsMyTurn)
+            var can = (cardContext.FromPlayer.IsMyRound)
                 && cardContext.FromPlayer.UserHero.GetMaxAttackDistance() >= playerDist;
             return can;
         }
