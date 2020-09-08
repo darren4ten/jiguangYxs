@@ -17,6 +17,6 @@
         <!--<Image HorizontalAlignment="Left" Height="25"  VerticalAlignment="Top" Width="20" Margin="1,1,0,0"/>-->
         <Label Name="LblCurrentLife" 
                Content="{Binding Path=CurrentLife,Mode=TwoWay}" VerticalAlignment="Top" Height="24" Margin="1,123,0,0" RenderTransformOrigin="2.35,2.167" HorizontalAlignment="Left" Width="23"/>
-        <Label Name="LblCardsCount" Content="{Binding Path=Cards.Count}" Height="24" Margin="94,123,5,1" RenderTransformOrigin="0.85,2.208"/>
+        <Label Name="LblCardsCount" Content="{Binding Path=CardsInHand.Count}" Height="24" Margin="94,123,5,1" RenderTransformOrigin="0.85,2.208"/>
     </Grid>
 </UserControl>

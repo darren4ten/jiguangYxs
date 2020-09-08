@@ -39,12 +39,58 @@ namespace UI
                 {
                     BtnText = "OK",
                     IsVisible = Visibility.Visible,
-                    BtnRoutedEventHandler = (obj, e) => { MessageBox.Show("Click btn1"); }
+                    BtnRoutedEventHandler = (obj, e) =>
+                    {
+                        if (obj is Button button)
+                        {
+                            var dataContext = button.DataContext;
+                            if (dataContext is UIState)
+                            {
+                                var uiState = (UIState)dataContext;
+                                Task.Run(() =>
+                                {
+
+                                });
+                                uiState.PlayerHero.CardsInHand.Add(new Sha()
+                                {
+                                    Number = new Random().Next(1, 9)
+                                });
+                            }
+                        }
+                        //this.PlayerHero.CardsInHand.Add(new Sha()
+                        //{
+                        //    Number = new Random().Next(1, 9)
+                        //});
+                        //MessageBox.Show("Click btn1");
+                    }
                 },
                 BtnAction2 = new BtnAction()
                 {
                     BtnText = "Cancel",
                     IsVisible = Visibility.Visible,
+                    BtnRoutedEventHandler = (obj, e) =>
+                    {
+                        if (obj is Button button)
+                        {
+                            var dataContext = button.DataContext;
+                            if (dataContext is UIState)
+                            {
+                                var uiState = (UIState)dataContext;
+                                var t = Task.Run(() =>
+                                  {
+                                      var index = uiState.PlayerHero.CardsInHand.Count - 1;
+                                      if (index > 0)
+                                      {
+                                          Application.Current.Dispatcher.BeginInvoke((Action)delegate // <--- HERE
+                                          {
+                                              uiState.PlayerHero.CardsInHand.RemoveAt(index);
+                                          });
+                                      }
+                                  });
+                                Task.WaitAll(t);
+                            }
+                        }
+                    }
                 },
                 PlayerHero = new PlayerHero
                 {
@@ -57,7 +103,7 @@ namespace UI
                             Number=2,
                         }
                     },
-                    CardsInHand = new List<CardBase>()
+                    CardsInHand = new System.Collections.ObjectModel.ObservableCollection<CardBase>()
                     {
                     new Sha()
                     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -30,7 +31,7 @@ namespace WpfApp1.Model
             }
         }
 
-        public List<CardBase> CardsInHand { get; set; }
+        public ObservableCollection<CardBase> CardsInHand { get; set; }
         public List<CardBase> Cards { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
