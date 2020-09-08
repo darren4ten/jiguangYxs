@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Logic.Cards;
+using Logic.Cards.BaseCards;
 using WpfApp1.Model;
 using WpfApp1.UserCtrl;
 using PlayerHero = WpfApp1.Model.PlayerHero;
@@ -50,7 +52,7 @@ namespace UI
                     CurrentLife = 4,
                     Cards = new List<CardBase>()
                     {
-                        new CardBase()
+                        new Sha()
                         {
                             Number=2,
                         }
