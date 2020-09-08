@@ -9,6 +9,7 @@ namespace WpfApp1.Model
 {
     public class UIState
     {
+        public string Tip { get; set; }
         public BtnAction BtnAction1 { get; set; }
         public BtnAction BtnAction2 { get; set; }
 
@@ -20,6 +21,7 @@ namespace WpfApp1.Model
         public string BtnText { get; set; }
 
         public Visibility IsVisible { get; set; }
+
 
         public Action<object, RoutedEventArgs> BtnRoutedEventHandler { get; set; }
 

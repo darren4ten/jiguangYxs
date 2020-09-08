@@ -35,6 +35,7 @@ namespace UI
         {
             var uiAction = new UIState()
             {
+                Tip = "OK to add card, cancel to remove card",
                 BtnAction1 = new BtnAction()
                 {
                     BtnText = "OK",

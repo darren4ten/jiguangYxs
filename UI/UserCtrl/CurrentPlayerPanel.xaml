@@ -11,11 +11,11 @@
         <Button Content="{Binding Path=BtnAction1.BtnText,Mode=TwoWay}"  
                 Visibility="{Binding BtnAction1.IsVisible}"  VerticalAlignment="Top"
                 Click="Btn1Click"
-                HorizontalAlignment="Left" Margin="376,10,0,0"  Width="75"/>
+                HorizontalAlignment="Left" Margin="469,10,0,0"  Width="75"/>
         <Button Content="{Binding Path=BtnAction2.BtnText,Mode=TwoWay}" 
                 Click="Btn2Click"
                 HorizontalAlignment="Left" Visibility="{Binding BtnAction2.IsVisible}" 
-                Margin="486,10,0,0" VerticalAlignment="Top" Width="75"/>
+                Margin="579,10,0,0" VerticalAlignment="Top" Width="75"/>
         <ListBox Height="120" Margin="125,50,108,10" ItemsSource="{Binding  PlayerHero.CardsInHand}" >
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -30,5 +30,6 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <Label Content="{Binding Tip}" HorizontalAlignment="Left" Margin="125,0,0,0" VerticalAlignment="Top" Width="339"/>
     </Grid>
 </UserControl>

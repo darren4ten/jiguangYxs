@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:UI.UserCtrl"
              mc:Ignorable="d" Height="90" Width="70">
     <Grid>
-        <Button  Width="70" Height="90">
+        <Button  Width="70" Height="90" Click="ButtonBase_OnClick">
             <Grid>
                 <Image Source="C:\MyData\ProgramProject\JiguangYxs\UI\Resources\card\card_sha.jpg" Width="70" Height="90" />
                 <Label x:Name="LblNumber" Content="{Binding Number}" FontSize="16px" Margin="-1,-1,0,53"  FontWeight="Bold"/>
