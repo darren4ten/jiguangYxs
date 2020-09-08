@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="UI.UserCtrl.Card"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UI.UserCtrl"
+             mc:Ignorable="d" Height="90" Width="70">
+    <Grid>
+        <Button  Width="70" Height="90">
+            <Grid>
+                <Image Source="C:\MyData\ProgramProject\JiguangYxs\UI\Resources\card\card_sha.jpg" Width="70" Height="90" />
+                <Label x:Name="LblNumber" Content="{Binding Number}" FontSize="16px" Margin="-3,-1,-14,53"  FontWeight="Bold"/>
+                <Label x:Name="LblFlower" Content="{Binding Flower}" FontSize="16px" Margin="-3,16,-14,36"  FontWeight="Bold"/>
+            </Grid>
+        </Button>
+        <!--<Label x:Name="LblNumber1" Content="Number" FontSize="24px" Margin="365,19,379,36"/>-->
+    </Grid>
+</UserControl>

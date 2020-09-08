@@ -4,12 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UI"
-        xmlns:UserCtrl="clr-namespace:WpfApp1.UserCtrl" x:Class="UI.MainWindow"
+        xmlns:UserCtrl="clr-namespace:WpfApp1.UserCtrl" xmlns:UserCtrl1="clr-namespace:UI.UserCtrl" x:Class="UI.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
-        <UserCtrl:CurrentPlayerPanel x:Name="CurrentPlayerPanel" HorizontalAlignment="Left" Height="188" Margin="10,246,0,0" VerticalAlignment="Top" Width="767"/>
-
+        <UserCtrl:CurrentPlayerPanel x:Name="CurrentPlayerPanel" HorizontalAlignment="Left" Height="188" Margin="10,230,0,0" VerticalAlignment="Top" Width="767"/>
     </Grid>
 </Window>

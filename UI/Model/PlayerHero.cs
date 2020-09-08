@@ -30,6 +30,7 @@ namespace WpfApp1.Model
             }
         }
 
+        public List<CardBase> CardsInHand { get; set; }
         public List<CardBase> Cards { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -56,8 +56,19 @@ namespace UI
                         {
                             Number=2,
                         }
+                    },
+                    CardsInHand = new List<CardBase>()
+                    {
+                    new Sha()
+                    {
+                    Number=2,
+                 },
+                    new Shan()
+                    {
+                        Number=9,
                     }
-                }
+            },
+                },
             };
             CurrentPlayerPanel.DataContext = uiAction;
         }

@@ -2,11 +2,13 @@
 using Logic.Model.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Logic.Cards
 {
-    public abstract class CardBase
+    public abstract class CardBase : INotifyPropertyChanged
     {
         public int CardId { get; set; }
         public string Name { get; set; }
@@ -58,5 +60,11 @@ namespace Logic.Cards
 
         //public abstract void ThrowCard();
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
