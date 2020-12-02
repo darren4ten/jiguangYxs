@@ -6,8 +6,13 @@ namespace Logic
 {
     public enum CardTargetTypeEnum
     {
+        /// <summary>
+        /// 
+        /// </summary>
         Group = 1,
         Single,
-        FixedNumber, MaxNumber, MinNumber
+        FixedNumber,
+        MaxNumber,
+        MinNumber
     }
 }

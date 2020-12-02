@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Logic.Cards;
-using Logic.Cards.BaseCards;
+using Logic.Model.Cards.BaseCards;
 using WpfApp1.Model;
 using WpfApp1.UserCtrl;
 using PlayerHero = WpfApp1.Model.PlayerHero;

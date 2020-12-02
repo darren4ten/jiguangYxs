@@ -9,6 +9,6 @@ namespace Logic.Enums
         Base,
         Weapon,
         Defender,
-        Jinlang,
+        Jinlang
     }
 }

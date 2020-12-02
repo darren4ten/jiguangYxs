@@ -1,39 +1,24 @@
-﻿using Logic.Interface;
-using Logic.Model.Cards.EquipmentCards;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Logic.Model.Cards.Interface;
 
-namespace Logic.Cards.JinlangCards.EquipmentCards
+namespace Logic.Model.Cards.EquipmentCards.Defense
 {
-    public class Yuruyi : EquipmentCardBase
+    /// <summary>
+    /// 玉如意
+    /// </summary>
+    public class Yuruyi : EquipmentBase, IDefender
     {
         public Yuruyi()
         {
             this.Description = "玉如意";
             this.Name = "Yuruyi";
             this.DisplayName = "玉如意";
-            this.CardType = Enums.CardTypeEnum.Defender;
-        }
-        public int TannangDistance
-        {
-            get;
-            set;
-        } = 0;
-        public int AttackDistance
-        {
-            get;
-            set;
-        } = 1;
-        public int DefenseDistance { get; set; }
-        public override bool CanBePlayedFunc()
-        {
-            return true;
+            this.CardType = Logic.Enums.CardTypeEnum.Defender;
         }
 
-        public override void TriggerResultFunc()
+        public override bool CanBePlayed()
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

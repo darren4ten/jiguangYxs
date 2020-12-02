@@ -1,24 +1,25 @@
-﻿using Logic.Enums;
-using Logic.Hero;
+﻿using System.Collections.Generic;
+using Logic.Enums;
 using Logic.Model.Enums;
 using Logic.Model.Skill;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Logic.Model.Skill.Zhudong;
 
-namespace Logic.Model.Hero.Presizdent
+namespace Logic.Model.Hero.Officer
 {
+    /// <summary>
+    /// 程咬金
+    /// </summary>
     public class Chengyaojin : HeroBase
     {
         public Chengyaojin()
         {
             Name = "Chengyaojin";
             DisplayName = "程咬金";
-            Life = 4;
-            this.Group = HeroGroupEnum.Officer;
+            MaxLife = 4;
+            this.HeroGroup = HeroGroupEnum.Officer;
             this.Gender = GenderEnum.Male;
             this.SubSkillSet = new List<SkillBase>();
-            this.MainSkillSet = new List<SkillBase>();
+            this.MainSkillSet = new List<SkillBase>() { new SanbanfuSkill() };
         }
     }
 }

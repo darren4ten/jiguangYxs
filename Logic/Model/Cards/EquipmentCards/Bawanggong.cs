@@ -1,40 +1,27 @@
-﻿using Logic.Interface;
-using Logic.Model.Cards.EquipmentCards;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Logic.Model.Cards.Interface;
 
-namespace Logic.Cards.JinlangCards
+namespace Logic.Model.Cards.EquipmentCards
 {
-    public class Bawanggong : EquipmentCardBase
+    /// <summary>
+    /// 霸王弓
+    /// </summary>
+    public class Bawanggong : EquipmentBase, IWeapon
     {
         public Bawanggong()
         {
             this.Description = "霸王弓";
             this.Name = "Bawanggong";
             this.DisplayName = "霸王弓";
-            this.CardType = Enums.CardTypeEnum.Weapon;
-        }
-        public new int TannangDistance
-        {
-            get;
-            set;
-        } = 0;
-        public new int AttackDistance
-        {
-            get;
-            set;
-        } = 5;
-        public int DefenseDistance { get; set; }
+            this.CardType = Logic.Enums.CardTypeEnum.Weapon;
 
-        public override bool CanBePlayedFunc()
+            AttackFactor.TannangDistance = 0;
+            AttackFactor.ShaDistance = 5;
+        }
+
+        public override bool CanBePlayed()
         {
             return true;
-        }
-
-        public override void TriggerResultFunc()
-        {
-            throw new NotImplementedException();
         }
     }
 }

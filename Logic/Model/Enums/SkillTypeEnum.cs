@@ -6,7 +6,13 @@ namespace Logic.Model.Enums
 {
     public enum SkillTypeEnum
     {
-        Zhudong,
-        Beidong
+        /// <summary>
+        /// 主技能
+        /// </summary>
+        MainSkill,
+        /// <summary>
+        /// 副技能
+        /// </summary>
+        SubSkill
     }
 }

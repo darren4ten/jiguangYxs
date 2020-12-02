@@ -1,9 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
+using Logic.Cards;
 
-namespace Logic.Cards.JinlangCards
+namespace Logic.Model.Cards.JinlangCards
 {
+    /// <summary>
+    /// 决斗
+    /// </summary>
     public class Juedou : CardBase
     {
         public Juedou()
@@ -11,15 +14,15 @@ namespace Logic.Cards.JinlangCards
             this.Description = "决斗";
             this.Name = "Juedou";
             this.DisplayName = "决斗";
-            this.CardType = Enums.CardTypeEnum.Jinlang;
+            this.CardType = Logic.Enums.CardTypeEnum.Jinlang;
         }
 
-        public override bool CanBePlayedFunc()
+        public override bool CanBePlayed()
         {
             return false;
         }
 
-        public override void TriggerResultFunc()
+        public override Task Popup()
         {
             throw new NotImplementedException();
         }

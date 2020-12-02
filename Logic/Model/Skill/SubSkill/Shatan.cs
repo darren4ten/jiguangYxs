@@ -4,20 +4,15 @@ using System.Text;
 
 namespace Logic.Model.Skill.SubSkill
 {
-    public class Shatan : SkillBase
+    /// <summary>
+    /// 杀之贪
+    /// </summary>
+    public class Shatan : SubSkillBase
     {
-        public Shatan(SkillContext SkillContext) : base(SkillContext)
+        public Shatan()
         {
-        }
-
-        public override bool IsSkillClickable()
-        {
-            return base.IsSkillClickable();
-        }
-
-        public override bool IsSkillTriggerable()
-        {
-            return base.IsSkillTriggerable();
+            Name = "shatan";
+            DisplayName = "杀之贪";
         }
     }
 }

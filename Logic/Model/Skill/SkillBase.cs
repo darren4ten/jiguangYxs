@@ -3,10 +3,12 @@ using Logic.Model.Interface;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using Logic.Model.Skill.Interface;
 
 namespace Logic.Model.Skill
 {
-    public abstract class SkillBase : ISkill
+    public abstract class SkillBase : ISkill, IAbility
     {
         public string Name { get; set; }
 
@@ -14,203 +16,54 @@ namespace Logic.Model.Skill
         public string Description { get; set; }
         public SkillTypeEnum SkillType { get; set; }
 
-        protected SkillContext SkillContext { get; set; }
-
-        public SkillBase(SkillContext SkillContext)
+        public Task LoadSkill()
         {
-            this.SkillContext = SkillContext;
+            throw new NotImplementedException();
         }
 
-        public virtual bool IsSkillTriggerable()
+        public Task UnLoadSkill()
         {
-            return false;
+            throw new NotImplementedException();
         }
 
-        public virtual bool IsSkillClickable()
+        SkillTypeEnum ISkill.SkillType()
         {
-            return SkillType != SkillTypeEnum.Beidong;
+            throw new NotImplementedException();
         }
 
-        ////public bool TriggerConditionFun() { }
+        #region IAbility
+        public bool CanProvideSha()
+        {
+            throw new NotImplementedException();
+        }
 
-        //public virtual void OnAddLifeCard()
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public bool CanProvideShan()
+        {
+            throw new NotImplementedException();
+        }
 
-        //public virtual void OnAfterAddLife()
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public bool CanProvideJuedou()
+        {
+            throw new NotImplementedException();
+        }
 
-        //public virtual void OnAfterBeJuedoued()
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public bool CanProvideFenghuolangyan()
+        {
+            throw new NotImplementedException();
+        }
 
-        //public virtual void OnAfterDetermine()
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public bool CanProvideWanjianqifa()
+        {
+            throw new NotImplementedException();
+        }
 
-        //public virtual void OnAfterDoJuedou()
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public bool CanProvideTannangquwu()
+        {
+            throw new NotImplementedException();
+        }
 
-        //public virtual void OnAfterDying()
-        //{
-        //    throw new NotImplementedException();
-        //}
 
-        //public virtual void OnAfterLoseLife()
-        //{
-        //    throw new NotImplementedException();
-        //}
+        #endregion
 
-        //public virtual void OnAfterPickCard()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnAfterPlayCard()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnAfterPlayJinlang()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnAfterPlaySha()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnAfterPlayShan()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnAfterThrowCard()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnBeforeAddLife()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnBeforeBeJuedoued()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnBeforeDetermine()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnBeforeDoJuedou()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnBeforeDying()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnBeforeLoseLife()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnBeforePlayCard()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnBeforePlayJinlang()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnBeforePlaySha()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnBeforePlayShan()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnBeforeThrowCardCard()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnBeJuedoued()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnDetermine()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnDoJuedou()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnDying()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnLoseLife()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnPickingCard()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnPickPlayCard()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnPlayingCard()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnPlayJinlang()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnPlaySha()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnPlayShan()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public virtual void OnThrowingCard()
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }

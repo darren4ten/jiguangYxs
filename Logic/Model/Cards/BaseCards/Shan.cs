@@ -1,9 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
+using Logic.Cards;
 
-namespace Logic.Cards.BaseCards
+namespace Logic.Model.Cards.BaseCards
 {
+    /// <summary>
+    /// 闪
+    /// </summary>
     public class Shan : CardBase
     {
         public Shan()
@@ -11,14 +14,14 @@ namespace Logic.Cards.BaseCards
             this.Description = "闪";
             this.Name = "Shan";
             this.DisplayName = "闪";
-            this.CardType = Enums.CardTypeEnum.Base;
+            this.CardType = Logic.Enums.CardTypeEnum.Base;
         }
-        public override bool CanBePlayedFunc()
+        public override bool CanBePlayed()
         {
             return false;
         }
 
-        public override void TriggerResultFunc()
+        public override Task Popup()
         {
             throw new NotImplementedException();
         }

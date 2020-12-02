@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Logic.Model.Cards.MutedCards;
+using Logic.Model.Player;
 
 namespace Logic.GameLevel
 {
@@ -14,24 +16,83 @@ namespace Logic.GameLevel
         public string Name { get; set; }
         public string Description { get; set; }
 
-        protected List<CardBase> UnUsedCardStack { get; set; }
-        protected List<CardBase> UsedCardStack { get; set; }
+        protected Queue<CardBase> UnUsedCardStack { get; set; }
+        protected Queue<CardBase> UsedCardStack { get; set; }
 
-        protected List<Player.Player> Players { get; set; }
+        protected List<Player> Players { get; set; }
 
-        protected virtual void LoadCards()
+        protected List<CardBase> CardsOnDesk { get; set; }
+
+        /// <summary>
+        /// 重新洗牌
+        /// </summary>
+        protected virtual void WashCards()
         {
-            this.UnUsedCardStack = new CardStackUtil().GenerateNewCardStack().ToList();
-            this.UsedCardStack = new List<CardBase>();
+            var unUsedCardList = new List<CardBase>();
+            var util = new CardStackUtil();
+            //todo:触发洗牌动画
+            if (UnUsedCardStack != null && UnUsedCardStack.Any())
+            {
+                unUsedCardList.AddRange(UnUsedCardStack);
+                unUsedCardList.AddRange(util.GenerateNewCardStack(UsedCardStack.ToList()));
+            }
+            else
+            {
+                unUsedCardList = util.GenerateNewCardStack().ToList();
+            }
+            this.UnUsedCardStack = new Queue<CardBase>(unUsedCardList);
+            this.UsedCardStack = new Queue<CardBase>();
         }
+
         protected virtual void LoadPlayers()
         {
-            this.Players = new List<Player.Player>();
+            this.Players = new List<Player>();
+        }
+
+        /// <summary>
+        /// 摸牌
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public virtual IEnumerable<CardBase> PickNextCardsFromStack(int count)
+        {
+            //如果取牌数>=当前剩余牌数，则重新洗牌之后再取牌
+            if (count >= UnUsedCardStack.Count)
+            {
+                WashCards();
+            }
+            for (int i = 0; i < count; i++)
+            {
+                yield return UnUsedCardStack.Dequeue();
+            }
+        }
+
+        /// <summary>
+        /// 将牌置于弃牌堆
+        /// </summary>
+        /// <param name="cards"></param>
+        public virtual void ThrowCardToStack(List<CardBase> cards)
+        {
+            foreach (var card in cards)
+            {
+                if (card is CombinedCard)
+                {
+                    ThrowBaseCardsToStack((card as CombinedCard).OriginalCards);
+                }
+                else if (card is ChangedCard)
+                {
+                    ThrowBaseCardsToStack((card as ChangedCard).OriginalCards);
+                }
+                else
+                {
+                    ThrowBaseCardsToStack(new List<CardBase>() { card });
+                }
+            }
         }
 
         public virtual void OnLoad()
         {
-            this.LoadCards();
+            this.WashCards();
             this.LoadPlayers();
         }
 
@@ -47,6 +108,14 @@ namespace Logic.GameLevel
             this.UsedCardStack = null;
             //Play animation
             Console.WriteLine("Game over!");
+        }
+
+        private void ThrowBaseCardsToStack(List<CardBase> cards)
+        {
+            foreach (var cardBase in cards)
+            {
+                UnUsedCardStack.Enqueue(cardBase);
+            }
         }
     }
 }

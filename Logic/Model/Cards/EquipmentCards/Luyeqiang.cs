@@ -1,39 +1,30 @@
-﻿using Logic.Interface;
-using Logic.Model.Cards.EquipmentCards;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Logic.Model.Cards.Interface;
 
-namespace Logic.Cards.JinlangCards
+namespace Logic.Model.Cards.EquipmentCards
 {
-    public class Luyeqiang : EquipmentCardBase
+    /// <summary>
+    /// 芦叶枪
+    /// </summary>
+    public class Luyeqiang : EquipmentBase, IWeapon
     {
         public Luyeqiang()
         {
             this.Description = "芦叶枪";
             this.Name = "Luyeqiang";
             this.DisplayName = "芦叶枪";
-            this.CardType = Enums.CardTypeEnum.Weapon;
+            this.CardType = Logic.Enums.CardTypeEnum.Weapon;
+            AttackFactor.ShaDistance = 3;
         }
-        public int TannangDistance
-        {
-            get;
-            set;
-        } = 0;
-        public int AttackDistance
-        {
-            get;
-            set;
-        } = 3;
-        public int DefenseDistance { get; set; }
-        public override bool CanBePlayedFunc()
+
+        public override bool CanBePlayed()
         {
             return true;
         }
 
-        public override void TriggerResultFunc()
+        public new bool IsViewableInSkillPanel()
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

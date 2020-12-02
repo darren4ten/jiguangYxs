@@ -1,10 +1,11 @@
 ﻿using Logic.Cards;
-using Logic.Cards.BaseCards;
-using Logic.Cards.JinlangCards;
-using Logic.Cards.JinlangCards.EquipmentCards;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Logic.Model.Cards.BaseCards;
+using Logic.Model.Cards.EquipmentCards;
+using Logic.Model.Cards.EquipmentCards.Defense;
+using Logic.Model.Cards.JinlangCards;
 
 namespace Logic.Util
 {
@@ -214,28 +215,28 @@ namespace Logic.Util
                 #endregion
 
                 #region Wuxiekeji
-                 new Cards.JinlangCards.Wuxiekeji()
+                 new Wuxiekeji()
                 {
                     FlowerKind= Enums.FlowerKindEnum.Hongtao,
                     Number=12,
                     DisplayNumberText="Q",
                     Color=  Model.Enums.CardColorEnum.Red
                 },
-                  new Cards.JinlangCards.Wuxiekeji()
+                  new Wuxiekeji()
                 {
                     FlowerKind= Enums.FlowerKindEnum.Meihua,
                     Number=11,
                     DisplayNumberText="J",
                     Color=  Model.Enums.CardColorEnum.Black
                 },
-                   new Cards.JinlangCards.Wuxiekeji()
+                   new Wuxiekeji()
                 {
                     FlowerKind= Enums.FlowerKindEnum.Heitao,
                     Number=12,
                     DisplayNumberText="Q",
                     Color=  Model.Enums.CardColorEnum.Black
                 },
-                    new Cards.JinlangCards.Wuxiekeji()
+                    new Wuxiekeji()
                 {
                     FlowerKind= Enums.FlowerKindEnum.Heitao,
                     Number=13,
@@ -766,9 +767,13 @@ namespace Logic.Util
 
             #endregion
 
-
             //random the cards.
             return RandomUtil.GetShuffleArray<CardBase>(cardsStack);
+        }
+
+        public IEnumerable<CardBase> GenerateNewCardStack(List<CardBase> cards)
+        {
+            return RandomUtil.GetShuffleArray<CardBase>(cards);
         }
     }
 }

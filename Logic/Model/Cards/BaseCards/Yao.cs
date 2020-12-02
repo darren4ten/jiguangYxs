@@ -1,9 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
+using Logic.Cards;
 
-namespace Logic.Cards.BaseCards
+namespace Logic.Model.Cards.BaseCards
 {
+    /// <summary>
+    /// 药
+    /// </summary>
     public class Yao : CardBase
     {
         public Yao()
@@ -11,15 +14,15 @@ namespace Logic.Cards.BaseCards
             this.Description = "药";
             this.Name = "Yao";
             this.DisplayName = "药";
-            this.CardType = Enums.CardTypeEnum.Base;
+            this.CardType = Logic.Enums.CardTypeEnum.Base;
         }
 
-        public override bool CanBePlayedFunc()
+        public override bool CanBePlayed()
         {
             return true;
         }
 
-        public override void TriggerResultFunc()
+        public override Task Popup()
         {
             throw new NotImplementedException();
         }

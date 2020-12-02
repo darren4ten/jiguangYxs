@@ -1,40 +1,24 @@
-﻿using Logic.Interface;
-using Logic.Model.Cards.EquipmentCards;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Logic.Model.Cards.Interface;
 
-namespace Logic.Cards.JinlangCards
+namespace Logic.Model.Cards.EquipmentCards
 {
-    public class Bolangchui : EquipmentCardBase
+    /// <summary>
+    /// 博浪锤
+    /// </summary>
+    public class Bolangchui : EquipmentBase, IWeapon
     {
         public Bolangchui()
         {
             this.Description = "博浪锤";
             this.Name = "Bolangchui";
             this.DisplayName = "博浪锤";
-            this.CardType = Enums.CardTypeEnum.Weapon;
+            this.CardType = Logic.Enums.CardTypeEnum.Weapon;
+            AttackFactor.ShaDistance = 3;
         }
-        public int TannangDistance
-        {
-            get;
-            set;
-        } = 0;
-        public int AttackDistance
-        {
-            get;
-            set;
-        } = 3;
-        public int DefenseDistance { get; set; }
 
-        public override bool CanBePlayedFunc()
+        public override bool CanBePlayed()
         {
             return true;
-        }
-
-        public override void TriggerResultFunc()
-        {
-            throw new NotImplementedException();
         }
     }
 }

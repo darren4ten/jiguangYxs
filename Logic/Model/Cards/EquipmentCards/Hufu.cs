@@ -1,40 +1,26 @@
-﻿using Logic.Interface;
-using Logic.Model.Cards.EquipmentCards;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Logic.Model.Cards.Interface;
 
-namespace Logic.Cards.JinlangCards
+namespace Logic.Model.Cards.EquipmentCards
 {
-    public class Hufu : EquipmentCardBase
+    /// <summary>
+    /// 虎符
+    /// </summary>
+    public class Hufu : EquipmentBase, IWeapon
     {
         public Hufu()
         {
             this.Description = "虎符";
             this.Name = "Hufu";
             this.DisplayName = "虎符";
-            this.CardType = Enums.CardTypeEnum.Weapon;
+            this.CardType = Logic.Enums.CardTypeEnum.Weapon;
+            AttackFactor.ShaDistance = 1;
+            AttackFactor.MaxShaTimes = 9999;
         }
-        public int TannangDistance
-        {
-            get;
-            set;
-        } = 0;
-        public int AttackDistance
-        {
-            get;
-            set;
-        } = 1;
-        public int DefenseDistance { get; set; }
 
-        public override bool CanBePlayedFunc()
+        public override bool CanBePlayed()
         {
             return true;
-        }
-
-        public override void TriggerResultFunc()
-        {
-            throw new NotImplementedException();
         }
     }
 }

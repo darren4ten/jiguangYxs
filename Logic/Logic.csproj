@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Model\Skill\Zhudong\" />
+    <Folder Include="GameLevel\Request\" />
+    <Folder Include="Model\User\" />
   </ItemGroup>
 
 </Project>

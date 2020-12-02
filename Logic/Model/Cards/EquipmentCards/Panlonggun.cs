@@ -1,40 +1,25 @@
-﻿using Logic.Interface;
-using Logic.Model.Cards.EquipmentCards;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Logic.Model.Cards.Interface;
 
-namespace Logic.Cards.JinlangCards
+namespace Logic.Model.Cards.EquipmentCards
 {
-    public class Panlonggun : EquipmentCardBase
+    /// <summary>
+    /// 盘龙棍
+    /// </summary>
+    public class Panlonggun : EquipmentBase, IWeapon
     {
         public Panlonggun()
         {
             this.Description = "盘龙棍";
             this.Name = "Panlonggun";
             this.DisplayName = "盘龙棍";
-            this.CardType = Enums.CardTypeEnum.Weapon;
+            this.CardType = Logic.Enums.CardTypeEnum.Weapon;
+            AttackFactor.ShaDistance = 3;
         }
 
-        public int TannangDistance
-        {
-            get;
-            set;
-        } = 0;
-        public int AttackDistance
-        {
-            get;
-            set;
-        } = 3;
-        public int DefenseDistance { get; set; }
-        public override bool CanBePlayedFunc()
+        public override bool CanBePlayed()
         {
             return true;
-        }
-
-        public override void TriggerResultFunc()
-        {
-            throw new NotImplementedException();
         }
     }
 }

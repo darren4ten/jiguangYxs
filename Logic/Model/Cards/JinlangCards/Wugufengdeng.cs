@@ -1,9 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
+using Logic.Cards;
 
-namespace Logic.Cards.JinlangCards
+namespace Logic.Model.Cards.JinlangCards
 {
+    /// <summary>
+    /// 五谷丰登
+    /// </summary>
     public class Wugufengdeng : CardBase
     {
         public Wugufengdeng()
@@ -11,15 +14,15 @@ namespace Logic.Cards.JinlangCards
             this.Description = "五谷丰登";
             this.Name = "Wugufengdeng";
             this.DisplayName = "五谷丰登";
-            this.CardType = Enums.CardTypeEnum.Jinlang;
+            this.CardType = Logic.Enums.CardTypeEnum.Jinlang;
         }
 
-        public override bool CanBePlayedFunc()
+        public override bool CanBePlayed()
         {
             return true;
         }
 
-        public override void TriggerResultFunc()
+        public override Task Popup()
         {
             throw new NotImplementedException();
         }
