@@ -11,8 +11,8 @@
             this.Name = "Fangyuma";
             this.DisplayName = "防御马";
             this.CardType = Logic.Enums.CardTypeEnum.Defender;
-            AttackFactor.ShaDistance = 2;
-            AttackFactor.DefenseDistance = 1;
+            BaseAttackFactor.ShaDistance = 2;
+            BaseAttackFactor.DefenseDistance = 1;
         }
 
         public override bool CanBePlayed()

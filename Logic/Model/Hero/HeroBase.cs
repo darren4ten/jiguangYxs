@@ -83,5 +83,6 @@ namespace Logic.Model.Hero
         {
             return AttackFactor;
         }
+
     }
 }

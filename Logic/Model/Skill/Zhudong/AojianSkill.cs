@@ -12,7 +12,6 @@ namespace Logic.Model.Skill.Zhudong
     {
         public AojianSkill()
         {
-            SkillType = SkillTypeEnum.MainSkill;
             Name = "Aojian";
             DisplayName = "傲剑";
         }

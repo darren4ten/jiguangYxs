@@ -14,8 +14,8 @@ namespace Logic.Model.Cards.EquipmentCards
             this.Name = "Hufu";
             this.DisplayName = "虎符";
             this.CardType = Logic.Enums.CardTypeEnum.Weapon;
-            AttackFactor.ShaDistance = 1;
-            AttackFactor.MaxShaTimes = 9999;
+            BaseAttackFactor.ShaDistance = 1;
+            BaseAttackFactor.MaxShaTimes = 9999;
         }
 
         public override bool CanBePlayed()

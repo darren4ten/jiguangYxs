@@ -12,7 +12,6 @@ namespace Logic.Model.Skill.Zhudong
     {
         public SanbanfuSkill()
         {
-            SkillType = SkillTypeEnum.MainSkill;
             Name = "Sanbanfu";
             DisplayName = "三板斧";
         }

@@ -4,10 +4,13 @@ using System.Text;
 
 namespace Logic.GameLevel
 {
+    /// <summary>
+    /// 攻击加成（一般指增量）
+    /// </summary>
     public class AttackDynamicFactor
     {
         /// <summary>
-        /// 血量
+        /// 最大血量（增量）
         /// </summary>
         public int MaxLife { get; set; }
 

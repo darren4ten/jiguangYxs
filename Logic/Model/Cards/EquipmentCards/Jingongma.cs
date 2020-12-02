@@ -13,8 +13,8 @@ namespace Logic.Model.Cards.EquipmentCards
             this.Name = "Jingongma";
             this.DisplayName = "进攻马";
             this.CardType = Logic.Enums.CardTypeEnum.Weapon;
-            AttackFactor.TannangDistance = 1;
-            AttackFactor.ShaDistance = 1;
+            BaseAttackFactor.TannangDistance = 1;
+            BaseAttackFactor.ShaDistance = 1;
         }
 
         public override bool CanBePlayed()

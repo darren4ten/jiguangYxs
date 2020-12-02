@@ -14,7 +14,7 @@ namespace Logic.Model.Cards.EquipmentCards
             this.Name = "Yuchangjian";
             this.DisplayName = "鱼肠剑";
             this.CardType = Logic.Enums.CardTypeEnum.Weapon;
-            AttackFactor.ShaDistance = 2;
+            BaseAttackFactor.ShaDistance = 2;
         }
 
         public override bool CanBePlayed()

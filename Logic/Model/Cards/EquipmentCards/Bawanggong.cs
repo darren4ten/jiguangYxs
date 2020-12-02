@@ -15,8 +15,8 @@ namespace Logic.Model.Cards.EquipmentCards
             this.DisplayName = "霸王弓";
             this.CardType = Logic.Enums.CardTypeEnum.Weapon;
 
-            AttackFactor.TannangDistance = 0;
-            AttackFactor.ShaDistance = 5;
+            BaseAttackFactor.TannangDistance = 0;
+            BaseAttackFactor.ShaDistance = 5;
         }
 
         public override bool CanBePlayed()

@@ -15,7 +15,6 @@ namespace Logic.Model.Skill.Beidong
         {
             Name = "Baotou";
             this.DisplayName = "豹子头";
-            SkillType = Enums.SkillTypeEnum.MainSkill;
             Description = "出牌时，当出现以下两种情况时你对别的角色出的【杀】不可回避：（1）目标角色的手牌数大于或等于你的血量值。（2）目标角色的手牌数小于或等于你的攻击范围。";
         }
     }

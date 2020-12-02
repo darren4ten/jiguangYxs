@@ -90,6 +90,14 @@ namespace Logic.Model.Player
         public Player(GameLevelBase gameLevel, List<PlayerHero> availablePlayerHeroes)
         {
             _availablePlayerHeroes = availablePlayerHeroes;
+            _availablePlayerHeroes.ForEach(p =>
+            {
+                p.SetPlayerContext(new PlayerContext()
+                {
+                    GameLevel = _gameLevel,
+                    Player = this
+                });
+            });
             _gameLevel = gameLevel;
             CardsInHand = new List<CardBase>();
             Marks = new List<Mark.MarkBase>();
@@ -121,7 +129,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_EnterMyRound()
         {
-            await GetCurrentPlayerHero().GetActionManager().OnRequestStartStep_EnterMyRound();
+            await GetCurrentPlayerHero().ActionManager.OnRequestStartStep_EnterMyRound();
         }
 
         /// <summary>
@@ -130,7 +138,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_PickCard()
         {
-            await GetCurrentPlayerHero().GetActionManager().OnRequestStartStep_PickCard();
+            await GetCurrentPlayerHero().ActionManager.OnRequestStartStep_PickCard();
         }
 
         /// <summary>
@@ -139,7 +147,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_PlayCard()
         {
-            await GetCurrentPlayerHero().GetActionManager().OnRequestStartStep_PlayCard();
+            await GetCurrentPlayerHero().ActionManager.OnRequestStartStep_PlayCard();
         }
 
         /// <summary>
@@ -148,7 +156,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_ThrowCard()
         {
-            await GetCurrentPlayerHero().GetActionManager().OnRequestStartStep_ThrowCard();
+            await GetCurrentPlayerHero().ActionManager.OnRequestStartStep_ThrowCard();
         }
 
         /// <summary>
@@ -157,7 +165,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_ExitMyRound()
         {
-            await GetCurrentPlayerHero().GetActionManager().OnRequestStartStep_ExitMyRound();
+            await GetCurrentPlayerHero().ActionManager.OnRequestStartStep_ExitMyRound();
         }
 
         /// <summary>

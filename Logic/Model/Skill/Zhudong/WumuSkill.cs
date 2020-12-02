@@ -12,7 +12,6 @@ namespace Logic.Model.Skill.Zhudong
     {
         public WumuSkill()
         {
-            SkillType = SkillTypeEnum.MainSkill;
             Name = "Wumu";
             DisplayName = "武穆";
         }

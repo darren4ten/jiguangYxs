@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Logic.Model.Player;
 using Logic.Model.Skill.Interface;
 
 namespace Logic.Model.Skill
@@ -14,19 +15,21 @@ namespace Logic.Model.Skill
 
         public string DisplayName { get; set; }
         public string Description { get; set; }
-        public SkillTypeEnum SkillType { get; set; }
 
-        public Task LoadSkill()
+        protected PlayerHero PlayerHero { get; set; }
+
+        public virtual Task LoadSkill(PlayerHero playerHero)
+        {
+            PlayerHero = playerHero;
+            return Task.FromResult("");
+        }
+
+        public virtual Task UnLoadSkill()
         {
             throw new NotImplementedException();
         }
 
-        public Task UnLoadSkill()
-        {
-            throw new NotImplementedException();
-        }
-
-        SkillTypeEnum ISkill.SkillType()
+        public virtual SkillTypeEnum SkillType()
         {
             throw new NotImplementedException();
         }

@@ -10,7 +10,7 @@ using Logic.Model.RequestResponse.Response;
 
 namespace Logic.ActionManger
 {
-    public abstract class StandardActionManager : IActionManager
+    public class StandardActionManager : IActionManager
     {
         public Task<bool> OnRequestTriggerSkill(SkillTypeEnum skillType, CardRequestContext cardRequestContext)
         {

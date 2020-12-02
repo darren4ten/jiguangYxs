@@ -14,7 +14,7 @@ namespace Logic.Model.Cards.EquipmentCards
             this.Name = "Langyabang";
             this.DisplayName = "狼牙棒";
             this.CardType = Logic.Enums.CardTypeEnum.Weapon;
-            AttackFactor.ShaDistance = 4;
+            BaseAttackFactor.ShaDistance = 4;
         }
 
         public override bool CanBePlayed()

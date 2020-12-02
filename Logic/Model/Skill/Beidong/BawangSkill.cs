@@ -12,7 +12,6 @@ namespace Logic.Model.Skill.Zhudong
     {
         public BawangSkill()
         {
-            SkillType = SkillTypeEnum.MainSkill;
             Name = "Bawang";
             DisplayName = "霸王";
         }

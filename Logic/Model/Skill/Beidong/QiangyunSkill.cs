@@ -15,7 +15,6 @@ namespace Logic.Model.Skill.Beidong
         {
             Name = "Qiangyun";
             this.DisplayName = "强运";
-            SkillType = Enums.SkillTypeEnum.MainSkill;
             Description = "";
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Logic.Model.Enums;
+using Logic.Model.Player;
 
 namespace Logic.Model.Skill.Interface
 {
@@ -9,7 +10,7 @@ namespace Logic.Model.Skill.Interface
         /// 装备技能
         /// </summary>
         /// <returns></returns>
-        Task LoadSkill();
+        Task LoadSkill(PlayerHero playerHero);
 
         /// <summary>
         /// 卸载技能

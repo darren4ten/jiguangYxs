@@ -16,7 +16,15 @@ namespace Logic.Model.Cards.EquipmentCards
         //public int AttackFactor.ShaDistance { get; set; }
         //public int MaxShaCount { get; set; }
         //public int MaxShaTargetCount { get; set; }
-        public AttackDynamicFactor AttackFactor { get; set; }
+        public AttackDynamicFactor BaseAttackFactor { get; set; }
+
+        public EquipmentBase()
+        {
+            BaseAttackFactor = new AttackDynamicFactor()
+            {
+                Damage = new Damage()
+            };
+        }
 
         public override bool CanBePlayed()
         {

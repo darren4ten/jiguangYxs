@@ -23,12 +23,12 @@ namespace Logic.Model.Player
         /// <summary>
         /// 当前血量
         /// </summary>
-        public int CurrentLife { get; set; }
+        public int CurrentLife { get; private set; }
 
-        /// <summary>
-        /// 最大生命
-        /// </summary>
-        public int MaxLife { get; set; }
+        ///// <summary>
+        ///// 最大生命
+        ///// </summary>
+        //public int MaxLife { get; private set; }
 
         /// <summary>
         /// 是否死亡
@@ -36,49 +36,60 @@ namespace Logic.Model.Player
         public bool IsDead { get; set; }
 
         /// <summary>
-        /// 攻击属性
+        /// 基础攻击属性
         /// </summary>
-        protected AttackDynamicFactor AttackFactor { get; set; }
+        public AttackDynamicFactor BaseAttackFactor { get; set; }
 
         /// <summary>
         /// 具体的英雄
         /// </summary>
-        public HeroBase Hero { get; set; }
+        public HeroBase Hero { get; }
 
         /// <summary>
-        /// 玩家英雄星级{0-4}
+        /// 玩家英雄星级{1-5}
         /// </summary>
-        public int Star { get; set; }
+        public int Star { get; }
 
         /// <summary>
         /// 用户行为管理器
         /// </summary>
-        protected IActionManager _actionManager { get; set; }
+        public IActionManager ActionManager { get; }
+
+
+        public PlayerContext PlayerContext { get; private set; }
 
         /// <summary>
         /// 额外的主技能
         /// </summary>
-        public List<SkillBase> ExtraMainSkillSet { get; set; }
+        public List<SkillBase> ExtraMainSkillSet { get; }
 
         /// <summary>
         /// 额外的副技能
         /// </summary>
-        public List<SkillBase> ExtraSubSkillSet { get; set; }
+        public List<SkillBase> ExtraSubSkillSet { get; }
 
 
-        public PlayerHero(IActionManager actionManager)
+        public PlayerHero(int star, HeroBase hero, List<SkillBase> extraMainSkillSet, List<SkillBase> extraSubSkillSet, IActionManager actionManager)
         {
-            _actionManager = actionManager;
-            AttackFactor = Hero.GetBaseAttackFactor();
+            ActionManager = actionManager;
+            Star = star <= 1 ? 1 : (star >= 5 ? 5 : star);
+            Hero = hero;
+            BaseAttackFactor = Hero.GetBaseAttackFactor();
+            //加载技能，初始化事件监听
+            ExtraMainSkillSet = extraMainSkillSet;
+            ExtraSubSkillSet = extraSubSkillSet;
+            LoadSkills(ExtraMainSkillSet);
+            LoadSkills(ExtraSubSkillSet);
+
+            //初始化攻击因子
+            InitAttackFactor(star, hero);
         }
 
-        /// <summary>
-        /// 获取当前用户行为管理器
-        /// </summary>
-        /// <returns></returns>
-        public IActionManager GetActionManager()
+        #region 公有方法
+
+        public void SetPlayerContext(PlayerContext playerContext)
         {
-            return _actionManager;
+            PlayerContext = playerContext;
         }
 
         /// <summary>
@@ -109,7 +120,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public AttackDynamicFactor GetAttackFactor()
         {
-            return AttackFactor;
+            return BaseAttackFactor;
         }
 
         /// <summary>
@@ -130,12 +141,35 @@ namespace Logic.Model.Player
         public async Task AddLife(AddLifeRequest request)
         {
             //todo:targetPlayer.triggerBeforeLoseLifeEvent
-            if (CurrentLife < MaxLife)
+            if (CurrentLife < BaseAttackFactor.MaxLife)
             {
                 //todo: trigger add life events
 
             }
         }
+        #endregion
+
+        #region 保护方法
+
+        protected void InitAttackFactor(int star, HeroBase hero)
+        {
+            BaseAttackFactor.MaxLife = (star - 1) + hero.MaxLife + BaseAttackFactor.MaxLife;
+            CurrentLife = BaseAttackFactor.MaxLife;
+        }
+
+        protected void LoadSkills(List<SkillBase> skillSet)
+        {
+            if (skillSet == null || !skillSet.Any())
+            {
+                return;
+            }
+            skillSet.ForEach(s =>
+            {
+                s.LoadSkill(this);
+            });
+        }
+
+        #endregion
 
         #region IAbility
         /// <summary>
