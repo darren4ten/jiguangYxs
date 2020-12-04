@@ -55,6 +55,7 @@ namespace Logic.Cards
         /// </summary>
         public string Image { get; set; }
 
+        public PlayerContext PlayerContext { get; private set; }
         /// <summary>
         /// 是否能够被主动打出
         /// </summary>
@@ -69,6 +70,12 @@ namespace Logic.Cards
             await Task.FromResult("");
         }
 
+        public CardBase AttachPlayerContext(PlayerContext playerContext)
+        {
+            PlayerContext = playerContext;
+            return this;
+        }
+
         #region 主动出牌，Play card
         /// <summary>
         /// 出牌
@@ -76,11 +83,21 @@ namespace Logic.Cards
         /// <param name="cardRequestContext"></param>
         /// <param name="roundContext"></param>
         /// <returns></returns>
-        public virtual async Task PlayCard(CardRequestContext cardRequestContext, RoundContext roundContext)
+        public virtual async Task<CardResponseContext> PlayCard(CardRequestContext cardRequestContext, RoundContext roundContext)
         {
-            await OnBeforePlayCard(cardRequestContext, roundContext);
-            await OnPlayCard(cardRequestContext, roundContext);
-            await OnAfterPlayCard(cardRequestContext, roundContext);
+            CardResponseContext responseContext = new CardResponseContext();
+            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeSha, cardRequestContext, roundContext, responseContext);
+            if (responseContext.ResponseResult != ResponseResultEnum.UnKnown) return responseContext;
+
+            var r1 = await OnBeforePlayCard(cardRequestContext, responseContext, roundContext);
+            if (r1.ResponseResult != ResponseResultEnum.UnKnown) return r1;
+
+            var r2 = await OnPlayCard(cardRequestContext, r1, roundContext);
+            if (r2.ResponseResult != ResponseResultEnum.UnKnown) return r2;
+
+            var r3 = await OnAfterPlayCard(cardRequestContext, r2, roundContext);
+            if (r3.ResponseResult != ResponseResultEnum.UnKnown) return r3;
+            return r3;
         }
 
         /// <summary>
@@ -89,9 +106,9 @@ namespace Logic.Cards
         /// <param name="cardRequestContext"></param>
         /// <param name="roundContext"></param>
         /// <returns></returns>
-        protected virtual async Task OnBeforePlayCard(CardRequestContext cardRequestContext, RoundContext roundContext)
+        protected virtual async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
-            await Task.FromResult("");
+            return await Task.FromResult(new CardResponseContext());
         }
 
         /// <summary>
@@ -100,9 +117,9 @@ namespace Logic.Cards
         /// <param name="cardRequestContext"></param>
         /// <param name="roundContext"></param>
         /// <returns></returns>
-        protected virtual async Task OnPlayCard(CardRequestContext cardRequestContext, RoundContext roundContext)
+        protected virtual async Task<CardResponseContext> OnPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
-            await Task.FromResult("");
+            return await Task.FromResult(new CardResponseContext());
         }
 
         /// <summary>
@@ -111,9 +128,9 @@ namespace Logic.Cards
         /// <param name="cardRequestContext"></param>
         /// <param name="roundContext"></param>
         /// <returns></returns>
-        protected virtual async Task OnAfterPlayCard(CardRequestContext cardRequestContext, RoundContext roundContext)
+        protected virtual async Task<CardResponseContext> OnAfterPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
-            await Task.FromResult("");
+            return await Task.FromResult(new CardResponseContext());
         }
 
         #endregion

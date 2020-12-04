@@ -71,6 +71,77 @@ namespace Logic.GameLevel
 
         public SkipOption SkipOption { get; set; }
 
+        /// <summary>
+        /// 获取默认的英雄攻击相关的基础信息（非增量）
+        /// </summary>
+        /// <returns></returns>
+        public static AttackDynamicFactor GetDefaultBaseAttackFactor()
+        {
+            return new AttackDynamicFactor()
+            {
+                DefenseDistance = 0,
+                TannangDistance = 1,
+                IsShaNotAvoidable = false,
+                MaxCardCountInHand = 3,
+                MaxLife = 3,
+                MaxShaTargetCount = 1,
+                MaxShaTimes = 1,
+                PickCardCountPerRound = 2,
+                ShaCountAvoidJuedou = 1,
+                ShaDistance = 1,
+                ShanCountAvoidSha = 1,
+                Damage = new Damage()
+                {
+                    FenghuolangyanDamage = 1,
+                    JuedouDamage = 1,
+                    ShaDamage = 1,
+                    WanjianqifaDamage = 1
+                },
+                SkipOption = new SkipOption()
+                {
+                    ShouldSkipEnterMyRound = false,
+                    ShouldSkipPickCard = false,
+                    ShouldSkipPlayCard = false,
+                    ShouldSkipThrowCard = false,
+                }
+            };
+        }
+
+        /// <summary>
+        /// 获取默认的英雄攻击相关的基础信息（增量）
+        /// </summary>
+        /// <returns></returns>
+        public static AttackDynamicFactor GetDefaultDeltaAttackFactor()
+        {
+            return new AttackDynamicFactor()
+            {
+                DefenseDistance = 0,
+                TannangDistance = 0,
+                IsShaNotAvoidable = false,
+                MaxCardCountInHand = 0,
+                MaxLife = 0,
+                MaxShaTargetCount = 0,
+                MaxShaTimes = 0,
+                PickCardCountPerRound = 0,
+                ShaCountAvoidJuedou = 0,
+                ShaDistance = 0,
+                ShanCountAvoidSha = 0,
+                Damage = new Damage()
+                {
+                    FenghuolangyanDamage = 0,
+                    JuedouDamage = 0,
+                    ShaDamage = 0,
+                    WanjianqifaDamage = 0
+                },
+                SkipOption = new SkipOption()
+                {
+                    ShouldSkipEnterMyRound = false,
+                    ShouldSkipPickCard = false,
+                    ShouldSkipPlayCard = false,
+                    ShouldSkipThrowCard = false,
+                }
+            };
+        }
     }
 
     public class SkipOption

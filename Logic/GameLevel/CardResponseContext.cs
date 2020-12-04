@@ -17,5 +17,7 @@ namespace Logic.GameLevel
         /// 响应结果
         /// </summary>
         public ResponseResultEnum ResponseResult { get; set; }
+
+        public string Message { get; set; }
     }
 }

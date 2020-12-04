@@ -124,6 +124,17 @@ namespace Logic.Model.Player
         }
 
         /// <summary>
+        /// 响应出牌
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <returns></returns>
+        public async Task<CardResponseContext> ResponseCard(CardRequestContext cardRequestContext)
+        {
+            var res = await GetCurrentPlayerHero().ActionManager.OnRequestResponseCard(cardRequestContext);
+            return res;
+        }
+
+        /// <summary>
         /// 开始进入我的回合
         /// </summary>
         /// <returns></returns>

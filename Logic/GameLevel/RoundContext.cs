@@ -8,6 +8,11 @@ namespace Logic.GameLevel
     public class RoundContext
     {
         /// <summary>
+        /// 杀过的次数
+        /// </summary>
+        public int ShaedTimes { get; set; }
+
+        /// <summary>
         /// 攻击加成
         /// </summary>
         public AttackDynamicFactor AttackDynamicFactor { get; set; }

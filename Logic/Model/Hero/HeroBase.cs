@@ -49,34 +49,7 @@ namespace Logic.Model.Hero
 
         public HeroBase()
         {
-            AttackFactor = new AttackDynamicFactor()
-            {
-                DefenseDistance = 0,
-                TannangDistance = 1,
-                IsShaNotAvoidable = false,
-                MaxCardCountInHand = MaxLife,
-                MaxLife = 3,
-                MaxShaTargetCount = 1,
-                MaxShaTimes = 1,
-                PickCardCountPerRound = 2,
-                ShaCountAvoidJuedou = 1,
-                ShaDistance = 1,
-                ShanCountAvoidSha = 1,
-                Damage = new Damage()
-                {
-                    FenghuolangyanDamage = 1,
-                    JuedouDamage = 1,
-                    ShaDamage = 1,
-                    WanjianqifaDamage = 1
-                },
-                SkipOption = new SkipOption()
-                {
-                    ShouldSkipEnterMyRound = false,
-                    ShouldSkipPickCard = false,
-                    ShouldSkipPlayCard = false,
-                    ShouldSkipThrowCard = false,
-                }
-            };
+            AttackFactor = AttackDynamicFactor.GetDefaultBaseAttackFactor();
         }
 
         public AttackDynamicFactor GetBaseAttackFactor()
