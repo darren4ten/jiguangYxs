@@ -10,6 +10,8 @@ namespace Logic.Model.Enums
         Juedou,
         Fenghuolangyan,
         Wanjianqifa,
-        Xiadan
+        Xiadan,
+        Hongyan,
+        Gongxin
     }
 }

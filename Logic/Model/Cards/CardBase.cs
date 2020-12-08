@@ -41,11 +41,6 @@ namespace Logic.Cards
         public FlowerKindEnum FlowerKind { get; set; }
 
         /// <summary>
-        /// 卡牌类型
-        /// </summary>
-        public CardTypeEnum CardType { get; set; }
-
-        /// <summary>
         /// 颜色
         /// </summary>
         public CardColorEnum Color { get; set; }
@@ -70,6 +65,11 @@ namespace Logic.Cards
             await Task.FromResult("");
         }
 
+        /// <summary>
+        /// 绑定卡牌的上下文
+        /// </summary>
+        /// <param name="playerContext"></param>
+        /// <returns></returns>
         public CardBase AttachPlayerContext(PlayerContext playerContext)
         {
             PlayerContext = playerContext;
@@ -86,17 +86,19 @@ namespace Logic.Cards
         public virtual async Task<CardResponseContext> PlayCard(CardRequestContext cardRequestContext, RoundContext roundContext)
         {
             CardResponseContext responseContext = new CardResponseContext();
-            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeSha, cardRequestContext, roundContext, responseContext);
+            await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, cardRequestContext, responseContext, roundContext);
             if (responseContext.ResponseResult != ResponseResultEnum.UnKnown) return responseContext;
 
             var r1 = await OnBeforePlayCard(cardRequestContext, responseContext, roundContext);
             if (r1.ResponseResult != ResponseResultEnum.UnKnown) return r1;
 
+            await PlayerContext.Player.TriggerEvent(EventTypeEnum.ZhudongPlayCard, cardRequestContext, responseContext, roundContext);
             var r2 = await OnPlayCard(cardRequestContext, r1, roundContext);
             if (r2.ResponseResult != ResponseResultEnum.UnKnown) return r2;
 
             var r3 = await OnAfterPlayCard(cardRequestContext, r2, roundContext);
             if (r3.ResponseResult != ResponseResultEnum.UnKnown) return r3;
+            await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterZhudongPlayCard, cardRequestContext, responseContext, roundContext);
             return r3;
         }
 

@@ -94,14 +94,15 @@ namespace Logic.Event
         }
 
         /// <summary>
-        /// 触发事件
+        /// 触发事件.Todo:listen event和trigger events都必须指定player
         /// </summary>
         /// <param name="eventType"></param>
+        /// <param name="playerHero"></param>
         /// <param name="cardRequestContext"></param>
         /// <param name="roundContext"></param>
         /// <param name="cardResponseContext"></param>
         /// <returns></returns>
-        public async Task TriggerEvent(EventTypeEnum eventType, CardRequestContext cardRequestContext, RoundContext roundContext, CardResponseContext cardResponseContext)
+        public async Task TriggerEvent(EventTypeEnum eventType, PlayerHero playerHero, CardRequestContext cardRequestContext, RoundContext roundContext, CardResponseContext cardResponseContext)
         {
             var eventDic = EventDic.ContainsKey(eventType) ? EventDic[eventType] : null;
             if (eventDic == null)
@@ -109,18 +110,39 @@ namespace Logic.Event
                 return;
             }
 
-            foreach (var evtBind in eventDic)
+            //如果没有指定playerHero，则直接触发对应的所以事件
+            if (playerHero == null)
             {
-                foreach (var eventHandler in evtBind.Value.EventHandlers)
+                foreach (var pe in eventDic)
                 {
-                    if (eventHandler == null)
+                    foreach (var eventHandler in pe.Value.EventHandlers)
                     {
-                        continue;
+                        if (eventHandler == null)
+                        {
+                            continue;
+                        }
+                        await eventHandler.RoundEventHandler(cardRequestContext, roundContext, cardResponseContext);
+                        Console.WriteLine($"TriggerEvent:{eventHandler?.EventId}.");
                     }
-                    await eventHandler.RoundEventHandler(cardRequestContext, roundContext, cardResponseContext);
-                    //log事件绑定成功
-                    Console.WriteLine($"TriggerEvent:{eventHandler?.EventId}.");
                 }
+                return;
+            }
+
+            if (!eventDic.ContainsKey(playerHero))
+            {
+                return;
+            }
+
+            var actDic = eventDic[playerHero];
+
+            foreach (var eventHandler in actDic.EventHandlers)
+            {
+                if (eventHandler == null)
+                {
+                    continue;
+                }
+                await eventHandler.RoundEventHandler(cardRequestContext, roundContext, cardResponseContext);
+                Console.WriteLine($"TriggerEvent:{eventHandler?.EventId}.");
             }
         }
 

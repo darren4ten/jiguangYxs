@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
 using Logic.ActionManger;
 using Logic.GameLevel;
 using Logic.Model.Cards.EquipmentCards;
+using Logic.Model.Enums;
 using Logic.Model.Hero;
 using Logic.Model.Interface;
 using Logic.Model.RequestResponse;
@@ -50,12 +52,6 @@ namespace Logic.Model.Player
         /// </summary>
         public int Star { get; }
 
-        /// <summary>
-        /// 用户行为管理器
-        /// </summary>
-        public IActionManager ActionManager { get; }
-
-
         public PlayerContext PlayerContext { get; private set; }
 
         /// <summary>
@@ -69,9 +65,8 @@ namespace Logic.Model.Player
         public List<SkillBase> ExtraSubSkillSet { get; }
 
 
-        public PlayerHero(int star, HeroBase hero, List<SkillBase> extraMainSkillSet, List<SkillBase> extraSubSkillSet, IActionManager actionManager)
+        public PlayerHero(int star, HeroBase hero, List<SkillBase> extraMainSkillSet, List<SkillBase> extraSubSkillSet)
         {
-            ActionManager = actionManager;
             Star = star <= 1 ? 1 : (star >= 5 ? 5 : star);
             Hero = hero;
             BaseAttackFactor = Hero.GetBaseAttackFactor();
@@ -124,13 +119,73 @@ namespace Logic.Model.Player
         }
 
         /// <summary>
-        /// 掉血
+        /// 当前PlayerHero掉血
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         public async Task LoseLife(LoseLifeRequest request)
         {
-            //todo:targetPlayer.triggerBeforeLoseLifeEvent
+            await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeLoseLife, request.CardRequestContext,
+                 request.CardResponseContext, request.SrcRoundContext);
+            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeLoseLife, null, request.CardRequestContext, request.SrcRoundContext,
+                request.CardResponseContext);
+
+
+            await PlayerContext.Player.TriggerEvent(EventTypeEnum.LoseLife, request.CardRequestContext,
+                request.CardResponseContext, request.SrcRoundContext);
+            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.LoseLife, null, request.CardRequestContext, request.SrcRoundContext,
+                request.CardResponseContext);
+
+            var defaultDamage = AttackDynamicFactor.GetDefaultBaseAttackFactor();
+            var roundContextAttackDynamicFactor = request.SrcRoundContext?.AttackDynamicFactor;
+            //杀
+            if (request.DamageType == DamageTypeEnum.Sha)
+            {
+                this.CurrentLife -= request.CardRequestContext.AttackDynamicFactor.Damage.ShaDamage + defaultDamage.Damage.ShaDamage + (roundContextAttackDynamicFactor?.Damage.ShaDamage ?? 0);
+            }
+            //决斗
+            else if (request.DamageType == DamageTypeEnum.Juedou)
+            {
+                this.CurrentLife -= request.CardRequestContext.AttackDynamicFactor.Damage.JuedouDamage + defaultDamage.Damage.JuedouDamage + (roundContextAttackDynamicFactor?.Damage.JuedouDamage ?? 0);
+            }
+            //烽火狼烟
+            else if (request.DamageType == DamageTypeEnum.Fenghuolangyan)
+            {
+                this.CurrentLife -= request.CardRequestContext.AttackDynamicFactor.Damage.FenghuolangyanDamage + defaultDamage.Damage.FenghuolangyanDamage + (roundContextAttackDynamicFactor?.Damage.FenghuolangyanDamage ?? 0);
+            }
+            //万箭齐发
+            else if (request.DamageType == DamageTypeEnum.Wanjianqifa)
+            {
+                this.CurrentLife -= request.CardRequestContext.AttackDynamicFactor.Damage.WanjianqifaDamage + defaultDamage.Damage.WanjianqifaDamage + (roundContextAttackDynamicFactor?.Damage.WanjianqifaDamage ?? 0);
+            }
+            //三板斧
+            else if (request.DamageType == DamageTypeEnum.Sanbanfu)
+            {
+                //三板斧，判断杀的response到底是几个闪,如果没闪则伤害+1。
+                var shaDamage = request.CardRequestContext.AttackDynamicFactor.Damage.ShaDamage +
+                                defaultDamage.Damage.ShaDamage +
+                                (roundContextAttackDynamicFactor?.Damage.ShaDamage ?? 0);
+                if (request.CardResponseContext.Cards.Count == 0)
+                {
+                    shaDamage++;
+                }
+                this.CurrentLife -= shaDamage;
+            }
+            //攻心
+            else if (request.DamageType == DamageTypeEnum.Gongxin)
+            {
+                this.CurrentLife -= request.CardRequestContext.AttackDynamicFactor.Damage.GongxinDamage + defaultDamage.Damage.GongxinDamage + (roundContextAttackDynamicFactor?.Damage.GongxinDamage ?? 0);
+            }
+            //未知攻击
+            else
+            {
+                this.CurrentLife -= 1;
+            }
+
+            await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterLoseLife, request.CardRequestContext,
+                request.CardResponseContext, request.SrcRoundContext);
+            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterLoseLife, null, request.CardRequestContext, request.SrcRoundContext,
+                request.CardResponseContext);
         }
 
         /// <summary>
@@ -140,16 +195,60 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task AddLife(AddLifeRequest request)
         {
-            //todo:targetPlayer.triggerBeforeLoseLifeEvent
             if (CurrentLife < BaseAttackFactor.MaxLife)
             {
-                //todo: trigger add life events
+                await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeAddLife, request.CardRequestContext,
+                    request.CardResponseContext, request.SrcRoundContext);
+                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeAddLife, null, request.CardRequestContext, request.SrcRoundContext,
+                    request.CardResponseContext);
 
+                await PlayerContext.Player.TriggerEvent(EventTypeEnum.AddLife, request.CardRequestContext,
+                    request.CardResponseContext, request.SrcRoundContext);
+                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AddLife, null, request.CardRequestContext, request.SrcRoundContext,
+                    request.CardResponseContext);
+
+                var defaultRecover = AttackDynamicFactor.GetDefaultBaseAttackFactor();
+                var roundContextAttackDynamicFactor = request.SrcRoundContext?.AttackDynamicFactor;
+                //吸血
+                if (request.RecoverType == RecoverTypeEnum.Xixue)
+                {
+                    var deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.XixueLife + defaultRecover.Recover.XixueLife + (roundContextAttackDynamicFactor?.Recover.XixueLife ?? 0);
+                    AddLife(deltaLife, BaseAttackFactor.MaxLife);
+                }
+                //休养生息
+                else if (request.RecoverType == RecoverTypeEnum.Xiuyangshengxi)
+                {
+                    var deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.XiuyangshengxiLife + defaultRecover.Recover.XiuyangshengxiLife + (roundContextAttackDynamicFactor?.Recover.XiuyangshengxiLife ?? 0);
+                    AddLife(deltaLife, BaseAttackFactor.MaxLife);
+                }
+                //吃药
+                else if (request.RecoverType == RecoverTypeEnum.Yao)
+                {
+                    var deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.YaoLife + defaultRecover.Recover.YaoLife + (roundContextAttackDynamicFactor?.Recover.YaoLife ?? 0);
+                    AddLife(deltaLife, BaseAttackFactor.MaxLife);
+                }
+
+                await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterAddLife, request.CardRequestContext,
+                    request.CardResponseContext, request.SrcRoundContext);
+                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterAddLife, null, request.CardRequestContext, request.SrcRoundContext,
+                    request.CardResponseContext);
             }
         }
         #endregion
 
         #region 保护方法
+
+        protected void AddLife(int deltaLife, int maxLife)
+        {
+            if (deltaLife + CurrentLife >= BaseAttackFactor.MaxLife)
+            {
+                this.CurrentLife = BaseAttackFactor.MaxLife;
+            }
+            else
+            {
+                this.CurrentLife += deltaLife;
+            }
+        }
 
         protected void InitAttackFactor(int star, HeroBase hero)
         {

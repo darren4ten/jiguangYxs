@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Logic.GameLevel;
 using Logic.Model.Enums;
 
 namespace Logic.Model.RequestResponse.Request
@@ -9,9 +10,9 @@ namespace Logic.Model.RequestResponse.Request
     {
         public RecoverTypeEnum RecoverType { get; set; }
 
-        /// <summary>
-        /// 谁来触发的回血
-        /// </summary>
-        public Player.Player FromPlayer { get; set; }
+        public CardRequestContext CardRequestContext { get; set; }
+        public CardResponseContext CardResponseContext { get; set; }
+
+        public RoundContext SrcRoundContext { get; set; }
     }
 }

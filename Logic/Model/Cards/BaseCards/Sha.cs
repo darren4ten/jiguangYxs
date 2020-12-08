@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.GameLevel;
 using Logic.Model.Enums;
+using Logic.Model.RequestResponse.Request;
 
 namespace Logic.Model.Cards.BaseCards
 {
@@ -16,7 +18,6 @@ namespace Logic.Model.Cards.BaseCards
             this.Description = "杀";
             this.Name = "Sha";
             this.DisplayName = "杀";
-            this.CardType = Logic.Enums.CardTypeEnum.Base;
         }
 
         public override bool CanBePlayed()
@@ -44,29 +45,35 @@ namespace Logic.Model.Cards.BaseCards
         /// <returns></returns>
         protected async Task<CardResponseContext> ExecuteAction(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
-            //检查是否杀不可以闪避，如果是，则跳过
-            if (cardRequestContext.AttackDynamicFactor.IsShaNotAvoidable || roundContext.AttackDynamicFactor.IsShaNotAvoidable)
+
+            PlayerContext.Player.RoundContext.ShaedTimes++;
+            foreach (var p in cardRequestContext.TargetPlayers)
             {
-                cardResponseContext.Cards = null;
-                cardResponseContext.ResponseResult = ResponseResultEnum.Failed;
-                cardResponseContext.Message = "杀不可被闪避";
-                return cardResponseContext;
+                //检查是否杀不可以闪避，如果是，则跳过
+                if (cardRequestContext.AttackDynamicFactor.IsShaNotAvoidable || roundContext.AttackDynamicFactor.IsShaNotAvoidable)
+                {
+                    cardResponseContext.Cards = null;
+                    cardResponseContext.ResponseResult = ResponseResultEnum.Failed;
+                    cardResponseContext.Message = "杀不可被闪避";
+                    return await LoseLife(cardRequestContext, await CheckResponse(cardRequestContext, cardResponseContext, roundContext), roundContext);
+                }
+
+                var actResponse = await p.ResponseCard(cardRequestContext);
+                return await LoseLife(cardRequestContext, await CheckResponse(cardRequestContext, actResponse, roundContext), roundContext);
             }
 
-            var actResponse = await PlayerContext.Player.ResponseCard(cardRequestContext);
-
-            return actResponse;
+            return cardResponseContext;
         }
 
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
-            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(Enums.EventTypeEnum.BeforeSha, cardRequestContext, roundContext, cardResponseContext);
+            await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeSha, cardRequestContext, cardResponseContext);
             return cardResponseContext;
         }
 
         protected override async Task<CardResponseContext> OnPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
-            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(Enums.EventTypeEnum.Sha, cardRequestContext, roundContext, cardResponseContext);
+            await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.Sha, cardRequestContext, cardResponseContext);
             if (PlayerContext.Player.IsInZhudongMode())
             {
                 PlayerContext.Player.RoundContext.ShaedTimes++;
@@ -83,37 +90,9 @@ namespace Logic.Model.Cards.BaseCards
 
         protected override async Task<CardResponseContext> OnAfterPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
-            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(Enums.EventTypeEnum.AfterSha, cardRequestContext, roundContext, cardResponseContext);
-            //判断是否杀成功
-            //如果返回结果不是ResponseResultEnum.UnKnown则直接返回
-            if (cardResponseContext == null)
-            {
-                return new CardResponseContext()
-                {
-                    ResponseResult = ResponseResultEnum.Failed
-                };
-            }
-            if (cardResponseContext.ResponseResult != ResponseResultEnum.UnKnown)
-            {
-                return cardResponseContext;
-            }
+            await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterSha, cardRequestContext, cardResponseContext);
 
-            if (cardResponseContext.Cards != null && cardResponseContext.Cards.Count >= cardRequestContext.MinCardCountToPlay && cardResponseContext.Cards.Count <= cardRequestContext.MaxCardCountToPlay)
-            {
-                cardResponseContext.ResponseResult = ResponseResultEnum.Success;
-                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(Enums.EventTypeEnum.BeforeShaSuccess, cardRequestContext, roundContext, cardResponseContext);
-                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(Enums.EventTypeEnum.ShaSuccess, cardRequestContext, roundContext, cardResponseContext);
-                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(Enums.EventTypeEnum.AfterShaSuccess, cardRequestContext, roundContext, cardResponseContext);
-                return cardResponseContext;
-            }
-            else
-            {
-                cardResponseContext.ResponseResult = ResponseResultEnum.Failed;
-                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(Enums.EventTypeEnum.BeforeShaFailed, cardRequestContext, roundContext, cardResponseContext);
-                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(Enums.EventTypeEnum.ShaFailed, cardRequestContext, roundContext, cardResponseContext);
-                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(Enums.EventTypeEnum.AfterShaFailed, cardRequestContext, roundContext, cardResponseContext);
-                return cardResponseContext;
-            }
+            return cardResponseContext;
         }
 
         public override async Task Popup()
@@ -126,9 +105,69 @@ namespace Logic.Model.Cards.BaseCards
 
         #region Private
 
-        private void Assert()
+        private async Task<CardResponseContext> LoseLife(CardRequestContext cardRequestContext, CardResponseContext actResponse, RoundContext roundContext)
         {
+            if (actResponse == null)
+            {
+                throw new Exception("actResponse cannot be null.");
+            }
 
+            //如果返回失败，则掉血
+            if (actResponse.ResponseResult == ResponseResultEnum.Failed)
+            {
+                var player = cardRequestContext.TargetPlayers.First();
+                await player.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
+                {
+                    CardRequestContext = cardRequestContext,
+                    SrcRoundContext = roundContext,
+                    CardResponseContext = actResponse,
+                    DamageType = DamageTypeEnum.Sha,
+                    RequestId = Guid.NewGuid()
+                });
+            }
+
+            return actResponse;
+        }
+
+
+        private async Task<CardResponseContext> CheckResponse(CardRequestContext cardRequestContext, CardResponseContext actResponse, RoundContext roundContext)
+        {
+            if (actResponse == null)
+            {
+                return new CardResponseContext()
+                {
+                    ResponseResult = ResponseResultEnum.Failed
+                };
+            }
+
+            if (actResponse.ResponseResult != ResponseResultEnum.UnKnown)
+            {
+                return actResponse;
+            }
+
+            if (actResponse.Cards != null && actResponse.Cards.Count >= cardRequestContext.MinCardCountToPlay &&
+                actResponse.Cards.Count <= cardRequestContext.MaxCardCountToPlay)
+            {
+                actResponse.ResponseResult = ResponseResultEnum.Success;
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeShaSuccess,
+                    cardRequestContext, actResponse, roundContext);
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.ShaSuccess, cardRequestContext,
+                     actResponse, roundContext);
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterShaSuccess,
+                    cardRequestContext, actResponse, roundContext);
+                return actResponse;
+            }
+            else
+            {
+                actResponse.ResponseResult = ResponseResultEnum.Failed;
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeShaFailed,
+                    cardRequestContext, actResponse, roundContext);
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.ShaFailed, cardRequestContext,
+                    actResponse, roundContext);
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterShaFailed,
+                    cardRequestContext, actResponse, roundContext);
+                return actResponse;
+            }
         }
 
         #endregion

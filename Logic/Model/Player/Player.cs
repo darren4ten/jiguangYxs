@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Logic.ActionManger;
 using Logic.Cards;
 using Logic.GameLevel;
 using Logic.Model.Cards;
@@ -81,24 +82,32 @@ namespace Logic.Model.Player
         public Player PreviousPlayer { get; private set; }
 
         /// <summary>
+        /// 用户行为管理器
+        /// </summary>
+        public ActionManagerBase ActionManager { get; }
+
+        /// <summary>
         /// 后一个玩家
         /// </summary>
         public Player NextPlayer { get; private set; }
 
         #endregion
 
-        public Player(GameLevelBase gameLevel, List<PlayerHero> availablePlayerHeroes)
+        public Player(GameLevelBase gameLevel, ActionManagerBase actionManager, List<PlayerHero> availablePlayerHeroes)
         {
+            var playerContext = new PlayerContext()
+            {
+                GameLevel = _gameLevel,
+                Player = this
+            };
             _availablePlayerHeroes = availablePlayerHeroes;
             _availablePlayerHeroes.ForEach(p =>
             {
-                p.SetPlayerContext(new PlayerContext()
-                {
-                    GameLevel = _gameLevel,
-                    Player = this
-                });
+                p.SetPlayerContext(playerContext);
             });
             _gameLevel = gameLevel;
+            ActionManager = actionManager;
+            ActionManager.SetPlayerContext(playerContext);
             CardsInHand = new List<CardBase>();
             Marks = new List<Mark.MarkBase>();
             EquipmentSet = new List<EquipmentBase>();
@@ -130,8 +139,26 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task<CardResponseContext> ResponseCard(CardRequestContext cardRequestContext)
         {
-            var res = await GetCurrentPlayerHero().ActionManager.OnRequestResponseCard(cardRequestContext);
+            var responseContext = new CardResponseContext();
+            await TriggerEvent(Enums.EventTypeEnum.BeforeBeidongPlayCard, cardRequestContext, responseContext, null);
+            await TriggerEvent(Enums.EventTypeEnum.BeidongPlayCard, cardRequestContext, responseContext, null);
+            var res = await ActionManager.OnRequestResponseCard(cardRequestContext);
+            await TriggerEvent(Enums.EventTypeEnum.AfterBeidongPlayCard, cardRequestContext, res, null);
             return res;
+        }
+
+        /// <summary>
+        /// 触发当前Player的事件
+        /// </summary>
+        /// <param name="eventType"></param>
+        /// <param name="cardRequestContext"></param>
+        /// <param name="responseContext"></param>
+        /// <param name="roundContext"></param>
+        /// <returns></returns>
+        public async Task<CardResponseContext> TriggerEvent(Enums.EventTypeEnum eventType, CardRequestContext cardRequestContext, CardResponseContext responseContext, RoundContext roundContext = null)
+        {
+            await _gameLevel.GlobalEventBus.TriggerEvent(eventType, this.GetCurrentPlayerHero(), cardRequestContext, roundContext, responseContext);
+            return responseContext;
         }
 
         /// <summary>
@@ -140,7 +167,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_EnterMyRound()
         {
-            await GetCurrentPlayerHero().ActionManager.OnRequestStartStep_EnterMyRound();
+            await ActionManager.OnRequestStartStep_EnterMyRound();
         }
 
         /// <summary>
@@ -149,7 +176,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_PickCard()
         {
-            await GetCurrentPlayerHero().ActionManager.OnRequestStartStep_PickCard();
+            await ActionManager.OnRequestStartStep_PickCard();
         }
 
         /// <summary>
@@ -158,7 +185,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_PlayCard()
         {
-            await GetCurrentPlayerHero().ActionManager.OnRequestStartStep_PlayCard();
+            await ActionManager.OnRequestStartStep_PlayCard();
         }
 
         /// <summary>
@@ -167,7 +194,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_ThrowCard()
         {
-            await GetCurrentPlayerHero().ActionManager.OnRequestStartStep_ThrowCard();
+            await ActionManager.OnRequestStartStep_ThrowCard();
         }
 
         /// <summary>
@@ -176,7 +203,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_ExitMyRound()
         {
-            await GetCurrentPlayerHero().ActionManager.OnRequestStartStep_ExitMyRound();
+            await ActionManager.OnRequestStartStep_ExitMyRound();
         }
 
         /// <summary>

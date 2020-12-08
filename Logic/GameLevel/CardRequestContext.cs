@@ -24,6 +24,11 @@ namespace Logic.GameLevel
         public int MinCardCountToPlay { get; set; }
 
         /// <summary>
+        /// 需要出的牌。如果是任意牌，则对应的CardType=any,RequestCard=null
+        /// </summary>
+        public CardBase RequestCard { get; set; }
+
+        /// <summary>
         /// 卡牌类型
         /// </summary>
         public CardTypeEnum CardType { get; set; }

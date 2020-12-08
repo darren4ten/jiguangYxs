@@ -64,6 +64,7 @@ namespace Logic.GameLevel
         /// </summary>
         public bool IsShaNotAvoidable { get; set; }
 
+        public Recover Recover { get; set; }
         /// <summary>
         /// 伤害
         /// </summary>
@@ -90,12 +91,20 @@ namespace Logic.GameLevel
                 ShaCountAvoidJuedou = 1,
                 ShaDistance = 1,
                 ShanCountAvoidSha = 1,
+                Recover = new Recover()
+                {
+                    XiuyangshengxiLife = 1,
+                    XixueLife = 1,
+                    YaoLife = 1
+                },
                 Damage = new Damage()
                 {
                     FenghuolangyanDamage = 1,
                     JuedouDamage = 1,
                     ShaDamage = 1,
-                    WanjianqifaDamage = 1
+                    WanjianqifaDamage = 1,
+                    GongxinDamage = 1,
+                    DujiDamage = 1,
                 },
                 SkipOption = new SkipOption()
                 {
@@ -133,6 +142,12 @@ namespace Logic.GameLevel
                     ShaDamage = 0,
                     WanjianqifaDamage = 0
                 },
+                Recover = new Recover()
+                {
+                    XiuyangshengxiLife = 0,
+                    XixueLife = 0,
+                    YaoLife = 0
+                },
                 SkipOption = new SkipOption()
                 {
                     ShouldSkipEnterMyRound = false,
@@ -167,6 +182,26 @@ namespace Logic.GameLevel
         public bool ShouldSkipPlayCard { get; set; }
     }
 
+    /// <summary>
+    /// 恢复相关参数
+    /// </summary>
+    public class Recover
+    {
+        /// <summary>
+        /// 休养生息回复的生命值
+        /// </summary>
+        public int XiuyangshengxiLife { get; set; }
+
+        /// <summary>
+        /// 吃药回复的生命值
+        /// </summary>
+        public int YaoLife { get; set; }
+
+        /// <summary>
+        /// 吸血回复的生命值
+        /// </summary>
+        public int XixueLife { get; set; }
+    }
     public class Damage
     {
         /// <summary>
@@ -188,5 +223,15 @@ namespace Logic.GameLevel
         /// 决斗的伤害
         /// </summary>
         public int JuedouDamage { get; set; }
+
+        /// <summary>
+        /// 攻心的伤害
+        /// </summary>
+        public int GongxinDamage { get; set; }
+
+        /// <summary>
+        /// 毒计的伤害
+        /// </summary>
+        public int DujiDamage { get; set; }
     }
 }

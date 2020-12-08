@@ -14,7 +14,6 @@ namespace Logic.Model.Cards.BaseCards
             this.Description = "药";
             this.Name = "Yao";
             this.DisplayName = "药";
-            this.CardType = Logic.Enums.CardTypeEnum.Base;
         }
 
         public override bool CanBePlayed()

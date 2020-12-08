@@ -14,7 +14,6 @@ namespace Logic.Model.Cards.JinlangCards
             this.Description = "探囊取物";
             this.Name = "Tannangquwu";
             this.DisplayName = "探囊取物";
-            this.CardType = Logic.Enums.CardTypeEnum.Jinlang;
         }
 
         public override bool CanBePlayed()

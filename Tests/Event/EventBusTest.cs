@@ -27,8 +27,8 @@ namespace Tests.Event
             var star2Xiangyu = new PlayerHero(2, new Xiangyu(), null,
                 new List<SkillBase>(){
                                         new Shatan(1,1)
-                                    }, new StandardActionManager());
-            var player1 = new Player(gameLevel1, new List<PlayerHero>() { star2Xiangyu })
+                                    });
+            var player1 = new Player(gameLevel1, new AiActionManager(), new List<PlayerHero>() { star2Xiangyu })
             {
                 PlayerId = 1
             };
@@ -43,7 +43,7 @@ namespace Tests.Event
 
             var t = Task.Run(async () =>
               {
-                  await eventBus.TriggerEvent(EventTypeEnum.AfterShaSuccess, new CardRequestContext(),
+                  await eventBus.TriggerEvent(EventTypeEnum.AfterShaSuccess, player1.GetCurrentPlayerHero(), new CardRequestContext(),
                       new RoundContext(), null);
               });
             Task.WaitAll(t);

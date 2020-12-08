@@ -10,7 +10,6 @@
             this.Description = "防御马";
             this.Name = "Fangyuma";
             this.DisplayName = "防御马";
-            this.CardType = Logic.Enums.CardTypeEnum.Defender;
             BaseAttackFactor.ShaDistance = 2;
             BaseAttackFactor.DefenseDistance = 1;
         }

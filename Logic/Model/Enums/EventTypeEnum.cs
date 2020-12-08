@@ -49,6 +49,19 @@ namespace Logic.Model.Enums
         AfterShaFailed,
 
         /// <summary>
+        /// 被动出牌之前
+        /// </summary>
+        BeforeBeidongPlayCard,
+        /// <summary>
+        /// 被动出牌
+        /// </summary>
+        BeidongPlayCard,
+        /// <summary>
+        /// 被动出牌之后
+        /// </summary>
+        AfterBeidongPlayCard,
+
+        /// <summary>
         /// 被杀
         /// </summary>
         BeShaed,
@@ -362,5 +375,18 @@ namespace Logic.Model.Enums
         /// 卸载装备之后
         /// </summary>
         AfterUnEquip,
+
+        /// <summary>
+        /// 主动出牌之前
+        /// </summary>
+        BeforeZhudongPlayCard,
+        /// <summary>
+        /// 主动出牌之时
+        /// </summary>
+        ZhudongPlayCard,
+        /// <summary>
+        /// 主动出牌之后
+        /// </summary>
+        AfterZhudongPlayCard,
     }
 }

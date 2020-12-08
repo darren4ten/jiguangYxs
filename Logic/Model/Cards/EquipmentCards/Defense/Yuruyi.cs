@@ -13,7 +13,6 @@ namespace Logic.Model.Cards.EquipmentCards.Defense
             this.Description = "玉如意";
             this.Name = "Yuruyi";
             this.DisplayName = "玉如意";
-            this.CardType = Logic.Enums.CardTypeEnum.Defender;
         }
 
         public override bool CanBePlayed()

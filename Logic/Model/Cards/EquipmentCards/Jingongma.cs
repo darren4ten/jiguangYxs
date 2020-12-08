@@ -12,7 +12,6 @@ namespace Logic.Model.Cards.EquipmentCards
             this.Description = "进攻马";
             this.Name = "Jingongma";
             this.DisplayName = "进攻马";
-            this.CardType = Logic.Enums.CardTypeEnum.Weapon;
             BaseAttackFactor.TannangDistance = 1;
             BaseAttackFactor.ShaDistance = 1;
         }

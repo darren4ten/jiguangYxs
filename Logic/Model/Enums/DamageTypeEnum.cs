@@ -11,6 +11,7 @@ namespace Logic.Model.Enums
         Fenghuolangyan,
         Wanjianqifa,
         Sanbanfu,
+        Gongxin,
         Duji,
         Shoupenglei
     }

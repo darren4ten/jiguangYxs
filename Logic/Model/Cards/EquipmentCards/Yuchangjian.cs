@@ -13,7 +13,6 @@ namespace Logic.Model.Cards.EquipmentCards
             this.Description = "鱼肠剑";
             this.Name = "Yuchangjian";
             this.DisplayName = "鱼肠剑";
-            this.CardType = Logic.Enums.CardTypeEnum.Weapon;
             BaseAttackFactor.ShaDistance = 2;
         }
 

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using Logic.Model.Enums;
+using Logic.Model.RequestResponse.Request;
 using Logic.Model.Skill.Beidong.SubSkill;
 using Logic.Model.Skill.Interface;
 using Logic.Model.Skill.Zhudong;
@@ -16,6 +19,34 @@ namespace Logic.Model.Skill.SubSkill
         {
             Name = "Xixue";
             DisplayName = "吸血";
+        }
+
+        public override Task SetupEventListeners()
+        {
+            PlayerHero.PlayerContext.GameLevel.GlobalEventBus.
+                ListenEvent(Guid.NewGuid(), PlayerHero, Logic.Model.Enums.EventTypeEnum.AfterShaSuccess, (
+                    async (reqContext, roundContext, responseContext) =>
+                    {
+                        if (ShouldTrigger())
+                        {
+                            await reqContext.SrcPlayer.GetCurrentPlayerHero().AddLife(new AddLifeRequest()
+                            {
+                                CardResponseContext = responseContext,
+                                CardRequestContext = reqContext,
+                                SrcRoundContext = roundContext,
+                                RequestId = Guid.NewGuid(),
+                                RecoverType = RecoverTypeEnum.Xixue
+                            });
+                            Console.WriteLine("触发吸血");
+                        }
+                    }));
+            return Task.FromResult("");
+        }
+
+
+        public override SkillTypeEnum SkillType()
+        {
+            return SkillTypeEnum.SubSkill;
         }
     }
 }

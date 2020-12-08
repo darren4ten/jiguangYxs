@@ -10,49 +10,53 @@ using Logic.Model.RequestResponse.Response;
 
 namespace Logic.ActionManger
 {
-    public class StandardActionManager : IActionManager
+    public class StandardActionManager : ActionManagerBase
     {
-        public Task<bool> OnRequestTriggerSkill(SkillTypeEnum skillType, CardRequestContext cardRequestContext)
+        public StandardActionManager(PlayerContext playContext) : base(playContext)
+        {
+        }
+
+        public override async Task<bool> OnRequestTriggerSkill(SkillTypeEnum skillType, CardRequestContext cardRequestContext)
         {
             throw new NotImplementedException();
         }
 
-        public Task<CardResponseContext> OnRequestResponseCard(CardRequestContext cardRequestContext)
+        public override async Task<CardResponseContext> OnRequestResponseCard(CardRequestContext cardRequestContext)
         {
             throw new NotImplementedException();
         }
 
-        public Task<CardResponseContext> OnRequestPickCardFromPanel(PickCardFromPanelRequest request)
+        public override async Task<CardResponseContext> OnRequestPickCardFromPanel(PickCardFromPanelRequest request)
         {
             throw new NotImplementedException();
         }
 
-        public Task OnRequestStartStep_EnterMyRound()
+        public override async Task OnRequestStartStep_EnterMyRound()
         {
             throw new NotImplementedException();
         }
 
-        public Task OnRequestStartStep_PickCard()
+        public override async Task OnRequestStartStep_PickCard()
         {
             throw new NotImplementedException();
         }
 
-        public Task OnRequestStartStep_PlayCard()
+        public override async Task OnRequestStartStep_PlayCard()
         {
             throw new NotImplementedException();
         }
 
-        public Task OnRequestStartStep_ThrowCard()
+        public override async Task OnRequestStartStep_ThrowCard()
         {
             throw new NotImplementedException();
         }
 
-        public Task OnRequestStartStep_ExitMyRound()
+        public override async Task OnRequestStartStep_ExitMyRound()
         {
             throw new NotImplementedException();
         }
 
-        public Task<SelectedTargetsResponse> OnRequestSelectTargets(SelectedTargetsRequest request)
+        public override async Task<SelectedTargetsResponse> OnRequestSelectTargets(SelectedTargetsRequest request)
         {
             throw new NotImplementedException();
         }
