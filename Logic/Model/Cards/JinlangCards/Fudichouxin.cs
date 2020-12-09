@@ -7,7 +7,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 釜底抽薪
     /// </summary>
-    public class Fudichouxin : CardBase
+    public class Fudichouxin : JinnangBase
     {
         public Fudichouxin()
         {

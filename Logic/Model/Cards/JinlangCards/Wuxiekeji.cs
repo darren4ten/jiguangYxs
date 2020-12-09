@@ -7,7 +7,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 无懈可击
     /// </summary>
-    public class Wuxiekeji : CardBase
+    public class Wuxiekeji : JinnangBase
     {
         public Wuxiekeji()
         {

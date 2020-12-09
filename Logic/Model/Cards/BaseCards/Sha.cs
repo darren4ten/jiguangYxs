@@ -72,7 +72,7 @@ namespace Logic.Model.Cards.BaseCards
             var phero = PlayerContext.Player.GetCurrentPlayerHero();
             cardRequestContext.MaxCardCountToPlay += phero.BaseAttackFactor.ShanCountAvoidSha;
             cardRequestContext.MinCardCountToPlay += phero.BaseAttackFactor.ShanCountAvoidSha;
-            await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeSha, cardRequestContext, cardResponseContext);
+            await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeSha, cardRequestContext, cardResponseContext, roundContext);
             return cardResponseContext;
         }
 
@@ -148,35 +148,6 @@ namespace Logic.Model.Cards.BaseCards
             }
 
             return actResponse;
-        }
-
-
-        private async Task<CardResponseContext> CheckResponse(CardRequestContext cardRequestContext, CardResponseContext actResponse, RoundContext roundContext)
-        {
-            if (actResponse == null)
-            {
-                return new CardResponseContext()
-                {
-                    ResponseResult = ResponseResultEnum.Failed
-                };
-            }
-
-            if (actResponse.ResponseResult != ResponseResultEnum.UnKnown)
-            {
-                return actResponse;
-            }
-
-            if (actResponse.Cards != null && actResponse.Cards.Count >= cardRequestContext.MinCardCountToPlay &&
-                actResponse.Cards.Count <= cardRequestContext.MaxCardCountToPlay)
-            {
-                actResponse.ResponseResult = ResponseResultEnum.Success;
-                return actResponse;
-            }
-            else
-            {
-                actResponse.ResponseResult = ResponseResultEnum.Failed;
-                return actResponse;
-            }
         }
 
         #endregion

@@ -7,7 +7,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 无中生有
     /// </summary>
-    public class Wuzhongshengyou : CardBase
+    public class Wuzhongshengyou : JinnangBase
     {
         public Wuzhongshengyou()
         {

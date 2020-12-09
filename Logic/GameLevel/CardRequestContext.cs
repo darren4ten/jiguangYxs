@@ -25,6 +25,7 @@ namespace Logic.GameLevel
 
         /// <summary>
         /// 需要出的牌。如果是任意牌，则对应的CardType=any,RequestCard=null
+        /// TODO: 优化类型，可否改为字符串或者枚举
         /// </summary>
         public CardBase RequestCard { get; set; }
 

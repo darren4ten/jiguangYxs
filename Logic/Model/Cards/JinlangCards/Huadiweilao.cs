@@ -7,7 +7,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 画地为牢
     /// </summary>
-    public class Huadiweilao : CardBase
+    public class Huadiweilao : JinnangBase
     {
         public Huadiweilao()
         {

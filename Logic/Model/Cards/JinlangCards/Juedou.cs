@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Logic.Cards;
+using Logic.GameLevel;
+using Logic.Model.Cards.BaseCards;
+using Logic.Model.Enums;
+using Logic.Model.RequestResponse.Request;
 
 namespace Logic.Model.Cards.JinlangCards
 {
     /// <summary>
     /// 决斗
     /// </summary>
-    public class Juedou : CardBase
+    public class Juedou : JinnangBase
     {
         public Juedou()
         {
@@ -16,14 +21,129 @@ namespace Logic.Model.Cards.JinlangCards
             this.DisplayName = "决斗";
         }
 
+        /// <summary>
+        /// 决斗。
+        /// 1. 主动出牌
+        /// 2. 被动出牌.被要求出牌
+        /// </summary>
+        /// <returns></returns>
         public override bool CanBePlayed()
         {
-            return false;
+            return PlayerContext.Player.IsInBeidongMode() || PlayerContext.Player.IsInZhudongMode();
         }
 
         public override Task Popup()
         {
             throw new NotImplementedException();
         }
+
+        #region 覆盖父类方法
+
+        protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
+            RoundContext roundContext)
+        {
+            var phero = PlayerContext.Player.GetCurrentPlayerHero();
+            cardRequestContext.RequestCard = new Sha();
+            cardRequestContext.AttackType = AttackTypeEnum.Juedou;
+            cardRequestContext.MaxCardCountToPlay += phero.BaseAttackFactor.ShaCountAvoidJuedou;
+            cardRequestContext.MinCardCountToPlay += phero.BaseAttackFactor.ShaCountAvoidJuedou;
+            return await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeJuedou, cardRequestContext,
+                  cardResponseContext, roundContext);
+        }
+
+        protected override async Task<CardResponseContext> OnPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
+            RoundContext roundContext)
+        {
+            await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.Juedou, cardRequestContext,
+               cardResponseContext, roundContext);
+            cardRequestContext.AttackDynamicFactor = cardRequestContext.AttackDynamicFactor ??
+                                                     AttackDynamicFactor.GetDefaultDeltaAttackFactor();
+            var actResponse = await ExecuteAction(cardRequestContext, cardResponseContext, roundContext);
+            var combindeRequest = PlayerContext.Player.GetCombindCardRequestContext(cardRequestContext,
+                PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor, roundContext);
+            return await LoseLife(combindeRequest, await CheckResponse(cardRequestContext, actResponse, roundContext), roundContext);
+        }
+
+        protected override async Task<CardResponseContext> OnAfterPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
+            RoundContext roundContext)
+        {
+            return await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterJuedou, cardRequestContext, cardResponseContext, roundContext);
+        }
+
+        #endregion
+
+        #region 业务逻辑
+
+        /// <summary>
+        /// 具体决斗的逻辑
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <param name="roundContext"></param>
+        /// <returns></returns>
+        protected async Task<CardResponseContext> ExecuteAction(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
+        {
+            var wxResponse = await GroupRequestWuxiekeji(cardRequestContext, cardResponseContext, roundContext);
+            if (wxResponse.ResponseResult == Enums.ResponseResultEnum.Wuxiekeji)
+            {
+                wxResponse.ResponseResult = Enums.ResponseResultEnum.Success;
+                wxResponse.Message = "请求被无懈可击";
+                return wxResponse;
+            }
+            //
+            var target = cardRequestContext.TargetPlayers.First();
+            var resTarget = await target.ResponseCard(cardRequestContext, cardResponseContext, roundContext);
+            while (resTarget.ResponseResult == Enums.ResponseResultEnum.Success)
+            {
+                var resSrc = await target.ResponseCard(cardRequestContext, cardResponseContext, roundContext);
+                if (resSrc.ResponseResult == ResponseResultEnum.Success)
+                {
+                    resTarget = await target.ResponseCard(cardRequestContext, cardResponseContext, roundContext);
+                }
+            }
+            return resTarget;
+        }
+
+
+        private async Task<CardResponseContext> LoseLife(CardRequestContext cardRequestContext, CardResponseContext actResponse, RoundContext roundContext)
+        {
+            if (actResponse == null)
+            {
+                throw new Exception("actResponse cannot be null.");
+            }
+
+            //如果返回失败，则掉血
+            if (actResponse.ResponseResult == ResponseResultEnum.Failed)
+            {
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeJuedouSuccess,
+                    cardRequestContext, actResponse, roundContext);
+                var player = cardRequestContext.TargetPlayers.First();
+                await player.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
+                {
+                    CardRequestContext = cardRequestContext,
+                    SrcRoundContext = roundContext,
+                    CardResponseContext = actResponse,
+                    DamageType = DamageTypeEnum.Juedou,
+                    RequestId = Guid.NewGuid()
+                });
+
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.JuedouSuccess, cardRequestContext,
+                    actResponse, roundContext);
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterJuedouSuccess,
+                    cardRequestContext, actResponse, roundContext);
+            }
+            else
+            {
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeJuedouFailed,
+                    cardRequestContext, actResponse, roundContext);
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.JuedouFailed, cardRequestContext,
+                    actResponse, roundContext);
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterJuedouFailed,
+                    cardRequestContext, actResponse, roundContext);
+            }
+
+            return actResponse;
+        }
+
+        #endregion
     }
 }

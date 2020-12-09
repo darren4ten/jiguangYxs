@@ -7,7 +7,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 休养生息
     /// </summary>
-    public class Xiuyangshengxi : CardBase
+    public class Xiuyangshengxi : JinnangBase
     {
         public Xiuyangshengxi()
         {

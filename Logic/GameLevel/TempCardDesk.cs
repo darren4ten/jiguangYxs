@@ -18,7 +18,7 @@ namespace Logic.GameLevel
 
         public void Add(CardBase card)
         {
-            if (card!=null)
+            if (card != null)
             {
                 card.AttachPlayerContext(null);
                 Cards.Add(card);

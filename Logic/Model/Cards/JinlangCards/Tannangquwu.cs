@@ -7,7 +7,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 探囊取物
     /// </summary>
-    public class Tannangquwu : CardBase
+    public class Tannangquwu : JinnangBase
     {
         public Tannangquwu()
         {

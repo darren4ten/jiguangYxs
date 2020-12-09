@@ -9,6 +9,7 @@ namespace Logic.Model.Enums
         UnKnown,
         Success,
         Failed,
-        Cancelled
+        Cancelled,
+        Wuxiekeji
     }
 }

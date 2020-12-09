@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
@@ -154,25 +155,26 @@ namespace Logic.Model.Player
             await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.LoseLife, null, request.CardRequestContext, request.SrcRoundContext,
                 request.CardResponseContext);
 
+            var actDamage = 0;
             //杀
             if (request.DamageType == DamageTypeEnum.Sha)
             {
-                this.CurrentLife -= (request.CardRequestContext.AttackDynamicFactor?.Damage?.ShaDamage ?? 0);
+                actDamage = (request.CardRequestContext.AttackDynamicFactor?.Damage?.ShaDamage ?? 0);
             }
             //决斗
             else if (request.DamageType == DamageTypeEnum.Juedou)
             {
-                this.CurrentLife -= (request.CardRequestContext.AttackDynamicFactor?.Damage?.JuedouDamage ?? 0);
+                actDamage = (request.CardRequestContext.AttackDynamicFactor?.Damage?.JuedouDamage ?? 0);
             }
             //烽火狼烟
             else if (request.DamageType == DamageTypeEnum.Fenghuolangyan)
             {
-                this.CurrentLife -= (request.CardRequestContext.AttackDynamicFactor?.Damage?.FenghuolangyanDamage ?? 0);
+                actDamage = (request.CardRequestContext.AttackDynamicFactor?.Damage?.FenghuolangyanDamage ?? 0);
             }
             //万箭齐发
             else if (request.DamageType == DamageTypeEnum.Wanjianqifa)
             {
-                this.CurrentLife -= (request.CardRequestContext.AttackDynamicFactor?.Damage?.WanjianqifaDamage ?? 0);
+                actDamage = (request.CardRequestContext.AttackDynamicFactor?.Damage?.WanjianqifaDamage ?? 0);
             }
             //三板斧
             else if (request.DamageType == DamageTypeEnum.Sanbanfu)
@@ -183,19 +185,22 @@ namespace Logic.Model.Player
                 {
                     shaDamage++;
                 }
-                this.CurrentLife -= shaDamage;
+                actDamage = shaDamage;
             }
             //攻心
             else if (request.DamageType == DamageTypeEnum.Gongxin)
             {
-                this.CurrentLife -= request.CardRequestContext.AttackDynamicFactor.Damage.GongxinDamage;
+                actDamage = request.CardRequestContext.AttackDynamicFactor.Damage.GongxinDamage;
             }
             //未知攻击
             else
             {
-                this.CurrentLife -= 1;
+                actDamage -= 1;
             }
 
+            CurrentLife -= actDamage;
+
+            Console.WriteLine($"{PlayerContext.Player.PlayerName + PlayerContext.Player.PlayerId}的【{Hero.DisplayName}】被“{request.DamageType}”掉血{actDamage}.");
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterLoseLife, request.CardRequestContext,
                 request.CardResponseContext, request.SrcRoundContext);
             await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterLoseLife, null, request.CardRequestContext, request.SrcRoundContext,
@@ -255,10 +260,13 @@ namespace Logic.Model.Player
         {
             if (deltaLife + CurrentLife >= BaseAttackFactor.MaxLife)
             {
+
+                Console.WriteLine($"{PlayerContext.Player.PlayerName + PlayerContext.Player.PlayerId}的【{Hero.DisplayName}】回复{BaseAttackFactor.MaxLife - CurrentLife}点血量.");
                 this.CurrentLife = BaseAttackFactor.MaxLife;
             }
             else
             {
+                Console.WriteLine($"{PlayerContext.Player.PlayerName + PlayerContext.Player.PlayerId}的【{Hero.DisplayName}】回复{deltaLife}点血量.");
                 this.CurrentLife += deltaLife;
             }
         }

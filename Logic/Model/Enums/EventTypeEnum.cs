@@ -49,6 +49,45 @@ namespace Logic.Model.Enums
         AfterShaFailed,
 
         /// <summary>
+        /// 决斗成功之时
+        /// </summary>
+        JuedouSuccess,
+        /// <summary>
+        /// 决斗成功之前
+        /// </summary>
+        BeforeJuedouSuccess,
+        /// <summary>
+        /// 决斗成功之后
+        /// </summary>
+        AfterJuedouSuccess,
+
+        /// <summary>
+        /// 决斗失败之时
+        /// </summary>
+        JuedouFailed,
+        /// <summary>
+        /// 决斗失败之前
+        /// </summary>
+        BeforeJuedouFailed,
+        /// <summary>
+        /// 决斗失败之后
+        /// </summary>
+        AfterJuedouFailed,
+
+        /// <summary>
+        /// 决斗之时
+        /// </summary>
+        Juedou,
+        /// <summary>
+        /// 决斗之前
+        /// </summary>
+        BeforeJuedou,
+        /// <summary>
+        /// 决斗之后
+        /// </summary>
+        AfterJuedou,
+
+        /// <summary>
         /// 被动出牌之前
         /// </summary>
         BeforeBeidongPlayCard,
@@ -86,6 +125,19 @@ namespace Logic.Model.Enums
         /// 出闪之后
         /// </summary>
         AfterShan,
+
+        /// <summary>
+        /// 吃药之时
+        /// </summary>
+        EatYao,
+        /// <summary>
+        /// 吃药之前
+        /// </summary>
+        BeforeEatYao,
+        /// <summary>
+        /// 吃药之后
+        /// </summary>
+        AfterEatYao,
 
 
         /// <summary>

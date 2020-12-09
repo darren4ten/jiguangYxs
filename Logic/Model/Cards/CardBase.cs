@@ -3,6 +3,7 @@ using Logic.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -85,6 +86,10 @@ namespace Logic.Cards
         /// <returns></returns>
         public virtual async Task<CardResponseContext> PlayCard(CardRequestContext cardRequestContext, RoundContext roundContext)
         {
+            //默认SrcPlayer为当前出牌的人
+            cardRequestContext.SrcPlayer = cardRequestContext.SrcPlayer ?? PlayerContext.Player;
+            Console.WriteLine($"[{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}的【{cardRequestContext.SrcPlayer.GetCurrentPlayerHero().Hero.DisplayName}】]{(cardRequestContext.TargetPlayers?.Any() == true ? "向" + string.Join(",", cardRequestContext.TargetPlayers.Select(p => p.PlayerName + p.PlayerId)) : "")}打出“{this.DisplayName}”");
+
             CardResponseContext responseContext = new CardResponseContext();
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, cardRequestContext, responseContext, roundContext);
             if (responseContext.ResponseResult != ResponseResultEnum.UnKnown) return responseContext;
@@ -187,6 +192,33 @@ namespace Logic.Cards
 
 
         #endregion
+        protected async Task<CardResponseContext> CheckResponse(CardRequestContext cardRequestContext, CardResponseContext actResponse, RoundContext roundContext)
+        {
+            if (actResponse == null)
+            {
+                return await Task.FromResult(new CardResponseContext()
+                {
+                    ResponseResult = ResponseResultEnum.Failed
+                });
+            }
+
+            if (actResponse.ResponseResult != ResponseResultEnum.UnKnown)
+            {
+                return actResponse;
+            }
+
+            if (actResponse.Cards != null && actResponse.Cards.Count >= cardRequestContext.MinCardCountToPlay &&
+                actResponse.Cards.Count <= cardRequestContext.MaxCardCountToPlay)
+            {
+                actResponse.ResponseResult = ResponseResultEnum.Success;
+                return actResponse;
+            }
+            else
+            {
+                actResponse.ResponseResult = ResponseResultEnum.Failed;
+                return actResponse;
+            }
+        }
 
         public abstract Task Popup();
 

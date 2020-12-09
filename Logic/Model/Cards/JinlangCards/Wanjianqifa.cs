@@ -7,7 +7,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 万箭齐发
     /// </summary>
-    public class Wanjianqifa : CardBase
+    public class Wanjianqifa : JinnangBase
     {
         public Wanjianqifa()
         {

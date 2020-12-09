@@ -154,11 +154,15 @@ namespace Logic.Model.Player
                 GetCurrentPlayerHero().BaseAttackFactor, roundContext);
             var res = await ActionManager.OnRequestResponseCard(newRequestContext);
             await TriggerEvent(Enums.EventTypeEnum.AfterBeidongPlayCard, cardRequestContext, res, roundContext);
+            if (res.Cards?.Any() == true)
+            {
+                Console.WriteLine($"[{PlayerName}{PlayerId}]出牌{string.Join(",", res.Cards.Select(p => $"{p.FlowerKind} {p.Number} {p.DisplayName}"))}");
+            }
             return res;
         }
 
         /// <summary>
-        /// 触发当前Player的事件
+        /// 触发当前Player的事件，会引用修改所有的参数，如cardRequestContext，responseContext
         /// </summary>
         /// <param name="eventType"></param>
         /// <param name="cardRequestContext"></param>

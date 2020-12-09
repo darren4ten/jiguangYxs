@@ -15,6 +15,11 @@ namespace Logic.Model.Cards.BaseCards
             this.Name = "Shan";
             this.DisplayName = "闪";
         }
+
+        /// <summary>
+        /// 闪不能被主动打出
+        /// </summary>
+        /// <returns></returns>
         public override bool CanBePlayed()
         {
             return false;

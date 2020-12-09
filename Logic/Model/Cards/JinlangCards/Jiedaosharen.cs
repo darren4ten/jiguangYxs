@@ -7,7 +7,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 借刀杀人
     /// </summary>
-    public class Jiedaosharen : CardBase
+    public class Jiedaosharen : JinnangBase
     {
         public Jiedaosharen()
         {

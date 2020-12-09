@@ -7,7 +7,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 手捧雷
     /// </summary>
-    public class Shoupenglei : CardBase
+    public class Shoupenglei : JinnangBase
     {
         public Shoupenglei()
         {
