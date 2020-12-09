@@ -15,7 +15,7 @@ namespace Logic.Model.Skill.Zhudong
         {
         }
 
-        public Task Trigger()
+        public async Task Trigger()
         {
             throw new NotImplementedException();
         }

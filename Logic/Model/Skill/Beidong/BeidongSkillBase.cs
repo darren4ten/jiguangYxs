@@ -17,7 +17,7 @@ namespace Logic.Model.Skill.Zhudong
         {
         }
 
-        public async Task LoadSkill(PlayerHero playerHero)
+        public override async Task LoadSkill(PlayerHero playerHero)
         {
             await base.LoadSkill(playerHero);
             await SetupEventListeners();

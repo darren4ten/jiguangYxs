@@ -22,21 +22,21 @@ namespace Logic.Model.Skill.SubSkill
             DisplayName = "杀之贪";
         }
 
-        public override Task SetupEventListeners()
+        public override async Task SetupEventListeners()
         {
             PlayerHero.PlayerContext.GameLevel.GlobalEventBus.
              ListenEvent(Guid.NewGuid(), PlayerHero, Logic.Model.Enums.EventTypeEnum.AfterShaSuccess, (
                  async (reqContext, roundContext, responseContext) =>
                  {
+                     Console.WriteLine("check杀贪");
                      if (ShouldTrigger())
                      {
-                         reqContext.SrcPlayer.PickCard(1);
+                         PlayerHero.PlayerContext.Player.PickCard(1);
                          Console.WriteLine("触发杀贪");
                      }
-                  
-                     await Task.FromResult("");
+                     await Task.FromResult(0);
                  }));
-            return Task.FromResult("");
+            await Task.FromResult(0);
         }
 
 

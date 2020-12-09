@@ -95,23 +95,31 @@ namespace Logic.Model.Player
 
         public Player(GameLevelBase gameLevel, ActionManagerBase actionManager, List<PlayerHero> availablePlayerHeroes)
         {
+
+            _gameLevel = gameLevel;
+            ActionManager = actionManager;
+            _availablePlayerHeroes = availablePlayerHeroes;
+            CardsInHand = new List<CardBase>();
+            Marks = new List<Mark.MarkBase>();
+            EquipmentSet = new List<EquipmentBase>();
+            PlayerUiState = new PlayerUIState(this);
+        }
+
+        public void Init()
+        {
             var playerContext = new PlayerContext()
             {
                 GameLevel = _gameLevel,
                 Player = this
             };
-            _availablePlayerHeroes = availablePlayerHeroes;
+            ActionManager.SetPlayerContext(playerContext);
             _availablePlayerHeroes.ForEach(p =>
             {
-                p.SetPlayerContext(playerContext);
+                p.AttachPlayerContext(playerContext);
             });
-            _gameLevel = gameLevel;
-            ActionManager = actionManager;
-            ActionManager.SetPlayerContext(playerContext);
-            CardsInHand = new List<CardBase>();
-            Marks = new List<Mark.MarkBase>();
-            EquipmentSet = new List<EquipmentBase>();
-            PlayerUiState = new PlayerUIState(this);
+
+            var curHero = GetCurrentPlayerHero();
+            curHero.SetupSkills();
         }
 
         /// <summary>
@@ -137,13 +145,15 @@ namespace Logic.Model.Player
         /// </summary>
         /// <param name="cardRequestContext"></param>
         /// <returns></returns>
-        public async Task<CardResponseContext> ResponseCard(CardRequestContext cardRequestContext)
+        public async Task<CardResponseContext> ResponseCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
             var responseContext = new CardResponseContext();
-            await TriggerEvent(Enums.EventTypeEnum.BeforeBeidongPlayCard, cardRequestContext, responseContext, null);
-            await TriggerEvent(Enums.EventTypeEnum.BeidongPlayCard, cardRequestContext, responseContext, null);
-            var res = await ActionManager.OnRequestResponseCard(cardRequestContext);
-            await TriggerEvent(Enums.EventTypeEnum.AfterBeidongPlayCard, cardRequestContext, res, null);
+            await TriggerEvent(Enums.EventTypeEnum.BeforeBeidongPlayCard, cardRequestContext, responseContext, roundContext);
+            await TriggerEvent(Enums.EventTypeEnum.BeidongPlayCard, cardRequestContext, responseContext, roundContext);
+            var newRequestContext = GetCombindCardRequestContext(cardRequestContext,
+                GetCurrentPlayerHero().BaseAttackFactor, roundContext);
+            var res = await ActionManager.OnRequestResponseCard(newRequestContext);
+            await TriggerEvent(Enums.EventTypeEnum.AfterBeidongPlayCard, cardRequestContext, res, roundContext);
             return res;
         }
 
@@ -391,6 +401,160 @@ namespace Logic.Model.Player
         public void SetNextPlayer(Player player)
         {
             NextPlayer = player;
+        }
+
+        /// <summary>
+        /// 叠加计算各个因子
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <param name="baseAttackDynamicFactor"></param>
+        /// <param name="roundContext"></param>
+        /// <returns></returns>
+        public CardRequestContext GetCombindCardRequestContext(CardRequestContext cardRequestContext, AttackDynamicFactor baseAttackDynamicFactor, RoundContext roundContext)
+        {
+            if (cardRequestContext == null)
+            {
+                return null;
+            }
+            var newCardRequestContext = new CardRequestContext()
+            {
+                CardType = cardRequestContext.CardType,
+                AttackType = cardRequestContext.AttackType,
+                FlowerKind = cardRequestContext.FlowerKind,
+                MaxCardCountToPlay = cardRequestContext.MaxCardCountToPlay,
+                MinCardCountToPlay = cardRequestContext.MinCardCountToPlay,
+                Message = cardRequestContext.Message,
+                RequestCard = cardRequestContext.RequestCard,
+                SrcCards = cardRequestContext.SrcCards,
+                SrcPlayer = cardRequestContext.SrcPlayer,
+                TargetPlayers = cardRequestContext.TargetPlayers,
+                IsMerged = true,
+            };
+            newCardRequestContext.AttackDynamicFactor = DeepCloneAttackDynamicFactor(cardRequestContext.AttackDynamicFactor);
+            if (baseAttackDynamicFactor != null)
+            {
+                newCardRequestContext.AttackDynamicFactor =
+                    MergeAttackDynamicFactor(newCardRequestContext.AttackDynamicFactor, baseAttackDynamicFactor);
+            }
+
+            if (roundContext != null)
+            {
+                newCardRequestContext.AttackDynamicFactor =
+                    MergeAttackDynamicFactor(newCardRequestContext.AttackDynamicFactor, roundContext.AttackDynamicFactor);
+            }
+
+            return newCardRequestContext;
+        }
+
+        private AttackDynamicFactor DeepCloneAttackDynamicFactor(AttackDynamicFactor factor)
+        {
+            var newAttackDynamicFactor = factor == null ? AttackDynamicFactor.GetDefaultDeltaAttackFactor() :
+                new AttackDynamicFactor()
+                {
+                    DefenseDistance = factor.DefenseDistance,
+                    TannangDistance = factor.TannangDistance,
+                    IsShaNotAvoidable = factor.IsShaNotAvoidable,
+                    MaxCardCountInHand = factor.MaxCardCountInHand,
+                    MaxLife = factor.MaxLife,
+                    MaxShaTargetCount = factor.MaxShaTargetCount,
+                    MaxShaTimes = factor.MaxShaTimes,
+                    PickCardCountPerRound = factor.PickCardCountPerRound,
+                    ShaCountAvoidJuedou = factor.ShaCountAvoidJuedou,
+                    ShaDistance = factor.ShaDistance,
+                    ShanCountAvoidSha = factor.ShanCountAvoidSha,
+                    Damage = new Damage()
+                    {
+                        FenghuolangyanDamage = factor.Damage.FenghuolangyanDamage,
+                        JuedouDamage = factor.Damage.JuedouDamage,
+                        ShaDamage = factor.Damage.ShaDamage,
+                        WanjianqifaDamage = factor.Damage.WanjianqifaDamage
+                    },
+                    Recover = new Recover()
+                    {
+                        XiuyangshengxiLife = factor.Recover.XiuyangshengxiLife,
+                        XixueLife = factor.Recover.XixueLife,
+                        YaoLife = factor.Recover.YaoLife
+                    },
+                    SkipOption = new SkipOption()
+                    {
+                        ShouldSkipEnterMyRound = factor.SkipOption.ShouldSkipEnterMyRound,
+                        ShouldSkipPickCard = factor.SkipOption.ShouldSkipPickCard,
+                        ShouldSkipPlayCard = factor.SkipOption.ShouldSkipPlayCard,
+                        ShouldSkipThrowCard = factor.SkipOption.ShouldSkipThrowCard,
+                    }
+                };
+            return newAttackDynamicFactor;
+        }
+
+        private AttackDynamicFactor MergeAttackDynamicFactor(AttackDynamicFactor src, AttackDynamicFactor target)
+        {
+            if (src == null)
+            {
+                return DeepCloneAttackDynamicFactor(target);
+            }
+
+            if (target == null)
+            {
+                return DeepCloneAttackDynamicFactor(src);
+            }
+            AttackDynamicFactor result = AttackDynamicFactor.GetDefaultDeltaAttackFactor();
+
+            result.MaxLife += src.MaxLife;
+            result.DefenseDistance += src.DefenseDistance;
+            result.IsShaNotAvoidable = result.IsShaNotAvoidable || src.IsShaNotAvoidable;
+            result.MaxCardCountInHand += src.MaxCardCountInHand;
+            result.MaxShaTargetCount += src.MaxShaTargetCount;
+            result.MaxShaTimes += src.MaxShaTimes;
+            result.PickCardCountPerRound += src.PickCardCountPerRound;
+            result.ShaCountAvoidJuedou += src.ShaCountAvoidJuedou;
+            result.ShaDistance += src.ShaDistance;
+            result.ShanCountAvoidSha += src.ShanCountAvoidSha;
+            result.TannangDistance += src.TannangDistance;
+
+            result.SkipOption.ShouldSkipEnterMyRound = result.SkipOption.ShouldSkipEnterMyRound || src.SkipOption.ShouldSkipEnterMyRound;
+            result.SkipOption.ShouldSkipPickCard = result.SkipOption.ShouldSkipPickCard || src.SkipOption.ShouldSkipPickCard;
+            result.SkipOption.ShouldSkipPlayCard = result.SkipOption.ShouldSkipPlayCard || src.SkipOption.ShouldSkipPlayCard;
+            result.SkipOption.ShouldSkipThrowCard = result.SkipOption.ShouldSkipThrowCard || src.SkipOption.ShouldSkipThrowCard;
+
+            result.Recover.XiuyangshengxiLife += src.Recover?.XiuyangshengxiLife ?? 0;
+            result.Recover.XixueLife += src.Recover?.XixueLife ?? 0;
+            result.Recover.YaoLife += src.Recover?.YaoLife ?? 0;
+
+            result.Damage.ShaDamage += src.Damage?.ShaDamage ?? 0;
+            result.Damage.DujiDamage += src.Damage?.DujiDamage ?? 0;
+            result.Damage.FenghuolangyanDamage += src.Damage?.FenghuolangyanDamage ?? 0;
+            result.Damage.GongxinDamage += src.Damage?.GongxinDamage ?? 0;
+            result.Damage.JuedouDamage += src.Damage?.JuedouDamage ?? 0;
+            result.Damage.WanjianqifaDamage += src.Damage?.WanjianqifaDamage ?? 0;
+
+            result.MaxLife += target.MaxLife;
+            result.DefenseDistance += target.DefenseDistance;
+            result.IsShaNotAvoidable = result.IsShaNotAvoidable || target.IsShaNotAvoidable;
+            result.MaxCardCountInHand += target.MaxCardCountInHand;
+            result.MaxShaTargetCount += target.MaxShaTargetCount;
+            result.MaxShaTimes += target.MaxShaTimes;
+            result.PickCardCountPerRound += target.PickCardCountPerRound;
+            result.ShaCountAvoidJuedou += target.ShaCountAvoidJuedou;
+            result.ShaDistance += target.ShaDistance;
+            result.ShanCountAvoidSha += target.ShanCountAvoidSha;
+            result.TannangDistance += target.TannangDistance;
+
+            result.SkipOption.ShouldSkipEnterMyRound = result.SkipOption.ShouldSkipEnterMyRound || target.SkipOption.ShouldSkipEnterMyRound;
+            result.SkipOption.ShouldSkipPickCard = result.SkipOption.ShouldSkipPickCard || target.SkipOption.ShouldSkipPickCard;
+            result.SkipOption.ShouldSkipPlayCard = result.SkipOption.ShouldSkipPlayCard || target.SkipOption.ShouldSkipPlayCard;
+            result.SkipOption.ShouldSkipThrowCard = result.SkipOption.ShouldSkipThrowCard || target.SkipOption.ShouldSkipThrowCard;
+
+            result.Recover.XiuyangshengxiLife += target.Recover?.XiuyangshengxiLife ?? 0;
+            result.Recover.XixueLife += target.Recover?.XixueLife ?? 0;
+            result.Recover.YaoLife += target.Recover?.YaoLife ?? 0;
+
+            result.Damage.ShaDamage += target.Damage?.ShaDamage ?? 0;
+            result.Damage.DujiDamage += target.Damage?.DujiDamage ?? 0;
+            result.Damage.FenghuolangyanDamage += target.Damage?.FenghuolangyanDamage ?? 0;
+            result.Damage.GongxinDamage += target.Damage?.GongxinDamage ?? 0;
+            result.Damage.JuedouDamage += target.Damage?.JuedouDamage ?? 0;
+            result.Damage.WanjianqifaDamage += target.Damage?.WanjianqifaDamage ?? 0;
+            return result;
         }
     }
 }

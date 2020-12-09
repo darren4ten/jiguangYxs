@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Logic.GameLevel;
 using Logic.Model.Enums;
 using Logic.Model.Skill.Beidong.SubSkill;
 using Logic.Model.Skill.Interface;
@@ -23,12 +24,14 @@ namespace Logic.Model.Skill.SubSkill
         public override Task SetupEventListeners()
         {
             PlayerHero.PlayerContext.GameLevel.GlobalEventBus.
-                ListenEvent(Guid.NewGuid(), PlayerHero, Logic.Model.Enums.EventTypeEnum.AfterShaSuccess, (
+                ListenEvent(Guid.NewGuid(), PlayerHero, Logic.Model.Enums.EventTypeEnum.BeforeShaSuccess, (
                     async (reqContext, roundContext, responseContext) =>
                     {
                         if (ShouldTrigger())
                         {
-                            reqContext.TargetPlayers.PickCard(1);
+                            reqContext.AttackDynamicFactor =
+                                reqContext.AttackDynamicFactor ?? AttackDynamicFactor.GetDefaultBaseAttackFactor();
+                            reqContext.AttackDynamicFactor.Damage.ShaDamage++;
                             Console.WriteLine("触发强化");
                         }
 

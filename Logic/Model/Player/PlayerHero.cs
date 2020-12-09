@@ -70,11 +70,10 @@ namespace Logic.Model.Player
             Star = star <= 1 ? 1 : (star >= 5 ? 5 : star);
             Hero = hero;
             BaseAttackFactor = Hero.GetBaseAttackFactor();
+            CurrentLife = BaseAttackFactor.MaxLife;
             //加载技能，初始化事件监听
             ExtraMainSkillSet = extraMainSkillSet;
             ExtraSubSkillSet = extraSubSkillSet;
-            LoadSkills(ExtraMainSkillSet);
-            LoadSkills(ExtraSubSkillSet);
 
             //初始化攻击因子
             InitAttackFactor(star, hero);
@@ -82,9 +81,19 @@ namespace Logic.Model.Player
 
         #region 公有方法
 
-        public void SetPlayerContext(PlayerContext playerContext)
+        public void SetupSkills()
+        {
+            var allMainSkills = GetAllMainSkills();
+            var allSubSkills = GetAllSubSkills();
+
+            LoadSkills(allMainSkills);
+            LoadSkills(allSubSkills);
+        }
+
+        public PlayerHero AttachPlayerContext(PlayerContext playerContext)
         {
             PlayerContext = playerContext;
+            return this;
         }
 
         /// <summary>
@@ -95,7 +104,11 @@ namespace Logic.Model.Player
         {
             var skills = new List<SkillBase>();
             skills.AddRange(Hero.MainSkillSet);
-            return skills.Union(ExtraMainSkillSet, new GenericCompare<SkillBase>(x => x.Name)).ToList();
+            if (ExtraMainSkillSet != null)
+            {
+                return skills.Union(ExtraMainSkillSet, new GenericCompare<SkillBase>(x => x.Name)).ToList();
+            }
+            return skills;
         }
 
         /// <summary>
@@ -106,7 +119,12 @@ namespace Logic.Model.Player
         {
             var skills = new List<SkillBase>();
             skills.AddRange(Hero.SubSkillSet);
-            return skills.Union(ExtraSubSkillSet, new GenericCompare<SkillBase>(x => x.Name)).ToList();
+            if (ExtraSubSkillSet != null)
+            {
+                return skills.Union(ExtraSubSkillSet, new GenericCompare<SkillBase>(x => x.Name)).ToList();
+            }
+
+            return skills;
         }
 
         /// <summary>
@@ -136,35 +154,31 @@ namespace Logic.Model.Player
             await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.LoseLife, null, request.CardRequestContext, request.SrcRoundContext,
                 request.CardResponseContext);
 
-            var defaultDamage = AttackDynamicFactor.GetDefaultBaseAttackFactor();
-            var roundContextAttackDynamicFactor = request.SrcRoundContext?.AttackDynamicFactor;
             //杀
             if (request.DamageType == DamageTypeEnum.Sha)
             {
-                this.CurrentLife -= request.CardRequestContext.AttackDynamicFactor.Damage.ShaDamage + defaultDamage.Damage.ShaDamage + (roundContextAttackDynamicFactor?.Damage.ShaDamage ?? 0);
+                this.CurrentLife -= (request.CardRequestContext.AttackDynamicFactor?.Damage?.ShaDamage ?? 0);
             }
             //决斗
             else if (request.DamageType == DamageTypeEnum.Juedou)
             {
-                this.CurrentLife -= request.CardRequestContext.AttackDynamicFactor.Damage.JuedouDamage + defaultDamage.Damage.JuedouDamage + (roundContextAttackDynamicFactor?.Damage.JuedouDamage ?? 0);
+                this.CurrentLife -= (request.CardRequestContext.AttackDynamicFactor?.Damage?.JuedouDamage ?? 0);
             }
             //烽火狼烟
             else if (request.DamageType == DamageTypeEnum.Fenghuolangyan)
             {
-                this.CurrentLife -= request.CardRequestContext.AttackDynamicFactor.Damage.FenghuolangyanDamage + defaultDamage.Damage.FenghuolangyanDamage + (roundContextAttackDynamicFactor?.Damage.FenghuolangyanDamage ?? 0);
+                this.CurrentLife -= (request.CardRequestContext.AttackDynamicFactor?.Damage?.FenghuolangyanDamage ?? 0);
             }
             //万箭齐发
             else if (request.DamageType == DamageTypeEnum.Wanjianqifa)
             {
-                this.CurrentLife -= request.CardRequestContext.AttackDynamicFactor.Damage.WanjianqifaDamage + defaultDamage.Damage.WanjianqifaDamage + (roundContextAttackDynamicFactor?.Damage.WanjianqifaDamage ?? 0);
+                this.CurrentLife -= (request.CardRequestContext.AttackDynamicFactor?.Damage?.WanjianqifaDamage ?? 0);
             }
             //三板斧
             else if (request.DamageType == DamageTypeEnum.Sanbanfu)
             {
                 //三板斧，判断杀的response到底是几个闪,如果没闪则伤害+1。
-                var shaDamage = request.CardRequestContext.AttackDynamicFactor.Damage.ShaDamage +
-                                defaultDamage.Damage.ShaDamage +
-                                (roundContextAttackDynamicFactor?.Damage.ShaDamage ?? 0);
+                var shaDamage = (request.CardRequestContext.AttackDynamicFactor?.Damage?.ShaDamage ?? 0);
                 if (request.CardResponseContext.Cards.Count == 0)
                 {
                     shaDamage++;
@@ -174,7 +188,7 @@ namespace Logic.Model.Player
             //攻心
             else if (request.DamageType == DamageTypeEnum.Gongxin)
             {
-                this.CurrentLife -= request.CardRequestContext.AttackDynamicFactor.Damage.GongxinDamage + defaultDamage.Damage.GongxinDamage + (roundContextAttackDynamicFactor?.Damage.GongxinDamage ?? 0);
+                this.CurrentLife -= request.CardRequestContext.AttackDynamicFactor.Damage.GongxinDamage;
             }
             //未知攻击
             else
@@ -237,7 +251,6 @@ namespace Logic.Model.Player
         #endregion
 
         #region 保护方法
-
         protected void AddLife(int deltaLife, int maxLife)
         {
             if (deltaLife + CurrentLife >= BaseAttackFactor.MaxLife)
@@ -252,7 +265,7 @@ namespace Logic.Model.Player
 
         protected void InitAttackFactor(int star, HeroBase hero)
         {
-            BaseAttackFactor.MaxLife = (star - 1) + hero.MaxLife + BaseAttackFactor.MaxLife;
+            BaseAttackFactor.MaxLife = (star - 1) + hero.MaxLife;
             CurrentLife = BaseAttackFactor.MaxLife;
         }
 

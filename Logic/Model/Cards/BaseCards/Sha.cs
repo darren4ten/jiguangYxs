@@ -49,17 +49,19 @@ namespace Logic.Model.Cards.BaseCards
             PlayerContext.Player.RoundContext.ShaedTimes++;
             foreach (var p in cardRequestContext.TargetPlayers)
             {
+                var combindeRequest = PlayerContext.Player.GetCombindCardRequestContext(cardRequestContext,
+                     PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor, roundContext);
                 //检查是否杀不可以闪避，如果是，则跳过
-                if (cardRequestContext.AttackDynamicFactor.IsShaNotAvoidable || roundContext.AttackDynamicFactor.IsShaNotAvoidable)
+                if (cardRequestContext.AttackDynamicFactor != null && (cardRequestContext.AttackDynamicFactor.IsShaNotAvoidable || roundContext.AttackDynamicFactor.IsShaNotAvoidable))
                 {
                     cardResponseContext.Cards = null;
                     cardResponseContext.ResponseResult = ResponseResultEnum.Failed;
                     cardResponseContext.Message = "杀不可被闪避";
-                    return await LoseLife(cardRequestContext, await CheckResponse(cardRequestContext, cardResponseContext, roundContext), roundContext);
+                    return await LoseLife(combindeRequest, await CheckResponse(cardRequestContext, cardResponseContext, roundContext), roundContext);
                 }
 
-                var actResponse = await p.ResponseCard(cardRequestContext);
-                return await LoseLife(cardRequestContext, await CheckResponse(cardRequestContext, actResponse, roundContext), roundContext);
+                var actResponse = await p.ResponseCard(cardRequestContext, cardResponseContext, roundContext);
+                return await LoseLife(combindeRequest, await CheckResponse(cardRequestContext, actResponse, roundContext), roundContext);
             }
 
             return cardResponseContext;
@@ -67,6 +69,9 @@ namespace Logic.Model.Cards.BaseCards
 
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
+            var phero = PlayerContext.Player.GetCurrentPlayerHero();
+            cardRequestContext.MaxCardCountToPlay += phero.BaseAttackFactor.ShanCountAvoidSha;
+            cardRequestContext.MinCardCountToPlay += phero.BaseAttackFactor.ShanCountAvoidSha;
             await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeSha, cardRequestContext, cardResponseContext);
             return cardResponseContext;
         }
@@ -115,6 +120,8 @@ namespace Logic.Model.Cards.BaseCards
             //如果返回失败，则掉血
             if (actResponse.ResponseResult == ResponseResultEnum.Failed)
             {
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeShaSuccess,
+                    cardRequestContext, actResponse, roundContext);
                 var player = cardRequestContext.TargetPlayers.First();
                 await player.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
                 {
@@ -124,6 +131,20 @@ namespace Logic.Model.Cards.BaseCards
                     DamageType = DamageTypeEnum.Sha,
                     RequestId = Guid.NewGuid()
                 });
+
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.ShaSuccess, cardRequestContext,
+                    actResponse, roundContext);
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterShaSuccess,
+                    cardRequestContext, actResponse, roundContext);
+            }
+            else
+            {
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeShaFailed,
+                    cardRequestContext, actResponse, roundContext);
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.ShaFailed, cardRequestContext,
+                    actResponse, roundContext);
+                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterShaFailed,
+                    cardRequestContext, actResponse, roundContext);
             }
 
             return actResponse;
@@ -149,23 +170,11 @@ namespace Logic.Model.Cards.BaseCards
                 actResponse.Cards.Count <= cardRequestContext.MaxCardCountToPlay)
             {
                 actResponse.ResponseResult = ResponseResultEnum.Success;
-                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeShaSuccess,
-                    cardRequestContext, actResponse, roundContext);
-                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.ShaSuccess, cardRequestContext,
-                     actResponse, roundContext);
-                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterShaSuccess,
-                    cardRequestContext, actResponse, roundContext);
                 return actResponse;
             }
             else
             {
                 actResponse.ResponseResult = ResponseResultEnum.Failed;
-                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeShaFailed,
-                    cardRequestContext, actResponse, roundContext);
-                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.ShaFailed, cardRequestContext,
-                    actResponse, roundContext);
-                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterShaFailed,
-                    cardRequestContext, actResponse, roundContext);
                 return actResponse;
             }
         }

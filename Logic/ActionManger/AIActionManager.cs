@@ -36,6 +36,7 @@ namespace Logic.ActionManger
         /// 被动出牌
         /// </summary>
         /// <param name="cardRequestContext"></param>
+        /// <param name="roundContext"></param>
         /// <returns></returns>
         public override async Task<CardResponseContext> OnRequestResponseCard(CardRequestContext cardRequestContext)
         {
@@ -148,10 +149,6 @@ namespace Logic.ActionManger
                     Priority = 160,
                     Value = 150
                 }},
-                { nameof(Sha),new AiValue(){
-                    Priority = 120,
-                    Value = 200
-                }},
                 { nameof(Hufu),new AiValue(){
                     Priority = 100,
                     Value = 230
@@ -202,7 +199,9 @@ namespace Logic.ActionManger
                 cardsToPlay = sumCards.Where(s => s.GetType() == cardRequestContext.RequestCard.GetType()).ToList();
             }
 
-            cardsToPlay = GetCardsOrderByAiValue(cardRequestContext.MinCardCountToPlay, cardRequestContext.MaxCardCountToPlay,
+            var minCount = cardRequestContext.MinCardCountToPlay;
+            var maxCount = cardRequestContext.MaxCardCountToPlay;
+            cardsToPlay = GetCardsOrderByAiValue(minCount, maxCount,
                 cardsToPlay, true);
             return new CardResponseContext()
             {
@@ -231,11 +230,13 @@ namespace Logic.ActionManger
                 cardsToPlay = sumCards.Where(s => s.GetType() == cardRequestContext.RequestCard.GetType()).ToList();
             }
 
-            cardsToPlay = GetCardsOrderByAiValue(cardRequestContext.MinCardCountToPlay, cardRequestContext.MaxCardCountToPlay,
+            var minCount = cardRequestContext.MinCardCountToPlay;
+            var maxCount = cardRequestContext.MaxCardCountToPlay;
+            cardsToPlay = GetCardsOrderByAiValue(minCount, maxCount,
                 cardsToPlay, true);
             return new CardResponseContext()
             {
-                Cards = cardsToPlay.ToList(),
+                Cards = cardsToPlay?.ToList(),
             };
         }
 

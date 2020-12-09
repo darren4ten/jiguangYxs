@@ -67,5 +67,10 @@ namespace Logic.GameLevel
         /// 提示信息
         /// </summary>
         public string Message { get; set; }
+
+        /// <summary>
+        /// 是否是汇总的结果
+        /// </summary>
+        public bool IsMerged { get; set; }
     }
 }
