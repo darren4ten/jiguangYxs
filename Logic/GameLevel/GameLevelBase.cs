@@ -27,6 +27,11 @@ namespace Logic.GameLevel
 
         protected List<Player> Players { get; set; }
 
+        /// <summary>
+        /// 用来存放回合所出的牌
+        /// </summary>
+        public TempCardDesk TempCardDesk { get; set; }
+
         protected List<CardBase> CardsOnDesk { get; set; }
 
         /// <summary>
@@ -98,6 +103,7 @@ namespace Logic.GameLevel
 
         public virtual void OnLoad()
         {
+            this.TempCardDesk = new TempCardDesk();
             this.WashCards();
             this.LoadPlayers();
         }

@@ -94,11 +94,12 @@ namespace Logic.Cards
 
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.ZhudongPlayCard, cardRequestContext, responseContext, roundContext);
             var r2 = await OnPlayCard(cardRequestContext, r1, roundContext);
-            if (r2.ResponseResult != ResponseResultEnum.UnKnown) return r2;
 
             var r3 = await OnAfterPlayCard(cardRequestContext, r2, roundContext);
-            if (r3.ResponseResult != ResponseResultEnum.UnKnown) return r3;
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterZhudongPlayCard, cardRequestContext, responseContext, roundContext);
+            //将该牌置入TempCardDesk
+            PlayerContext.Player.CardsInHand.Remove(this);
+            PlayerContext.GameLevel.TempCardDesk.Add(this);
             return r3;
         }
 
