@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Logic.Cards;
+using Logic.GameLevel;
 
 namespace Logic.Model.Cards.JinlangCards
 {
@@ -16,14 +17,29 @@ namespace Logic.Model.Cards.JinlangCards
             this.DisplayName = "无中生有";
         }
 
-        public override bool CanBePlayed()
-        {
-            return true;
-        }
-
         public override Task Popup()
         {
             throw new NotImplementedException();
+        }
+
+        protected override async Task<CardResponseContext> OnPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
+            RoundContext roundContext)
+        {
+            return await ExecuteAction(cardRequestContext, cardResponseContext, roundContext);
+        }
+
+        /// <summary>
+        /// 具体的逻辑
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <param name="roundContext"></param>
+        /// <returns></returns>
+        protected async Task<CardResponseContext> ExecuteAction(CardRequestContext cardRequestContext,
+            CardResponseContext cardResponseContext, RoundContext roundContext)
+        {
+            var combined = PlayerContext.Player.GetCombindCardRequestContext(cardRequestContext, PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor, roundContext);
+            PlayerContext.Player.PickCard(combined.AttackDynamicFactor.WuzhongshengyouCardCount);
+            return await Task.FromResult(cardResponseContext);
         }
     }
 }

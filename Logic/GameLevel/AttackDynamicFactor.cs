@@ -25,6 +25,11 @@ namespace Logic.GameLevel
         public int MaxShaTargetCount { get; set; }
 
         /// <summary>
+        /// 无中生有摸牌的卡牌数量
+        /// </summary>
+        public int WuzhongshengyouCardCount { get; set; }
+
+        /// <summary>
         /// 最大探囊距离
         /// </summary>
         public int TannangDistance { get; set; }
@@ -82,6 +87,7 @@ namespace Logic.GameLevel
             {
                 DefenseDistance = 0,
                 TannangDistance = 1,
+                WuzhongshengyouCardCount = 2,
                 IsShaNotAvoidable = false,
                 MaxCardCountInHand = 3,
                 MaxLife = 3,
@@ -126,6 +132,7 @@ namespace Logic.GameLevel
             {
                 DefenseDistance = 0,
                 TannangDistance = 0,
+                WuzhongshengyouCardCount = 0,
                 IsShaNotAvoidable = false,
                 MaxCardCountInHand = 0,
                 MaxLife = 0,

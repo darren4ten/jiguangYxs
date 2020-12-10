@@ -513,6 +513,7 @@ namespace Logic.Model.Player
                     TannangDistance = factor.TannangDistance,
                     IsShaNotAvoidable = factor.IsShaNotAvoidable,
                     MaxCardCountInHand = factor.MaxCardCountInHand,
+                    WuzhongshengyouCardCount = factor.WuzhongshengyouCardCount,
                     MaxLife = factor.MaxLife,
                     MaxShaTargetCount = factor.MaxShaTargetCount,
                     MaxShaTimes = factor.MaxShaTimes,
@@ -568,6 +569,7 @@ namespace Logic.Model.Player
             result.ShaDistance += src.ShaDistance;
             result.ShanCountAvoidSha += src.ShanCountAvoidSha;
             result.TannangDistance += src.TannangDistance;
+            result.WuzhongshengyouCardCount += src.WuzhongshengyouCardCount;
 
             result.SkipOption.ShouldSkipEnterMyRound = result.SkipOption.ShouldSkipEnterMyRound || src.SkipOption.ShouldSkipEnterMyRound;
             result.SkipOption.ShouldSkipPickCard = result.SkipOption.ShouldSkipPickCard || src.SkipOption.ShouldSkipPickCard;
@@ -596,6 +598,7 @@ namespace Logic.Model.Player
             result.ShaDistance += target.ShaDistance;
             result.ShanCountAvoidSha += target.ShanCountAvoidSha;
             result.TannangDistance += target.TannangDistance;
+            result.WuzhongshengyouCardCount += target.WuzhongshengyouCardCount;
 
             result.SkipOption.ShouldSkipEnterMyRound = result.SkipOption.ShouldSkipEnterMyRound || target.SkipOption.ShouldSkipEnterMyRound;
             result.SkipOption.ShouldSkipPickCard = result.SkipOption.ShouldSkipPickCard || target.SkipOption.ShouldSkipPickCard;

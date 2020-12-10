@@ -45,14 +45,6 @@ namespace Logic.Model.Cards.JinlangCards
         /// <returns></returns>
         protected async Task<CardResponseContext> ExecuteAction(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
-            var wxResponse = await GroupRequestWuxiekeji(cardRequestContext, cardResponseContext, roundContext);
-            if (wxResponse.ResponseResult == Enums.ResponseResultEnum.Wuxiekeji)
-            {
-                wxResponse.ResponseResult = Enums.ResponseResultEnum.Success;
-                wxResponse.Message = "请求被无懈可击";
-                return wxResponse;
-            }
-            //
             var target = cardRequestContext.TargetPlayers.First();
             //获取target的所有牌，展示面板
             var panel = new PanelBase
