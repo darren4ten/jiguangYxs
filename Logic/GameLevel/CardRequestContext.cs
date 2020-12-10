@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Logic.Cards;
 using Logic.Enums;
+using Logic.GameLevel.Panel;
 using Logic.Model.Enums;
 using Logic.Model.Player;
 
@@ -13,6 +14,7 @@ namespace Logic.GameLevel
     /// </summary>
     public class CardRequestContext
     {
+        public Guid? RequestId { get; set; }
         /// <summary>
         /// 最大出牌数
         /// </summary>
@@ -73,5 +75,10 @@ namespace Logic.GameLevel
         /// 是否是汇总的结果
         /// </summary>
         public bool IsMerged { get; set; }
+
+        /// <summary>
+        /// 需要摸牌的面板
+        /// </summary>
+        public PanelBase Panel { get; set; }
     }
 }

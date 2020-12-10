@@ -18,7 +18,7 @@ namespace Logic.Model.Cards.JinlangCards
 
         public override bool CanBePlayed()
         {
-            return true;
+            return PlayerContext.Player.IsInBeidongMode() || PlayerContext.Player.IsInZhudongMode();
         }
 
         public abstract override Task Popup();

@@ -12,6 +12,12 @@ namespace Logic.Model.Enums
         Wanjianqifa,
         Xiadan,
         Hongyan,
-        Gongxin
+        Gongxin,
+        Fudichouxin,
+        Tannangquwu,
+        /// <summary>
+        /// 请求选牌
+        /// </summary>
+        SelectCard
     }
 }

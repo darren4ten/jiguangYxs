@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="GameLevel\Request\" />
     <Folder Include="Model\User\" />
   </ItemGroup>
 

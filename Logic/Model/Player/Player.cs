@@ -7,6 +7,7 @@ using Logic.Cards;
 using Logic.GameLevel;
 using Logic.Model.Cards;
 using Logic.Model.Cards.EquipmentCards;
+using Logic.Model.Enums;
 using Logic.Model.Interface;
 using Logic.Model.Mark;
 using Logic.Util;
@@ -47,7 +48,7 @@ namespace Logic.Model.Player
         /// <summary>
         /// 玩家当前的装备牌
         /// </summary>
-        public List<EquipmentBase> EquipmentSet { get; set; }
+        public List<CardBase> EquipmentSet { get; private set; }
 
         #endregion
 
@@ -101,7 +102,7 @@ namespace Logic.Model.Player
             _availablePlayerHeroes = availablePlayerHeroes;
             CardsInHand = new List<CardBase>();
             Marks = new List<Mark.MarkBase>();
-            EquipmentSet = new List<EquipmentBase>();
+            EquipmentSet = new List<CardBase>();
             PlayerUiState = new PlayerUIState(this);
         }
 
@@ -218,6 +219,58 @@ namespace Logic.Model.Player
         public async Task StartStep_ExitMyRound()
         {
             await ActionManager.OnRequestStartStep_ExitMyRound();
+        }
+
+        /// <summary>
+        /// 移除手牌，会触发事件
+        /// </summary>
+        /// <param name="equipmentCard"></param>
+        /// <param name="request"></param>
+        /// <param name="response"></param>
+        /// <param name="roundContext"></param>
+        /// <returns></returns>
+        public async Task RemoveCardsInHand(List<CardBase> cards, CardRequestContext request, CardResponseContext response, RoundContext roundContext)
+        {
+            if (cards == null)
+            {
+                return;
+            }
+
+            await TriggerEvent(EventTypeEnum.BeforeLoseCardsInHand, request, response, roundContext);
+            await TriggerEvent(EventTypeEnum.LoseCardsInHand, request, response, roundContext);
+            cards.ForEach(c =>
+            {
+                CardsInHand.Remove(c);
+            });
+            await TriggerEvent(EventTypeEnum.AfterLoseCardsInHand, request, response, roundContext);
+        }
+
+        /// <summary>
+        /// 移除装备栏中的装备。会触发移除装备的事件
+        /// </summary>
+        /// <param name="equipmentCard"></param>
+        /// <param name="request"></param>
+        /// <param name="response"></param>
+        /// <param name="roundContext"></param>
+        /// <returns></returns>
+        public async Task RemoveEquipment(CardBase equipmentCard, CardRequestContext request, CardResponseContext response, RoundContext roundContext)
+        {
+            if (EquipmentSet == null)
+            {
+                return;
+            }
+
+            var equip = equipmentCard as EquipmentBase;
+            if (equip == null)
+            {
+                Console.WriteLine($"移除装备失败，该牌不是装备牌：{equipmentCard.DisplayName}");
+                return;
+            }
+
+            var removedEq = EquipmentSet.Remove(equipmentCard);
+            await equip.UnEquip();
+            //触发卸载装备的事件
+            Console.WriteLine($"移除装备{equip.DisplayName}{(removedEq ? "成功!" : "失败!!!")}");
         }
 
         /// <summary>
@@ -433,6 +486,7 @@ namespace Logic.Model.Player
                 SrcPlayer = cardRequestContext.SrcPlayer,
                 TargetPlayers = cardRequestContext.TargetPlayers,
                 IsMerged = true,
+                Panel = cardRequestContext.Panel
             };
             newCardRequestContext.AttackDynamicFactor = DeepCloneAttackDynamicFactor(cardRequestContext.AttackDynamicFactor);
             if (baseAttackDynamicFactor != null)

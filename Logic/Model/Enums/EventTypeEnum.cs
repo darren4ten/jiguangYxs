@@ -377,6 +377,19 @@ namespace Logic.Model.Enums
         AfterPickCard,
 
         /// <summary>
+        /// 丢失手牌之时
+        /// </summary>
+        LoseCardsInHand,
+        /// <summary>
+        /// 丢失手牌之前
+        /// </summary>
+        BeforeLoseCardsInHand,
+        /// <summary>
+        /// 丢失手牌之后
+        /// </summary>
+        AfterLoseCardsInHand,
+
+        /// <summary>
         /// 弃牌之时
         /// </summary>
         ThrowCard,

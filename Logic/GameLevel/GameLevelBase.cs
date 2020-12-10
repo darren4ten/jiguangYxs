@@ -28,7 +28,7 @@ namespace Logic.GameLevel
         protected List<Player> Players { get; set; }
 
         /// <summary>
-        /// 用来存放回合所出的牌
+        /// todo:用来存放回合所出的牌,回合结束的时候放置入弃牌堆
         /// </summary>
         public TempCardDesk TempCardDesk { get; set; }
 

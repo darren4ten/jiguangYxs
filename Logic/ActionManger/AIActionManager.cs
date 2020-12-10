@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.Enums;
 using Logic.GameLevel;
+using Logic.GameLevel.Panel;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Cards.EquipmentCards.Defense;
+using Logic.Model.Cards.Interface;
 using Logic.Model.Cards.JinlangCards;
 using Logic.Model.Enums;
+using Logic.Model.Mark;
 using Logic.Model.RequestResponse.Request;
 using Logic.Model.RequestResponse.Response;
 
@@ -43,6 +46,19 @@ namespace Logic.ActionManger
             await Task.Delay(500);
             //任意牌，则检查手牌、装备牌是否可以出牌
             CardResponseContext response = null;
+            //处理选择牌的请求
+            if (cardRequestContext.AttackType == AttackTypeEnum.SelectCard)
+            {
+                return await OnRequestPickCardFromPanel(new PickCardFromPanelRequest()
+                {
+                    MaxCount = cardRequestContext.MaxCardCountToPlay,
+                    MinCount = cardRequestContext.MinCardCountToPlay,
+                    Panel = cardRequestContext.Panel,
+                    RequestId = cardRequestContext.RequestId
+                });
+            }
+
+            //处理其他类型
             if (cardRequestContext.CardType == CardTypeEnum.Any)
             {
                 response = GetResponseCardByCardType_Any(cardRequestContext);
@@ -66,7 +82,75 @@ namespace Logic.ActionManger
 
         public override async Task<CardResponseContext> OnRequestPickCardFromPanel(PickCardFromPanelRequest request)
         {
-            throw new NotImplementedException($"");
+            //基本逻辑是
+            //1. 如果选取的牌是来自友方，则优先抽取负面标记牌
+            var response = new CardResponseContext()
+            {
+                Cards = new List<CardBase>() { }
+            };
+            if (request.Panel.CardOwner != null && request.Panel.CardOwner.IsSameGroup(PlayerContext.Player) && request.Panel.MarkCards != null)
+            {
+                var markCards = request.Panel.MarkCards.Where(p => p.Mark != null);
+                //如果有画地为牢，则将其取掉
+                var huadiweilaoMark = markCards.FirstOrDefault(p => nameof(p.Mark) == nameof(HuadiweilaoMark));
+                if (huadiweilaoMark != null)
+                {
+                    //Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{request.Panel.CardOwner.PlayerId}的【{request.Panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{huadiweilaoMark.Card.DisplayName}");
+                    //request.Panel.CardOwner.Marks.Remove(huadiweilaoMark.Mark);
+                    huadiweilaoMark.SelectedBy = PlayerContext.Player;
+                    response.Cards.Add(huadiweilaoMark.Card);
+                }
+            }
+
+            if (response.Cards.Count >= request.MaxCount)
+            {
+                return response;
+            }
+
+            //2. 如果有装备牌，则选择装备牌。优先级从高到低是武器、防具、防御马、进攻马
+            if (request.Panel.EquipmentCards?.Any() == true)
+            {
+                //判断是否有武器
+                await RemoveEquipment<IWeapon>(response, request.Panel);
+                if (response.Cards.Count >= request.MaxCount)
+                {
+                    return response;
+                }
+
+                //判断是否有防具
+                await RemoveEquipment<IDefender>(response, request.Panel);
+                if (response.Cards.Count >= request.MaxCount)
+                {
+                    return response;
+                }
+
+                //判断是否有防御马
+                await RemoveEquipment<Fangyuma>(response, request.Panel);
+                if (response.Cards.Count >= request.MaxCount)
+                {
+                    return response;
+                }
+
+                //判断是否有进攻马
+                await RemoveEquipment<Jingongma>(response, request.Panel);
+                if (response.Cards.Count >= request.MaxCount)
+                {
+                    return response;
+                }
+            }
+
+            //3. 如果有手牌，则选择手牌
+            if (request.Panel.InHandCards?.Any() == true)
+            {
+                var maxCount = request.MaxCount - response.Cards.Count;
+                var takeCards = request.Panel.InHandCards.Take(maxCount);
+                response.Cards.AddRange(takeCards.Select(t =>
+                {
+                    t.SelectedBy = PlayerContext.Player;
+                    return t.Card;
+                }));
+            }
+            return response;
         }
 
         public override async Task OnRequestStartStep_EnterMyRound()
@@ -183,6 +267,21 @@ namespace Logic.ActionManger
         }
 
         #region 私有方法
+
+        private async Task RemoveEquipment<T>(CardResponseContext responseContext, PanelBase panel)
+        {
+            //如果有画地为牢，则将其取掉
+            var equipment = panel.EquipmentCards.FirstOrDefault(p => p.Card is T);
+            if (equipment != null)
+            {
+                //Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{equipment.Card.DisplayName}");
+                //await panel.CardOwner.RemoveEquipment(equipment.Card, null, null, null);
+                equipment.SelectedBy = PlayerContext.Player;
+                responseContext.Cards.Add(equipment.Card);
+            }
+
+            await Task.FromResult(0);
+        }
 
         /// <summary>
         /// 处理从手牌中出牌

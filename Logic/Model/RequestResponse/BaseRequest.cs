@@ -6,6 +6,6 @@ namespace Logic.Model.RequestResponse
 {
     public class BaseRequest
     {
-        public Guid RequestId { get; set; }
+        public Guid? RequestId { get; set; }
     }
 }
