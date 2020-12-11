@@ -16,6 +16,10 @@ namespace Logic.Model.Enums
         Fudichouxin,
         Tannangquwu,
         /// <summary>
+        /// 博浪锤
+        /// </summary>
+        Bolangchui,
+        /// <summary>
         /// 请求选牌
         /// </summary>
         SelectCard

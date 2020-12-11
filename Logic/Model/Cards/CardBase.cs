@@ -88,7 +88,7 @@ namespace Logic.Cards
         {
             //默认SrcPlayer为当前出牌的人
             cardRequestContext.SrcPlayer = cardRequestContext.SrcPlayer ?? PlayerContext.Player;
-            Console.WriteLine($"[{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}的【{cardRequestContext.SrcPlayer.GetCurrentPlayerHero().Hero.DisplayName}】]{(cardRequestContext.TargetPlayers?.Any() == true ? "向" + string.Join(",", cardRequestContext.TargetPlayers.Select(p => p.PlayerName + p.PlayerId)) : "")}打出“{this.DisplayName}”");
+            Console.WriteLine($"[{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}的【{cardRequestContext.SrcPlayer.GetCurrentPlayerHero().Hero.DisplayName}】]{(cardRequestContext.TargetPlayers?.Any() == true ? "向" + string.Join(",", cardRequestContext.TargetPlayers.Select(p => p.PlayerName + p.PlayerId)) : "")}打出“{this.ToString()}”");
 
             CardResponseContext responseContext = new CardResponseContext();
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, cardRequestContext, responseContext, roundContext);
@@ -97,14 +97,17 @@ namespace Logic.Cards
             var r1 = await OnBeforePlayCard(cardRequestContext, responseContext, roundContext);
             if (r1.ResponseResult != ResponseResultEnum.UnKnown) return r1;
 
+            //将该牌置入TempCardDesk
+            PlayerContext.Player.CardsInHand.Remove(this);
+            PlayerContext.GameLevel.TempCardDesk.Add(this);
+
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.ZhudongPlayCard, cardRequestContext, responseContext, roundContext);
             var r2 = await OnPlayCard(cardRequestContext, r1, roundContext);
 
             var r3 = await OnAfterPlayCard(cardRequestContext, r2, roundContext);
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterZhudongPlayCard, cardRequestContext, responseContext, roundContext);
-            //将该牌置入TempCardDesk
-            PlayerContext.Player.CardsInHand.Remove(this);
-            PlayerContext.GameLevel.TempCardDesk.Add(this);
+
+            
             return r3;
         }
 
@@ -218,6 +221,40 @@ namespace Logic.Cards
                 actResponse.ResponseResult = ResponseResultEnum.Failed;
                 return actResponse;
             }
+        }
+
+        public override string ToString()
+        {
+            var flower = "";
+            switch (FlowerKind)
+            {
+                case FlowerKindEnum.Fangkuai:
+                    {
+                        flower = "♦";
+                    };
+                    break;
+                case FlowerKindEnum.Meihua:
+                    {
+                        flower = "♣";
+                    };
+                    break;
+                case FlowerKindEnum.Heitao:
+                    {
+                        flower = "♠";
+                    };
+                    break;
+                case FlowerKindEnum.Hongtao:
+                    {
+                        flower = "♥";
+                    };
+                    break;
+                default:
+                    {
+                        flower = "♣";
+                    };
+                    break;
+            }
+            return $"[{flower}{Number} {DisplayName}]";
         }
 
         public abstract Task Popup();

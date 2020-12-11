@@ -32,7 +32,12 @@ namespace Logic.ActionManger
 
         public override async Task<bool> OnRequestTriggerSkill(SkillTypeEnum skillType, CardRequestContext cardRequestContext)
         {
-            throw new NotImplementedException();
+            if (skillType == SkillTypeEnum.Bolangchui)
+            {
+                return ShouldTriggerSkill_Bolangchui(cardRequestContext);
+            }
+
+            return await Task.FromResult(false);
         }
 
         /// <summary>
@@ -71,6 +76,15 @@ namespace Logic.ActionManger
             else if (cardRequestContext.CardType == Enums.CardTypeEnum.InHand)
             {
                 response = GetResponseCardByCardType_InHands(cardRequestContext);
+            }
+            else if (cardRequestContext.CardType == Enums.CardTypeEnum.InHandAndEquipment)
+            {
+                var exculdeEquipCards = new List<string>();
+                if (cardRequestContext.AttackType == AttackTypeEnum.Bolangchui)
+                {
+                    exculdeEquipCards.Add(nameof(Bolangchui));
+                }
+                response = GetResponseCardByCardType_InHandsAmdEquipment(cardRequestContext, exculdeEquipCards);
             }
             else
             {
@@ -268,6 +282,40 @@ namespace Logic.ActionManger
 
         #region 私有方法
 
+        #region 博浪锤技能
+
+        /// <summary>
+        /// 是否要发动博浪锤.
+        /// 发动条件：
+        ///     1. 被攻击的对象是敌方
+        ///     2. 且本人手牌和装备牌中有至少两张手牌（除博浪锤之外）
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <returns></returns>
+        private bool ShouldTriggerSkill_Bolangchui(CardRequestContext cardRequestContext)
+        {
+            var target = cardRequestContext.TargetPlayers.FirstOrDefault();
+            if (target == null)
+            {
+                throw new Exception("攻击目标不能为空。");
+            }
+
+            if (target.IsSameGroup(cardRequestContext.SrcPlayer))
+            {
+                return false;
+            }
+
+            var totalCount = cardRequestContext.SrcPlayer.CardsInHand.Count +
+                 cardRequestContext.SrcPlayer.EquipmentSet.Count(p => !(p is Bolangchui));
+            if (totalCount >= 2)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
         private async Task RemoveEquipment<T>(CardResponseContext responseContext, PanelBase panel)
         {
             //如果有画地为牢，则将其取掉
@@ -281,6 +329,33 @@ namespace Logic.ActionManger
             }
 
             await Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// 处理从手牌、装备区中出牌
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <param name="excludeEquipCards">要排除的卡类型(装备区)</param>
+        /// <returns></returns>
+        private CardResponseContext GetResponseCardByCardType_InHandsAmdEquipment(CardRequestContext cardRequestContext, List<string> excludeEquipCards)
+        {
+            var sumCards = new List<CardBase>(PlayerContext.Player.CardsInHand);
+            sumCards.AddRange(excludeEquipCards == null ? PlayerContext.Player.EquipmentSet : PlayerContext.Player.EquipmentSet.Where(p => excludeEquipCards.All(e => !p.Name.Equals(e))));
+            var cardsToPlay = sumCards;
+            //没有指定出什么牌，则返回任意牌
+            if (cardRequestContext.RequestCard != null)
+            {
+                cardsToPlay = sumCards.Where(s => s.GetType() == cardRequestContext.RequestCard.GetType()).ToList();
+            }
+
+            var minCount = cardRequestContext.MinCardCountToPlay;
+            var maxCount = cardRequestContext.MaxCardCountToPlay;
+            cardsToPlay = GetCardsOrderByAiValue(minCount, maxCount,
+                cardsToPlay, true);
+            return new CardResponseContext()
+            {
+                Cards = cardsToPlay.ToList(),
+            };
         }
 
         /// <summary>
@@ -349,15 +424,9 @@ namespace Logic.ActionManger
         /// <returns></returns>
         private List<CardBase> GetCardsOrderByAiValue(int minCount, int maxCount, List<CardBase> cards, bool asc)
         {
-            if (cards.Count >= minCount && cards.Count <= maxCount)
-            {
-                var avCards = asc ? cards.OrderBy(p => GetCardAiValue(p).Value) : cards.OrderByDescending(p => GetCardAiValue(p).Value);
-                var cardsToPlay = avCards.Take(maxCount);
-                return cardsToPlay.ToList();
-            }
-
-            //不够就不出
-            return null;
+            var avCards = asc ? cards.OrderBy(p => GetCardAiValue(p).Value) : cards.OrderByDescending(p => GetCardAiValue(p).Value);
+            var cardsToPlay = avCards.Take(maxCount);
+            return cardsToPlay.ToList();
         }
         #endregion
 

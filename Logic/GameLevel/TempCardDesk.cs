@@ -20,7 +20,8 @@ namespace Logic.GameLevel
         {
             if (card != null)
             {
-                card.AttachPlayerContext(null);
+                //todo:将所有Card的上下文注销掉
+                //card.AttachPlayerContext(null);
                 Cards.Add(card);
             }
         }

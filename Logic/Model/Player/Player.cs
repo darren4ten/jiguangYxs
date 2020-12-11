@@ -159,7 +159,21 @@ namespace Logic.Model.Player
             await TriggerEvent(Enums.EventTypeEnum.AfterBeidongPlayCard, cardRequestContext, res, roundContext);
             if (res.Cards?.Any() == true)
             {
-                Console.WriteLine($"[{PlayerName}{PlayerId}]出牌{string.Join(",", res.Cards.Select(p => $"{p.FlowerKind} {p.Number} {p.DisplayName}"))}");
+                Console.WriteLine($"[{PlayerName}{PlayerId}]出牌{string.Join(",", res.Cards.Select(p => p.ToString()))}");
+                //将牌置于临时牌堆,todo:触发出牌事件
+                res.Cards.ForEach(async c =>
+                {
+                    //是装备牌
+                    if (EquipmentSet.Any(p => p == c))
+                    {
+                        await RemoveEquipment(c, null, null, null);
+                    }
+                    else
+                    {
+                        await RemoveCardsInHand(new List<CardBase>() { c }, null, null, null);
+                    }
+                });
+                _gameLevel.TempCardDesk.Add(res.Cards);
             }
             return res;
         }

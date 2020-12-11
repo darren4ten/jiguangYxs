@@ -13,6 +13,38 @@ namespace Logic.Model.Enums
         /// <summary>
         /// 副技能
         /// </summary>
-        SubSkill
+        SubSkill,
+        /// <summary>
+        /// 博浪锤弃牌命中的技能
+        /// </summary>
+        Bolangchui,
+        /// <summary>
+        /// 红颜
+        /// </summary>
+        Hongyan,
+        /// <summary>
+        /// 醉酒
+        /// </summary>
+        Zuijiu,
+        /// <summary>
+        /// 集权
+        /// </summary>
+        Jiquan,
+        /// <summary>
+        /// 反击
+        /// </summary>
+        Fanji,
+        /// <summary>
+        /// 攻心
+        /// </summary>
+        Gongxin,
+        /// <summary>
+        /// 毒计
+        /// </summary>
+        Duji,
+        /// <summary>
+        /// 疏财
+        /// </summary>
+        Shucai,
     }
 }
