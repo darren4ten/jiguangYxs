@@ -36,6 +36,10 @@ namespace Logic.ActionManger
             {
                 return ShouldTriggerSkill_Bolangchui(cardRequestContext);
             }
+            else if (skillType == SkillTypeEnum.Longlindao)
+            {
+                return ShouldTriggerSkill_Longlindao(cardRequestContext);
+            }
 
             return await Task.FromResult(false);
         }
@@ -282,6 +286,42 @@ namespace Logic.ActionManger
 
         #region 私有方法
 
+        #region 龙鳞刀技能
+        /// <summary>
+        /// 是否要发动龙鳞刀.
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <returns></returns>
+        private bool ShouldTriggerSkill_Longlindao(CardRequestContext cardRequestContext)
+        {
+            var target = cardRequestContext.TargetPlayers.FirstOrDefault();
+            if (target == null)
+            {
+                throw new Exception("攻击目标不能为空。");
+            }
+            //如果是队友，血量低于3则卸牌，否则掉血
+            //如果是敌人，如果血量低于3，则掉血，否则卸牌
+            if (target.IsSameGroup(cardRequestContext.SrcPlayer))
+            {
+                if (target.GetCurrentPlayerHero().CurrentLife <= 3)
+                {
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                if (target.GetCurrentPlayerHero().CurrentLife <= 3)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+
+        #endregion
+
         #region 博浪锤技能
 
         /// <summary>
@@ -424,7 +464,7 @@ namespace Logic.ActionManger
         /// <returns></returns>
         private List<CardBase> GetCardsOrderByAiValue(int minCount, int maxCount, List<CardBase> cards, bool asc)
         {
-            if (cards.Count >= minCount )
+            if (cards.Count >= minCount)
             {
                 var avCards = asc ? cards.OrderBy(p => GetCardAiValue(p).Value) : cards.OrderByDescending(p => GetCardAiValue(p).Value);
                 var cardsToPlay = avCards.Take(maxCount);

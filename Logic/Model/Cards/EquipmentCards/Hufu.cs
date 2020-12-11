@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Logic.Model.Cards.Interface;
 
 namespace Logic.Model.Cards.EquipmentCards
@@ -16,10 +17,18 @@ namespace Logic.Model.Cards.EquipmentCards
             BaseAttackFactor.ShaDistance = 1;
             BaseAttackFactor.MaxShaTimes = 9999;
         }
-
-        public override bool CanBePlayed()
+        protected override async Task OnEquip()
         {
-            return true;
+            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance += BaseAttackFactor.ShaDistance - 1;
+            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.MaxShaTimes += BaseAttackFactor.MaxShaTimes;
+            await Task.FromResult(0);
+        }
+
+        protected override async Task OnUnEquip()
+        {
+            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance -= BaseAttackFactor.ShaDistance - 1;
+            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.MaxShaTimes -= BaseAttackFactor.MaxShaTimes;
+            await Task.FromResult(0);
         }
     }
 }

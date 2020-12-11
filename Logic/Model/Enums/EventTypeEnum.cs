@@ -101,6 +101,19 @@ namespace Logic.Model.Enums
         AfterBeidongPlayCard,
 
         /// <summary>
+        /// 选择目标之时
+        /// </summary>
+        SelectTarget,
+        /// <summary>
+        /// 选择目标之前
+        /// </summary>
+        BeforeSelectTarget,
+        /// <summary>
+        /// 选择目标之后
+        /// </summary>
+        AfterSelectTarget,
+
+        /// <summary>
         /// 被杀
         /// </summary>
         BeShaed,

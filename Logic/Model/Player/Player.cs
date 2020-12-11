@@ -25,6 +25,11 @@ namespace Logic.Model.Player
         public int PlayerId { get; set; }
 
         /// <summary>
+        /// 玩家所在阵营id，用来标记各个player之间是否为敌对关系
+        /// </summary>
+        public Guid GroupId { get; set; } = Guid.NewGuid();
+
+        /// <summary>
         /// 玩家姓名
         /// </summary>
         public string PlayerName { get; set; }
@@ -160,7 +165,7 @@ namespace Logic.Model.Player
             if (res.Cards?.Any() == true)
             {
                 Console.WriteLine($"[{PlayerName}{PlayerId}]出牌{string.Join(",", res.Cards.Select(p => p.ToString()))}");
-                //将牌置于临时牌堆,todo:触发出牌事件
+                //将牌置于临时牌堆
                 res.Cards.ForEach(async c =>
                 {
                     //是装备牌
@@ -368,7 +373,8 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public bool IsSameGroup(Player targetPlayer)
         {
-            return GetCurrentPlayerHero().Hero.HeroGroup == targetPlayer.GetCurrentPlayerHero().Hero.HeroGroup;
+            //return GetCurrentPlayerHero().Hero.HeroGroup == targetPlayer.GetCurrentPlayerHero().Hero.HeroGroup;
+            return GroupId == targetPlayer.GroupId;
         }
 
         /// <summary>

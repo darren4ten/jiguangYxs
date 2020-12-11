@@ -127,6 +127,10 @@ namespace Logic.Model.Cards.BaseCards
             {
                 await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeShaSuccess,
                     cardRequestContext, actResponse, roundContext);
+                if (actResponse.ResponseResult == ResponseResultEnum.Cancelled)
+                {
+                    return actResponse;
+                }
                 var player = cardRequestContext.TargetPlayers.First();
                 await player.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
                 {

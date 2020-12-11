@@ -14,6 +14,10 @@ namespace Logic.Model.Enums
         Hongyan,
         Gongxin,
         Fudichouxin,
+        /// <summary>
+        /// 龙鳞刀卸牌
+        /// </summary>
+        Longlindao,
         Tannangquwu,
         /// <summary>
         /// 博浪锤

@@ -19,6 +19,10 @@ namespace Logic.Model.Enums
         /// </summary>
         Bolangchui,
         /// <summary>
+        /// 龙鳞刀
+        /// </summary>
+        Longlindao,
+        /// <summary>
         /// 红颜
         /// </summary>
         Hongyan,

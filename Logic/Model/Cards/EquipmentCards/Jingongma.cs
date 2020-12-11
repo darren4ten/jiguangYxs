@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Logic.Model.Cards.EquipmentCards
 {
@@ -16,9 +17,18 @@ namespace Logic.Model.Cards.EquipmentCards
             BaseAttackFactor.ShaDistance = 1;
         }
 
-        public override bool CanBePlayed()
+        protected override async Task OnEquip()
         {
-            return true;
+            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.TannangDistance += BaseAttackFactor.TannangDistance;
+            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance += BaseAttackFactor.ShaDistance;
+            await Task.FromResult(0);
+        }
+
+        protected override async Task OnUnEquip()
+        {
+            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.TannangDistance -= BaseAttackFactor.TannangDistance;
+            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance -= BaseAttackFactor.ShaDistance;
+            await Task.FromResult(0);
         }
     }
 }
