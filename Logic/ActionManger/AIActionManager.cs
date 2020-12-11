@@ -424,9 +424,15 @@ namespace Logic.ActionManger
         /// <returns></returns>
         private List<CardBase> GetCardsOrderByAiValue(int minCount, int maxCount, List<CardBase> cards, bool asc)
         {
-            var avCards = asc ? cards.OrderBy(p => GetCardAiValue(p).Value) : cards.OrderByDescending(p => GetCardAiValue(p).Value);
-            var cardsToPlay = avCards.Take(maxCount);
-            return cardsToPlay.ToList();
+            if (cards.Count >= minCount )
+            {
+                var avCards = asc ? cards.OrderBy(p => GetCardAiValue(p).Value) : cards.OrderByDescending(p => GetCardAiValue(p).Value);
+                var cardsToPlay = avCards.Take(maxCount);
+                return cardsToPlay.ToList();
+            }
+
+            //不够就不出
+            return null;
         }
         #endregion
 
