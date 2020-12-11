@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Logic.ActionManger;
 using Logic.Cards;
+using Logic.Event;
 using Logic.GameLevel;
 using Logic.Model.Cards;
 using Logic.Model.Cards.EquipmentCards;
+using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
 using Logic.Model.Interface;
 using Logic.Model.Mark;
@@ -177,6 +179,19 @@ namespace Logic.Model.Player
         }
 
         /// <summary>
+        /// 监听当前Player的事件
+        /// </summary>
+        /// <param name="eventType"></param>
+        /// <param name="cardRequestContext"></param>
+        /// <param name="responseContext"></param>
+        /// <param name="roundContext"></param>
+        /// <returns></returns>
+        public void ListenEvent(Guid eventId, Enums.EventTypeEnum eventType, EventBus.RoundEventHandler handler)
+        {
+            _gameLevel.GlobalEventBus.ListenEvent(eventId, this.GetCurrentPlayerHero(), eventType, handler);
+        }
+
+        /// <summary>
         /// 开始进入我的回合
         /// </summary>
         /// <returns></returns>
@@ -271,6 +286,38 @@ namespace Logic.Model.Player
             await equip.UnEquip();
             //触发卸载装备的事件
             Console.WriteLine($"移除装备{equip.DisplayName}{(removedEq ? "成功!" : "失败!!!")}");
+        }
+
+        /// <summary>
+        /// 装备装备
+        /// </summary>
+        /// <param name="equipmentCard"></param>
+        /// <returns></returns>
+        public async Task AddEquipment(CardBase equipmentCard)
+        {
+            if (!(equipmentCard is EquipmentBase))
+            {
+                Console.WriteLine($"装备{equipmentCard.DisplayName}失败，不是装备。");
+                return;
+            }
+            var hasEquiped = await EquipEquipment<IWeapon>(equipmentCard);
+            if (hasEquiped)
+            {
+                return;
+            }
+            hasEquiped = await EquipEquipment<IDefender>(equipmentCard);
+
+            if (hasEquiped)
+            {
+                return;
+            }
+            hasEquiped = await EquipEquipment<Jingongma>(equipmentCard);
+
+            if (hasEquiped)
+            {
+                return;
+            }
+            await EquipEquipment<Fangyuma>(equipmentCard);
         }
 
         /// <summary>
@@ -504,6 +551,37 @@ namespace Logic.Model.Player
             return newCardRequestContext;
         }
 
+        #region 私有方法
+        /// <summary>
+        /// 根据指定的类型装备武器,如果装备成功/异常，则返回true
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="equipmentCard"></param>
+        /// <returns></returns>
+        private async Task<bool> EquipEquipment<T>(CardBase equipmentCard)
+        {
+            var equipment = equipmentCard as EquipmentBase;
+            if (equipmentCard is T)
+            {
+                var exist = EquipmentSet.FirstOrDefault(p => p is T);
+                if (exist != null)
+                {
+                    EquipmentSet.Remove(exist);
+                    await (exist as EquipmentBase).UnEquip();
+                }
+                EquipmentSet.Add(equipmentCard);
+                await equipment.Equip();
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 深拷贝
+        /// </summary>
+        /// <param name="factor"></param>
+        /// <returns></returns>
         private AttackDynamicFactor DeepCloneAttackDynamicFactor(AttackDynamicFactor factor)
         {
             var newAttackDynamicFactor = factor == null ? AttackDynamicFactor.GetDefaultDeltaAttackFactor() :
@@ -617,5 +695,8 @@ namespace Logic.Model.Player
             result.Damage.WanjianqifaDamage += target.Damage?.WanjianqifaDamage ?? 0;
             return result;
         }
+
+
+        #endregion
     }
 }

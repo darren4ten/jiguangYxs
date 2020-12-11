@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Logic.Cards;
@@ -46,11 +47,13 @@ namespace Logic.Model.Cards.BaseCards
         protected async Task<CardResponseContext> ExecuteAction(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
 
-            PlayerContext.Player.RoundContext.ShaedTimes++;
+            roundContext.ShaedTimes++;
             foreach (var p in cardRequestContext.TargetPlayers)
             {
                 var combindeRequest = PlayerContext.Player.GetCombindCardRequestContext(cardRequestContext,
                      PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor, roundContext);
+                //当前杀的目标只有一个
+                combindeRequest.TargetPlayers = new List<Player.Player>() { p };
                 //检查是否杀不可以闪避，如果是，则跳过
                 if (cardRequestContext.AttackDynamicFactor != null && (cardRequestContext.AttackDynamicFactor.IsShaNotAvoidable || roundContext.AttackDynamicFactor.IsShaNotAvoidable))
                 {

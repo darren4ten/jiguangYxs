@@ -1,21 +1,21 @@
 ﻿using Logic.Cards;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Logic.GameLevel;
 using Logic.Model.Cards.Interface;
 using Logic.Model.Interface;
+using Logic.Model.Enums;
 
 namespace Logic.Model.Cards.EquipmentCards
 {
+    /// <summary>
+    /// 装备的基类
+    /// </summary>
     public class EquipmentBase : CardBase, IEquipment, IAbility
     {
-        //public int DefenseDistance { get; set; }
-        //public int TannangDistance { get; set; }
-        //public int AttackFactor.ShaDistance { get; set; }
-        //public int MaxShaCount { get; set; }
-        //public int MaxShaTargetCount { get; set; }
         public AttackDynamicFactor BaseAttackFactor { get; set; }
 
         public EquipmentBase()
@@ -26,9 +26,37 @@ namespace Logic.Model.Cards.EquipmentCards
             };
         }
 
+        public override async Task<CardResponseContext> PlayCard(CardRequestContext cardRequestContext, RoundContext roundContext)
+        {
+            //默认SrcPlayer为当前出牌的人
+            cardRequestContext.SrcPlayer = cardRequestContext.SrcPlayer ?? PlayerContext.Player;
+            Console.WriteLine($"[{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}]的【{cardRequestContext.SrcPlayer.GetCurrentPlayerHero().Hero.DisplayName}】装备了【{FlowerKind}{Number}{DisplayName}】");
+
+            CardResponseContext responseContext = new CardResponseContext();
+            await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, cardRequestContext, responseContext, roundContext);
+            await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeEquip, cardRequestContext, responseContext, roundContext);
+            if (responseContext.ResponseResult != ResponseResultEnum.UnKnown) return responseContext;
+
+            var r1 = await OnBeforePlayCard(cardRequestContext, responseContext, roundContext);
+            if (r1.ResponseResult != ResponseResultEnum.UnKnown) return r1;
+
+            await PlayerContext.Player.TriggerEvent(EventTypeEnum.ZhudongPlayCard, cardRequestContext, responseContext, roundContext);
+            await PlayerContext.Player.TriggerEvent(EventTypeEnum.Equip, cardRequestContext, responseContext, roundContext);
+            var r2 = await OnPlayCard(cardRequestContext, r1, roundContext);
+            //装备技能
+            await this.PlayerContext.Player.AddEquipment(this);
+
+            var r3 = await OnAfterPlayCard(cardRequestContext, r2, roundContext);
+            await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterZhudongPlayCard, cardRequestContext, responseContext, roundContext);
+            await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterEquip, cardRequestContext, responseContext, roundContext);
+            //装备不会放入牌堆
+            PlayerContext.Player.CardsInHand.Remove(this);
+            return r3;
+        }
+
         public override bool CanBePlayed()
         {
-            return false;
+            return PlayerContext.Player.IsInBeidongMode() || PlayerContext.Player.IsInZhudongMode();
         }
 
         public override Task Popup()
@@ -36,14 +64,20 @@ namespace Logic.Model.Cards.EquipmentCards
             throw new NotImplementedException();
         }
 
-        public Task Equip()
+        public async Task Equip()
         {
-            throw new NotImplementedException();
+            await OnBeforeEquip();
+            await OnEquip();
+            await OnAfterEquip();
         }
 
-        public Task UnEquip()
+        public async Task UnEquip()
         {
-            throw new NotImplementedException();
+            await OnBeforeUnEquip();
+            await OnUnEquip();
+            await OnAfterUnEquip();
+            //卸载装备时将卡牌放入临时弃牌堆
+            PlayerContext.GameLevel.TempCardDesk.Add(this);
         }
 
         public bool IsViewableInSkillPanel()
@@ -80,5 +114,41 @@ namespace Logic.Model.Cards.EquipmentCards
         {
             throw new NotImplementedException();
         }
+
+        #region 保护方法
+
+
+        protected virtual Task OnBeforeEquip()
+        {
+            return Task.FromResult(0);
+        }
+
+        protected virtual Task OnEquip()
+        {
+            return Task.FromResult(0);
+        }
+
+        protected virtual Task OnAfterEquip()
+        {
+            return Task.FromResult(0);
+        }
+
+        protected virtual Task OnBeforeUnEquip()
+        {
+            return Task.FromResult(0);
+        }
+
+        protected virtual Task OnUnEquip()
+        {
+            return Task.FromResult(0);
+        }
+
+        protected virtual Task OnAfterUnEquip()
+        {
+            return Task.FromResult(0);
+        }
+
+
+        #endregion
     }
 }
