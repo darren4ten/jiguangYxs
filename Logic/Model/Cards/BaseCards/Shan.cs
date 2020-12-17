@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Logic.Cards;
+using Logic.GameLevel;
+using Logic.Model.Player;
 
 namespace Logic.Model.Cards.BaseCards
 {
@@ -16,13 +18,22 @@ namespace Logic.Model.Cards.BaseCards
             this.DisplayName = "闪";
         }
 
+        public static bool CanBePlayed(PlayerContext playerContext)
+        {
+            if (CanBeidongPlayCard<Shan>(playerContext))
+            {
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// 闪不能被主动打出
         /// </summary>
         /// <returns></returns>
         public override bool CanBePlayed()
         {
-            return false;
+            return CanBePlayed(PlayerContext);
         }
 
         public override Task Popup()

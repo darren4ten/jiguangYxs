@@ -19,6 +19,10 @@ namespace Logic.Model.Interface
         /// </summary>
         /// <returns></returns>
         bool CanProvideShan();
+
+        bool CanProvideYao();
+        bool CanProviderWuxiekeji();
+
         bool CanProvideJuedou();
         bool CanProvideFenghuolangyan();
         bool CanProvideWanjianqifa();

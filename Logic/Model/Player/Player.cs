@@ -12,6 +12,7 @@ using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
 using Logic.Model.Interface;
 using Logic.Model.Mark;
+using Logic.Model.Skill.Interface;
 using Logic.Util;
 
 namespace Logic.Model.Player
@@ -135,7 +136,7 @@ namespace Logic.Model.Player
         /// </summary>
         public PlayerHero GetCurrentPlayerHero()
         {
-            return _availablePlayerHeroes.OrderBy(p => p.IsDead).First();
+            return _availablePlayerHeroes.OrderByDescending(p => p.IsDead).First();
         }
 
         /// <summary>
@@ -155,6 +156,8 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task<CardResponseContext> ResponseCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
+            //设置被请求的上下文
+            CardRequestContext = cardRequestContext;
             var responseContext = new CardResponseContext();
             await TriggerEvent(Enums.EventTypeEnum.BeforeBeidongPlayCard, cardRequestContext, responseContext, roundContext);
             await TriggerEvent(Enums.EventTypeEnum.BeidongPlayCard, cardRequestContext, responseContext, roundContext);
@@ -180,6 +183,8 @@ namespace Logic.Model.Player
                 });
                 _gameLevel.TempCardDesk.Add(res.Cards);
             }
+            //清除被请求的上下文
+            CardRequestContext = null;
             return res;
         }
 
@@ -367,6 +372,24 @@ namespace Logic.Model.Player
         }
 
         /// <summary>
+        /// 获取所有的技能按钮
+        /// </summary>
+        /// <returns></returns>
+        public List<ISkillButton> GetAllSkillButtons()
+        {
+            var skillBtnInfos = new List<ISkillButton>();
+            var equipSkilBtns = EquipmentSet?.OfType<ISkillButton>();
+            if (equipSkilBtns != null)
+            {
+                skillBtnInfos.AddRange(equipSkilBtns);
+            }
+            var skillBtns = GetCurrentPlayerHero().GetAllMainSkills().OfType<ISkillButton>();
+
+            skillBtnInfos.AddRange(skillBtns);
+            return skillBtnInfos;
+        }
+
+        /// <summary>
         /// 当前Player是否和targetPlayer同一阵营
         /// </summary>
         /// <param name="targetPlayer"></param>
@@ -542,7 +565,7 @@ namespace Logic.Model.Player
             }
             var newCardRequestContext = new CardRequestContext()
             {
-                CardType = cardRequestContext.CardType,
+                CardScope = cardRequestContext.CardScope,
                 AttackType = cardRequestContext.AttackType,
                 FlowerKind = cardRequestContext.FlowerKind,
                 MaxCardCountToPlay = cardRequestContext.MaxCardCountToPlay,

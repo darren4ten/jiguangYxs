@@ -65,7 +65,7 @@ namespace Tests.Card
             var response = cardSha.PlayCard(new CardRequestContext()
             {
                 AttackType = AttackTypeEnum.Sha,
-                CardType = CardTypeEnum.Any,
+                CardScope = CardScopeEnum.Any,
                 RequestCard = new Shan(),
                 TargetPlayers = new List<Player>()
                     {

@@ -28,7 +28,7 @@ namespace Tests.Card
             var shatan1 = new Shatan(5, 50);
             var star2Xiangyu = new PlayerHero(2, new Xiangyu(), null,
                 new List<SkillBase>(){
-                    qianghua1,
+                    //qianghua1,
                     shatan1
                 });
             var star3Zhuyuanzhang = new PlayerHero(3, new Zhuyuanzhang(), null,
@@ -66,7 +66,7 @@ namespace Tests.Card
             var response = cardSha.PlayCard(new CardRequestContext()
             {
                 AttackType = AttackTypeEnum.Sha,
-                CardType = CardTypeEnum.Any,
+                CardScope = CardScopeEnum.Any,
                 RequestCard = new Shan(),
                 TargetPlayers = new List<Player>()
                     {

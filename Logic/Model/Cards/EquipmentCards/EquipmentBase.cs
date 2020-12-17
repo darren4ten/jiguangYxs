@@ -42,15 +42,17 @@ namespace Logic.Model.Cards.EquipmentCards
 
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.ZhudongPlayCard, cardRequestContext, responseContext, roundContext);
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.Equip, cardRequestContext, responseContext, roundContext);
-            var r2 = await OnPlayCard(cardRequestContext, r1, roundContext);
             //装备技能
             await this.PlayerContext.Player.AddEquipment(this);
+            //装备不会放入牌堆
+            var isRemoved = PlayerContext.Player.CardsInHand.Remove(this);
+
+            var r2 = await OnPlayCard(cardRequestContext, r1, roundContext);
 
             var r3 = await OnAfterPlayCard(cardRequestContext, r2, roundContext);
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterZhudongPlayCard, cardRequestContext, responseContext, roundContext);
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterEquip, cardRequestContext, responseContext, roundContext);
-            //装备不会放入牌堆
-            PlayerContext.Player.CardsInHand.Remove(this);
+
             return r3;
         }
 
@@ -85,34 +87,44 @@ namespace Logic.Model.Cards.EquipmentCards
             return false;
         }
 
-        public bool CanProvideSha()
+        public virtual bool CanProvideSha()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool CanProvideShan()
+        public virtual bool CanProvideShan()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool CanProvideJuedou()
+        public virtual bool CanProvideYao()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool CanProvideFenghuolangyan()
+        public virtual bool CanProviderWuxiekeji()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool CanProvideWanjianqifa()
+        public virtual bool CanProvideJuedou()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool CanProvideTannangquwu()
+        public virtual bool CanProvideFenghuolangyan()
         {
-            throw new NotImplementedException();
+            return false;
+        }
+
+        public virtual bool CanProvideWanjianqifa()
+        {
+            return false;
+        }
+
+        public virtual bool CanProvideTannangquwu()
+        {
+            return false;
         }
 
         #region 保护方法

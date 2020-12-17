@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Logic.Enums
 {
-    public enum CardTypeEnum
+    /// <summary>
+    /// 卡牌的来源范围
+    /// </summary>
+    public enum CardScopeEnum
     {
         Any,
         /// <summary>

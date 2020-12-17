@@ -48,7 +48,7 @@ namespace Logic.Model.Cards.EquipmentCards
                    {
                        var res = await PlayerContext.Player.ResponseCard(new CardRequestContext()
                        {
-                           CardType = CardTypeEnum.InHandAndEquipment,
+                           CardScope = CardScopeEnum.InHandAndEquipment,
                            AttackType = AttackTypeEnum.Bolangchui,
                            MaxCardCountToPlay = 2,
                            MinCardCountToPlay = 2,

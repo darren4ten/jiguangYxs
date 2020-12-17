@@ -306,6 +306,16 @@ namespace Logic.Model.Player
             throw new System.NotImplementedException();
         }
 
+        public bool CanProvideYao()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CanProviderWuxiekeji()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool CanProvideJuedou()
         {
             throw new System.NotImplementedException();

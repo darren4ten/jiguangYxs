@@ -41,7 +41,7 @@ namespace Logic.Model.Cards.EquipmentCards
                     {
                         bool shouldTrigger = await PlayerContext.Player.ActionManager.OnRequestTriggerSkill(SkillTypeEnum.Longlindao, new CardRequestContext()
                         {
-                            CardType = CardTypeEnum.Any,
+                            CardScope = CardScopeEnum.Any,
                             AttackType = AttackTypeEnum.Longlindao,
                             MaxCardCountToPlay = 2,
                             MinCardCountToPlay = 2,

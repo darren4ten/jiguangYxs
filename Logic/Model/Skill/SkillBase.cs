@@ -45,6 +45,16 @@ namespace Logic.Model.Skill
             throw new NotImplementedException();
         }
 
+        public bool CanProvideYao()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CanProviderWuxiekeji()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool CanProvideJuedou()
         {
             throw new NotImplementedException();

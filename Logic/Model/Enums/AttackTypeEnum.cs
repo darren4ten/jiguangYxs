@@ -18,6 +18,10 @@ namespace Logic.Model.Enums
         /// 龙鳞刀卸牌
         /// </summary>
         Longlindao,
+        /// <summary>
+        /// 芦叶枪
+        /// </summary>
+        Luyeqiang,
         Tannangquwu,
         /// <summary>
         /// 博浪锤

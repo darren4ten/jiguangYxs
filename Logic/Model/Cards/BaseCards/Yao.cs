@@ -35,7 +35,7 @@ namespace Logic.Model.Cards.BaseCards
                 return true;
             }
 
-            if (PlayerContext.Player.IsInBeidongMode())
+            if (CanBeidongPlayCard<Yao>(PlayerContext))
             {
                 return true;
             }

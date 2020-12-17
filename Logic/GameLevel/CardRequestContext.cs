@@ -32,9 +32,9 @@ namespace Logic.GameLevel
         public CardBase RequestCard { get; set; }
 
         /// <summary>
-        /// 卡牌类型
+        /// 卡牌范围
         /// </summary>
-        public CardTypeEnum CardType { get; set; }
+        public CardScopeEnum CardScope { get; set; }
 
         /// <summary>
         /// 花色要求

@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Logic.GameLevel;
+using Logic.Model.Cards.BaseCards;
 
 namespace Logic.Cards
 {
@@ -41,10 +42,18 @@ namespace Logic.Cards
         /// </summary>
         public FlowerKindEnum FlowerKind { get; set; }
 
+        private CardColorEnum? _Color = null;
         /// <summary>
         /// 颜色
         /// </summary>
-        public CardColorEnum Color { get; set; }
+        public CardColorEnum Color
+        {
+            get
+            {
+                return _Color == null ? (FlowerKind == FlowerKindEnum.Hongtao || FlowerKind == FlowerKindEnum.Fangkuai ? CardColorEnum.Red : CardColorEnum.Black) : _Color.Value;
+            }
+            set => _Color = value;
+        }
 
         /// <summary>
         /// 图像path
@@ -77,6 +86,20 @@ namespace Logic.Cards
             return this;
         }
 
+        /// <summary>
+        /// 能够被动出牌
+        /// </summary>
+        /// <returns></returns>
+        public static bool CanBeidongPlayCard<T>(PlayerContext playerContext)
+        {
+            if (playerContext.Player.IsInBeidongMode() &&
+                (playerContext.Player.CardRequestContext.RequestCard == null || playerContext.Player.CardRequestContext.RequestCard is T))
+            {
+                return true;
+            }
+            return false;
+        }
+
         #region 主动出牌，Play card
         /// <summary>
         /// 出牌
@@ -107,7 +130,7 @@ namespace Logic.Cards
             var r3 = await OnAfterPlayCard(cardRequestContext, r2, roundContext);
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterZhudongPlayCard, cardRequestContext, responseContext, roundContext);
 
-            
+
             return r3;
         }
 
@@ -195,6 +218,7 @@ namespace Logic.Cards
 
 
         #endregion
+
         protected async Task<CardResponseContext> CheckResponse(CardRequestContext cardRequestContext, CardResponseContext actResponse, RoundContext roundContext)
         {
             if (actResponse == null)

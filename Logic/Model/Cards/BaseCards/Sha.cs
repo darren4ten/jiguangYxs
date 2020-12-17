@@ -21,21 +21,31 @@ namespace Logic.Model.Cards.BaseCards
             this.DisplayName = "杀";
         }
 
-        public override bool CanBePlayed()
+        /// <summary>
+        /// 杀是否可以被打出
+        /// </summary>
+        /// <param name="playerContext"></param>
+        /// <returns></returns>
+        public static bool CanBePlayed(PlayerContext playerContext)
         {
             //1.主动出杀,检查出杀的次数
-            if (PlayerContext.Player.IsInZhudongMode()
-                && PlayerContext.Player.RoundContext.AttackDynamicFactor.MaxShaTimes > PlayerContext.Player.RoundContext.ShaedTimes)
+            if (playerContext.Player.IsInZhudongMode()
+                && playerContext.Player.RoundContext.AttackDynamicFactor.MaxShaTimes > playerContext.Player.RoundContext.ShaedTimes)
             {
                 return true;
             }
 
             //2. 被动出杀
-            if (PlayerContext.Player.IsInBeidongMode())
+            if (CanBeidongPlayCard<Sha>(playerContext))
             {
                 return true;
             }
             return false;
+        }
+
+        public override bool CanBePlayed()
+        {
+            return CanBePlayed(PlayerContext);
         }
 
         /// <summary>

@@ -19,6 +19,10 @@ namespace Logic.Model.Enums
         /// </summary>
         Bolangchui,
         /// <summary>
+        /// 芦叶枪
+        /// </summary>
+        Luyeqiang,
+        /// <summary>
         /// 龙鳞刀
         /// </summary>
         Longlindao,
@@ -50,5 +54,9 @@ namespace Logic.Model.Enums
         /// 疏财
         /// </summary>
         Shucai,
+        /// <summary>
+        /// 三板斧
+        /// </summary>
+        SanBanfu
     }
 }
