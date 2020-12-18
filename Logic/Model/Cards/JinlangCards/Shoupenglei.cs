@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Logic.Cards;
+using Logic.Model.Cards.Interface;
 
 namespace Logic.Model.Cards.JinlangCards
 {
     /// <summary>
     /// 手捧雷
     /// </summary>
-    public class Shoupenglei : JinnangBase
+    public class Shoupenglei : JinnangBase, IDelayJinnang
     {
         public Shoupenglei()
         {

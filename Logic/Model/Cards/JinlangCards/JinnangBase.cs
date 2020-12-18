@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.GameLevel;
+using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
 
 namespace Logic.Model.Cards.JinlangCards
@@ -44,7 +45,7 @@ namespace Logic.Model.Cards.JinlangCards
             }
 
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, cardRequestContext, responseContext, roundContext);
-            if (!(this is Shoupenglei))
+            if (!(this is IDelayJinnang))
             {
                 await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforePlayJinnang, cardRequestContext, responseContext, roundContext);
             }
@@ -55,7 +56,7 @@ namespace Logic.Model.Cards.JinlangCards
             if (r1.ResponseResult != ResponseResultEnum.UnKnown) return r1;
 
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.ZhudongPlayCard, cardRequestContext, responseContext, roundContext);
-            if (!(this is Shoupenglei))
+            if (!(this is IDelayJinnang))
             {
                 await PlayerContext.Player.TriggerEvent(EventTypeEnum.PlayJinnang, cardRequestContext, responseContext,
                     roundContext);
@@ -65,7 +66,7 @@ namespace Logic.Model.Cards.JinlangCards
 
             var r3 = await OnAfterPlayCard(cardRequestContext, r2, roundContext);
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterZhudongPlayCard, cardRequestContext, responseContext, roundContext);
-            if (!(this is Shoupenglei))
+            if (!(this is IDelayJinnang))
             {
                 await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterPlayJinnang, cardRequestContext,
                     responseContext, roundContext);
