@@ -65,6 +65,11 @@ namespace Logic.GameLevel
         public int ShaCountAvoidJuedou { get; set; }
 
         /// <summary>
+        /// 杀是否不可被玉如意闪避
+        /// </summary>
+        public bool IsShaNotAvoidableByYuruyi { get; set; }
+
+        /// <summary>
         /// 杀是否不可闪避
         /// </summary>
         public bool IsShaNotAvoidable { get; set; }
@@ -89,6 +94,7 @@ namespace Logic.GameLevel
                 TannangDistance = 1,
                 WuzhongshengyouCardCount = 2,
                 IsShaNotAvoidable = false,
+                IsShaNotAvoidableByYuruyi = false,
                 MaxCardCountInHand = 3,
                 MaxLife = 3,
                 MaxShaTargetCount = 1,
@@ -134,6 +140,7 @@ namespace Logic.GameLevel
                 TannangDistance = 0,
                 WuzhongshengyouCardCount = 0,
                 IsShaNotAvoidable = false,
+                IsShaNotAvoidableByYuruyi = false,
                 MaxCardCountInHand = 0,
                 MaxLife = 0,
                 MaxShaTargetCount = 0,

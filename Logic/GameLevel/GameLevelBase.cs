@@ -4,8 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Logic.Event;
 using Logic.Model.Cards.MutedCards;
+using Logic.Model.Enums;
 using Logic.Model.Player;
 
 namespace Logic.GameLevel
@@ -76,6 +79,26 @@ namespace Logic.GameLevel
             {
                 yield return UnUsedCardStack.Dequeue();
             }
+        }
+
+        public virtual async Task<CardResponseContext> Panding(CardRequestContext request, Expression<Func<CardBase, bool>> expression)
+        {
+            var response = new CardResponseContext() { Cards = new List<CardBase>() };
+            await GlobalEventBus.TriggerEvent(EventTypeEnum.BeforePanding, null, request, null, response);
+            await GlobalEventBus.TriggerEvent(EventTypeEnum.Panding, null, request, null, response);
+            if (response.ResponseResult == ResponseResultEnum.Cancelled)
+            {
+                return response;
+            }
+            var pdCard = PickNextCardsFromStack(1).FirstOrDefault();
+            response.Cards.Add(pdCard);
+            var isSuccess = expression.Compile().Invoke(pdCard);
+            if (isSuccess)
+            {
+                response.ResponseResult = ResponseResultEnum.Success;
+            }
+            await GlobalEventBus.TriggerEvent(EventTypeEnum.AfterPanding, null, request, null, response);
+            return response;
         }
 
         /// <summary>

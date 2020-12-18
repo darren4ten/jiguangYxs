@@ -51,6 +51,10 @@ namespace Logic.ActionManger
             {
                 return ShouldTriggerSkill_Panlonggun(cardRequestContext);
             }
+            else if (skillType == SkillTypeEnum.Yuruyi)
+            {
+                return ShouldTriggerSkill_Yuruyi(cardRequestContext);
+            }
 
 
             return await Task.FromResult(false);
@@ -331,6 +335,34 @@ namespace Logic.ActionManger
 
 
         #endregion
+        #region 玉如意技能
+        /// <summary>
+        /// 是否要发动玉如意.
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <returns></returns>
+        private bool ShouldTriggerSkill_Yuruyi(CardRequestContext cardRequestContext)
+        {
+            var target = cardRequestContext.TargetPlayers.FirstOrDefault();
+            if (target == null)
+            {
+                throw new Exception("攻击目标不能为空。");
+            }
+            //如果是队友，返回false
+            //如果是敌人，则返回true
+            if (target.IsSameGroup(cardRequestContext.SrcPlayer) && PlayerContext.Player.GetCurrentPlayerHero().CurrentLife > 3)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+
+        #endregion
+
         #region 盘龙棍技能
         /// <summary>
         /// 是否要发动盘龙棍.

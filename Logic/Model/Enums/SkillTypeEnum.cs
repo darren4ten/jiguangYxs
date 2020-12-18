@@ -15,6 +15,10 @@ namespace Logic.Model.Enums
         /// </summary>
         SubSkill,
         /// <summary>
+        /// 玉如意
+        /// </summary>
+        Yuruyi,
+        /// <summary>
         /// 盘龙棍
         /// </summary>
         Panlonggun,

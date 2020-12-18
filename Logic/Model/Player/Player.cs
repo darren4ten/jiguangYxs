@@ -156,11 +156,18 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task<CardResponseContext> ResponseCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
+            cardRequestContext.AttackDynamicFactor =
+                cardRequestContext.AttackDynamicFactor ?? AttackDynamicFactor.GetDefaultDeltaAttackFactor();
             //设置被请求的上下文
             CardRequestContext = cardRequestContext;
             var responseContext = new CardResponseContext();
             await TriggerEvent(Enums.EventTypeEnum.BeforeBeidongPlayCard, cardRequestContext, responseContext, roundContext);
             await TriggerEvent(Enums.EventTypeEnum.BeidongPlayCard, cardRequestContext, responseContext, roundContext);
+            //如果被取消或者处理成功了，就直接返回
+            if (responseContext.ResponseResult == ResponseResultEnum.Success || responseContext.ResponseResult == ResponseResultEnum.Cancelled)
+            {
+                return responseContext;
+            }
             var newRequestContext = GetCombindCardRequestContext(cardRequestContext,
                 GetCurrentPlayerHero().BaseAttackFactor, roundContext);
             var res = await ActionManager.OnRequestResponseCard(newRequestContext);
@@ -682,6 +689,7 @@ namespace Logic.Model.Player
             result.MaxLife += src.MaxLife;
             result.DefenseDistance += src.DefenseDistance;
             result.IsShaNotAvoidable = result.IsShaNotAvoidable || src.IsShaNotAvoidable;
+            result.IsShaNotAvoidableByYuruyi = result.IsShaNotAvoidableByYuruyi || src.IsShaNotAvoidableByYuruyi;
             result.MaxCardCountInHand += src.MaxCardCountInHand;
             result.MaxShaTargetCount += src.MaxShaTargetCount;
             result.MaxShaTimes += src.MaxShaTimes;
@@ -711,6 +719,7 @@ namespace Logic.Model.Player
             result.MaxLife += target.MaxLife;
             result.DefenseDistance += target.DefenseDistance;
             result.IsShaNotAvoidable = result.IsShaNotAvoidable || target.IsShaNotAvoidable;
+            result.IsShaNotAvoidableByYuruyi = result.IsShaNotAvoidableByYuruyi || target.IsShaNotAvoidableByYuruyi;
             result.MaxCardCountInHand += target.MaxCardCountInHand;
             result.MaxShaTargetCount += target.MaxShaTargetCount;
             result.MaxShaTimes += target.MaxShaTimes;
