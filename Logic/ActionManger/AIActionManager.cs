@@ -47,6 +47,11 @@ namespace Logic.ActionManger
             {
                 return ShouldTriggerSkill_Luyeqiang(cardRequestContext);
             }
+            else if (skillType == SkillTypeEnum.Panlonggun)
+            {
+                return ShouldTriggerSkill_Panlonggun(cardRequestContext);
+            }
+
 
             return await Task.FromResult(false);
         }
@@ -97,6 +102,10 @@ namespace Logic.ActionManger
                 else if (cardRequestContext.AttackType == AttackTypeEnum.Luyeqiang)
                 {
                     exculdeEquipCards.Add(nameof(Luyeqiang));
+                }
+                else if (cardRequestContext.AttackType == AttackTypeEnum.Panlonggun)
+                {
+                    exculdeEquipCards.Add(nameof(Panlonggun));
                 }
                 response = await GetResponseCardByCardType_InHandsAmdEquipment(cardRequestContext, exculdeEquipCards);
             }
@@ -319,6 +328,33 @@ namespace Logic.ActionManger
             return true;
         }
 
+
+
+        #endregion
+        #region 盘龙棍技能
+        /// <summary>
+        /// 是否要发动盘龙棍.
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <returns></returns>
+        private bool ShouldTriggerSkill_Panlonggun(CardRequestContext cardRequestContext)
+        {
+            var target = cardRequestContext.TargetPlayers.FirstOrDefault();
+            if (target == null)
+            {
+                throw new Exception("攻击目标不能为空。");
+            }
+            //如果是队友，返回false
+            //如果是敌人，则返回true
+            if (target.IsSameGroup(cardRequestContext.SrcPlayer))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
 
         #endregion

@@ -29,7 +29,7 @@ namespace Logic.Model.Skill.SubSkill
                     {
                         if (ShouldTrigger())
                         {
-                            await PlayerHero.PlayerContext.Player.GetCurrentPlayerHero().AddLife(new AddLifeRequest()
+                            var triggered = await PlayerHero.PlayerContext.Player.GetCurrentPlayerHero().AddLife(new AddLifeRequest()
                             {
                                 CardResponseContext = responseContext,
                                 CardRequestContext = reqContext,
@@ -37,7 +37,7 @@ namespace Logic.Model.Skill.SubSkill
                                 RequestId = Guid.NewGuid(),
                                 RecoverType = RecoverTypeEnum.Xixue
                             });
-                            Console.WriteLine("触发吸血");
+                            if (triggered) Console.WriteLine($"【{PlayerHero.Hero.DisplayName}】触发吸血");
                         }
                     }));
             return Task.FromResult("");

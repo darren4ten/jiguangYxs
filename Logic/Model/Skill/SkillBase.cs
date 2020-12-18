@@ -35,44 +35,44 @@ namespace Logic.Model.Skill
         }
 
         #region IAbility
-        public bool CanProvideSha()
+        public virtual bool CanProvideSha()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool CanProvideShan()
+        public virtual bool CanProvideShan()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool CanProvideYao()
+        public virtual bool CanProvideYao()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool CanProviderWuxiekeji()
+        public virtual bool CanProviderWuxiekeji()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool CanProvideJuedou()
+        public virtual bool CanProvideJuedou()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool CanProvideFenghuolangyan()
+        public virtual bool CanProvideFenghuolangyan()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool CanProvideWanjianqifa()
+        public virtual bool CanProvideWanjianqifa()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool CanProvideTannangquwu()
+        public virtual bool CanProvideTannangquwu()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
 

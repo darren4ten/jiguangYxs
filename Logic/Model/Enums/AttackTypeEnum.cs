@@ -28,6 +28,10 @@ namespace Logic.Model.Enums
         /// </summary>
         Bolangchui,
         /// <summary>
+        /// 盘龙棍
+        /// </summary>
+        Panlonggun,
+        /// <summary>
         /// 请求选牌
         /// </summary>
         SelectCard

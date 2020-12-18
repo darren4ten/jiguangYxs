@@ -15,6 +15,10 @@ namespace Logic.Model.Enums
         /// </summary>
         SubSkill,
         /// <summary>
+        /// 盘龙棍
+        /// </summary>
+        Panlonggun,
+        /// <summary>
         /// 博浪锤弃牌命中的技能
         /// </summary>
         Bolangchui,

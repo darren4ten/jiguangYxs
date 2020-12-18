@@ -211,8 +211,8 @@ namespace Logic.Model.Player
         /// 回血
         /// </summary>
         /// <param name="request"></param>
-        /// <returns></returns>
-        public async Task AddLife(AddLifeRequest request)
+        /// <returns>是否回血</returns>
+        public async Task<bool> AddLife(AddLifeRequest request)
         {
             if (CurrentLife < BaseAttackFactor.MaxLife)
             {
@@ -251,18 +251,20 @@ namespace Logic.Model.Player
                     request.CardResponseContext, request.SrcRoundContext);
                 await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterAddLife, null, request.CardRequestContext, request.SrcRoundContext,
                     request.CardResponseContext);
+                return true;
             }
+            return false;
         }
         #endregion
 
         #region 保护方法
         protected void AddLife(int deltaLife, int maxLife)
         {
-            if (deltaLife + CurrentLife >= BaseAttackFactor.MaxLife)
+            if (deltaLife + CurrentLife >= maxLife)
             {
 
-                Console.WriteLine($"{PlayerContext.Player.PlayerName + PlayerContext.Player.PlayerId}的【{Hero.DisplayName}】回复{BaseAttackFactor.MaxLife - CurrentLife}点血量.");
-                this.CurrentLife = BaseAttackFactor.MaxLife;
+                Console.WriteLine($"{PlayerContext.Player.PlayerName + PlayerContext.Player.PlayerId}的【{Hero.DisplayName}】回复{maxLife - CurrentLife}点血量.");
+                this.CurrentLife = maxLife;
             }
             else
             {

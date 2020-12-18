@@ -25,6 +25,9 @@ namespace Logic.Model.Cards.MutedCards
         {
             this.OriginalCards = originalCards;
             this.TargetCard = targetCard;
+            this.DisplayName = targetCard.DisplayName;
+            Description = targetCard.Description;
+            FlowerKind = targetCard.FlowerKind;
         }
 
         public override bool CanBePlayed()

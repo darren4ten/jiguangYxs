@@ -14,7 +14,7 @@ namespace Logic.GameLevel
         public List<CardBase> Cards { get; set; }
 
         /// <summary>
-        /// 响应结果
+        /// 响应结果。如果返回success，则代表对方成功回避伤害
         /// </summary>
         public ResponseResultEnum ResponseResult { get; set; }
 
