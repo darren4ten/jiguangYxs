@@ -18,10 +18,10 @@ using NUnit.Framework;
 namespace Tests.Card
 {
     [TestFixture]
-    public class FenghuolangyanTest
+    public class WanjianqifaTest
     {
         [Test]
-        public async Task TestFenghuolangyan_Success()
+        public async Task TestWanjianqifaTest_Success()
         {
             var gameLevel1 = new GameLevel1();
             var qianghua1 = new Qianghua(5, 30);
@@ -61,7 +61,7 @@ namespace Tests.Card
             player1.Init();
             player2.Init();
             player3.Init();
-            var cardToPlay = new Fenghuolangyan().AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });
+            var cardToPlay = new Wanjianqifa().AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });
             player1.CardsInHand.Add(cardToPlay);
             player1.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
             player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
@@ -74,11 +74,11 @@ namespace Tests.Card
 
             var response = await cardToPlay.PlayCard(new CardRequestContext(), player1.RoundContext);
 
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(5, player3.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(6, player3.GetCurrentPlayerHero().CurrentLife);
             Assert.AreEqual(1, player1.CardsInHand.Count);
-            Assert.AreEqual(1, player2.CardsInHand.Count);
-            Assert.AreEqual(2, player3.CardsInHand.Count);
+            Assert.AreEqual(2, player2.CardsInHand.Count);
+            Assert.AreEqual(1, player3.CardsInHand.Count);
         }
     }
 }

@@ -56,7 +56,7 @@ namespace Logic.Model.Cards.JinlangCards
                 var req = new CardRequestContext()
                 {
                     AttackType = AttackTypeEnum.Fenghuolangyan,
-                    CardScope = CardScopeEnum.InHand,
+                    CardScope = CardScopeEnum.Any,
                     AttackDynamicFactor = cardRequestContext.AttackDynamicFactor,
                     RequestCard = new Sha(),
                     MaxCardCountToPlay = 1,
@@ -72,7 +72,7 @@ namespace Logic.Model.Cards.JinlangCards
                     wxResponse.Message = "请求被无懈可击";
                     return wxResponse;
                 }
-                var res = await currentPlayer.ActionManager.OnRequestResponseCard(req);
+                var res = await currentPlayer.ResponseCard(req, cardResponseContext, roundContext);
                 //判断是否有成功出杀，如果没有，则掉血
                 if (res.ResponseResult == ResponseResultEnum.Failed || !res.Cards.Any())
                 {
