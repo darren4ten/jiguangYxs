@@ -23,7 +23,6 @@ namespace Tests.Card
         public void TestSha()
         {
             var gameLevel1 = new GameLevel1();
-            gameLevel1.OnLoad();
             var qianghua1 = new Qianghua(5, 30);
             var shatan1 = new Shatan(5, 50);
             var star2Xiangyu = new PlayerHero(2, new Xiangyu(), null,
@@ -51,8 +50,7 @@ namespace Tests.Card
 
             player1.Init();
             player2.Init();
-            //player1.PickCard(2);
-            //player2.PickCard(2);
+            gameLevel1.OnLoad(player1, new List<Player>() { player2 });
             var cardSha = new Sha().AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });
             player1.CardsInHand.Add(cardSha);
             player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));

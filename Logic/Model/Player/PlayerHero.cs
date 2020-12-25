@@ -28,6 +28,19 @@ namespace Logic.Model.Player
         /// </summary>
         public int CurrentLife { get; private set; }
 
+        private int ExtraXianShou { get; set; }
+
+
+        /// <summary>
+        /// 获取英雄的先手值
+        /// </summary>
+        /// <returns></returns>
+        public int GetXianshou()
+        {
+            return Hero.Xianshou + ExtraXianShou;
+        }
+
+
         ///// <summary>
         ///// 最大生命
         ///// </summary>

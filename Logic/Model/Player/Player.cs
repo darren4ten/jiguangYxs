@@ -31,6 +31,15 @@ namespace Logic.Model.Player
         public Guid GroupId { get; set; } = Guid.NewGuid();
 
         /// <summary>
+        /// 是否死亡
+        /// </summary>
+        /// <returns></returns>
+        public bool IsAlive()
+        {
+            return _availablePlayerHeroes.Any(p => !p.IsDead);
+        }
+
+        /// <summary>
         /// 玩家姓名
         /// </summary>
         public string PlayerName { get; set; }
@@ -44,6 +53,8 @@ namespace Logic.Model.Player
         /// 进入角色回合的次数
         /// </summary>
         public int Round { get; set; }
+
+        public int ExtraXianshou { get; set; }
 
         public PlayerUIState PlayerUiState { get; }
 
@@ -129,6 +140,15 @@ namespace Logic.Model.Player
 
             var curHero = GetCurrentPlayerHero();
             curHero.SetupSkills();
+        }
+
+        /// <summary>
+        /// 获取先手值
+        /// </summary>
+        /// <returns></returns>
+        public int GetXianshou()
+        {
+            return GetCurrentPlayerHero().GetXianshou() + ExtraXianshou;
         }
 
         /// <summary>

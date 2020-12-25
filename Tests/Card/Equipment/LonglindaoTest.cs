@@ -26,7 +26,6 @@ namespace Tests.Card
         public async Task LonglindaoTest_Success()
         {
             var gameLevel1 = new GameLevel1();
-            gameLevel1.OnLoad();
             var qianghua1 = new Qianghua(5, 30);
             var shatan1 = new Shatan(5, 50);
             var star2Xiangyu = new PlayerHero(2, new Xiangyu(), null,
@@ -53,6 +52,8 @@ namespace Tests.Card
 
             player1.Init();
             player2.Init();
+            gameLevel1.OnLoad(player1, new List<Player>() { player2 });
+          
             var longlindao = new Longlindao() { CardId = 3, Color = CardColorEnum.Black, Number = 7, FlowerKind = FlowerKindEnum.Heitao }.AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });
             var cardSha = new Sha() { CardId = 1, Color = CardColorEnum.Red, Number = 10, FlowerKind = FlowerKindEnum.Hongtao }.AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });
             var cardSha1 = new Sha() { CardId = 5, Color = CardColorEnum.Red, Number = 8, FlowerKind = FlowerKindEnum.Hongtao }.AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });

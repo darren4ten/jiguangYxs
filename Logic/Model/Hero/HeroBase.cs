@@ -21,6 +21,11 @@ namespace Logic.Model.Hero
         public string DisplayName { get; set; }
 
         /// <summary>
+        /// 先手值
+        /// </summary>
+        public int Xianshou { get; set; }
+
+        /// <summary>
         /// 性别
         /// </summary>
         public GenderEnum Gender { get; set; }

@@ -1,6 +1,7 @@
 ﻿using Logic.Model.Hero.Civilian;
 using Logic.Model.Hero.Presizdent;
 using Logic.Model.Player;
+using System.Collections.Generic;
 
 namespace Logic.GameLevel.Levels
 {
@@ -12,17 +13,9 @@ namespace Logic.GameLevel.Levels
             Description = "Level 1 test.";
         }
 
-        protected override void LoadPlayers()
+        protected override void LoadPlayers(Player currentPlayer, List<Player> aditionalPlayers)
         {
-            //var player1 = new Player()
-            //{
-            //    PlayerId = 1,
-            //    PlayerHero = new PlayerHero()
-            //    {
-            //        Hero = new Linchong(),
-            //        Star = 3,
-            //    }
-            //};
+            base.LoadPlayers(currentPlayer, aditionalPlayers);
         }
     }
 }

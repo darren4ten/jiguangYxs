@@ -24,7 +24,6 @@ namespace Tests.Card
         public void TestJuedou_Success()
         {
             var gameLevel1 = new GameLevel1();
-            gameLevel1.OnLoad();
             var qianghua1 = new Qianghua(5, 30);
             var shatan1 = new Shatan(5, 50);
             var star2Xiangyu = new PlayerHero(2, new Xiangyu(), null,
@@ -50,6 +49,7 @@ namespace Tests.Card
                 PlayerId = 2
             };
 
+            gameLevel1.OnLoad(player1, new List<Player>() { player2 });
             player1.Init();
             player2.Init();
             var cardJuedou = new Juedou().AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });
@@ -82,7 +82,6 @@ namespace Tests.Card
         public void TestJuedou_Failed()
         {
             var gameLevel1 = new GameLevel1();
-            gameLevel1.OnLoad();
             var qianghua1 = new Qianghua(5, 30);
             var shatan1 = new Shatan(5, 50);
             var star2Xiangyu = new PlayerHero(2, new Xiangyu(), null,
@@ -108,6 +107,7 @@ namespace Tests.Card
                 PlayerId = 2
             };
 
+            gameLevel1.OnLoad(player1, new List<Player>() { player2 });
             player1.Init();
             player2.Init();
             var cardJuedou = new Juedou().AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });

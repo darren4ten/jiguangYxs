@@ -28,7 +28,6 @@ namespace Tests.Card
         public async Task YuchangjianTest_Success()
         {
             var gameLevel1 = new GameLevel1();
-            gameLevel1.OnLoad();
             var qianghua1 = new Qianghua(5, 30);
             var shatan1 = new Shatan(5, 50);
             var star2Chengyaojin = new PlayerHero(2, new Chengyaojin(), null,
@@ -55,6 +54,7 @@ namespace Tests.Card
 
             player1.Init();
             player2.Init();
+            gameLevel1.OnLoad(player1, new List<Player>() { player2 });
             var sha = new Sha() { CardId = 1, Number = 10, FlowerKind = FlowerKindEnum.Hongtao }.AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });
             var sha1 = new Sha() { CardId = 11, Number = 10, FlowerKind = FlowerKindEnum.Heitao }.AttachPlayerContext(
                   new PlayerContext() { Player = player1, GameLevel = gameLevel1 });
