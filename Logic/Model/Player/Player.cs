@@ -194,7 +194,8 @@ namespace Logic.Model.Player
             await TriggerEvent(Enums.EventTypeEnum.AfterBeidongPlayCard, cardRequestContext, res, roundContext);
             if (res.Cards?.Any() == true)
             {
-                Console.WriteLine($"[{PlayerName}{PlayerId}]出牌{string.Join(",", res.Cards.Select(p => p.ToString()))}");
+                string actionName = cardRequestContext.AttackType == AttackTypeEnum.SelectCard ? "选择了" : "出牌";
+                Console.WriteLine($"[{PlayerName}{PlayerId}]{actionName}{string.Join(",", res.Cards.Select(p => p.ToString()))}");
                 //将牌置于临时牌堆
                 res.Cards.ForEach(async c =>
                 {

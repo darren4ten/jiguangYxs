@@ -15,6 +15,10 @@ namespace Logic.Model.Enums
         Gongxin,
         Fudichouxin,
         /// <summary>
+        /// 五谷丰登
+        /// </summary>
+        Wugufengdeng,
+        /// <summary>
         /// 休养生息
         /// </summary>
         Xiuyangshengxi,

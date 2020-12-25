@@ -191,6 +191,19 @@ namespace Logic.ActionManger
                     return t.Card;
                 }));
             }
+
+            //4. 如果有五谷丰登，则按照Value、Priority降序选择牌
+            if (request.Panel.UnknownCards?.Any() == true)
+            {
+                var maxCount = request.MaxCount - response.Cards.Count;
+                var takeCards = request.Panel.UnknownCards.Where(c => c.SelectedBy == null).
+                    Select(c => new { Key = c, Value = GetCardAiValue(c.Card) }).OrderByDescending(c => c.Value.Value).ThenBy(c => c.Value.Priority).Take(maxCount).Select(c => c.Key);
+                response.Cards.AddRange(takeCards.Select(t =>
+                {
+                    t.SelectedBy = PlayerContext.Player;
+                    return t.Card;
+                }));
+            }
             return response;
         }
 
@@ -231,76 +244,106 @@ namespace Logic.ActionManger
         /// <returns></returns>
         public AiValue GetCardAiValue(CardBase card)
         {
-            var valueDic = new Dictionary<string, AiValue>()
+            var valueDic = new Dictionary<Type, AiValue>()
             {
-                { nameof(Sha),new AiValue()
+                { typeof(Sha),new AiValue()
                 {
                     Priority = 120,
                     Value = 200
                 }},
-                { nameof(Juedou),new AiValue(){
-                    Priority = 150,
-                    Value = 200
+                { typeof(Shan),new AiValue()
+                {
+                    Priority = 120,
+                    Value = 90
                 }},
-                { nameof(Yao),new AiValue(){
+                { typeof(Shoupenglei),new AiValue()
+                {
+                    Priority = 100,
+                    Value = 80
+                }},
+                { typeof(Juedou),new AiValue(){
+                    Priority = 150,
+                    Value = 210
+                }},
+                { typeof(Yao),new AiValue(){
                     Priority = 175,
                     Value = 250
                 }},
-                { nameof(Fenghuolangyan),new AiValue(){
+                { typeof(Fenghuolangyan),new AiValue(){
                     Priority = 170,
+                    Value = 200
+                }},
+                { typeof(Wanjianqifa),new AiValue(){
+                    Priority = 170,
+                    Value = 200
+                }},
+                { typeof(Xiuyangshengxi),new AiValue(){
+                    Priority = 160,
                     Value = 100
                 }},
-                { nameof(Wanjianqifa),new AiValue(){
-                    Priority = 170,
-                    Value = 100
-                }},
-                { nameof(Jiedaosharen),new AiValue(){
+                { typeof(Jiedaosharen),new AiValue(){
                     Priority = 190,
                     Value = 80
                 }},
-                { nameof(Fudichouxin),new AiValue(){
+                { typeof(Fudichouxin),new AiValue(){
                     Priority = 200,
                     Value = 200
                 }},
-                { nameof(Tannangquwu),new AiValue(){
+                { typeof(Wugufengdeng),new AiValue(){
+                    Priority = 100,
+                    Value = 80
+                }},
+                { typeof(Wuxiekeji),new AiValue(){
+                    Priority = 210,
+                    Value = 200
+                }},
+                { typeof(Wuzhongshengyou),new AiValue(){
+                    Priority = 220,
+                    Value = 220
+                }},
+                { typeof(Tannangquwu),new AiValue(){
                     Priority = 180,
                     Value = 220
                 }},
-                { nameof(Huadiweilao),new AiValue(){
+                { typeof(Huadiweilao),new AiValue(){
                     Priority = 100,
                     Value = 220
                 }},
-                { nameof(Luyeqiang),new AiValue(){
+                { typeof(Luyeqiang),new AiValue(){
                     Priority = 160,
                     Value = 150
                 }},
-                { nameof(Hufu),new AiValue(){
+                { typeof(Hufu),new AiValue(){
                     Priority = 100,
                     Value = 230
                 }},
-                { nameof(Longlindao),new AiValue(){
-                    Priority = 160,
-                    Value = 80
-                }},
-                { nameof(Langyabang),new AiValue(){
+                { typeof(Yuchangjian),new AiValue(){
                     Priority = 150,
                     Value = 80
                 }},
-                { nameof(Bawanggong),new AiValue(){
+                { typeof(Longlindao),new AiValue(){
                     Priority = 160,
                     Value = 80
                 }},
-                { nameof(Panlonggun),new AiValue(){
+                { typeof(Langyabang),new AiValue(){
                     Priority = 150,
                     Value = 80
                 }},
-                { nameof(Yuruyi),new AiValue(){
+                { typeof(Bawanggong),new AiValue(){
                     Priority = 160,
-                    Value = 190
+                    Value = 80
+                }},
+                { typeof(Panlonggun),new AiValue(){
+                    Priority = 150,
+                    Value = 80
+                }},
+                { typeof(Yuruyi),new AiValue(){
+                    Priority = 160,
+                    Value = 220
                 }},
             };
 
-            return valueDic.ContainsKey(nameof(card)) ? valueDic[nameof(card)] : new AiValue()
+            return valueDic.ContainsKey(card.GetType()) ? valueDic[(card).GetType()] : new AiValue()
             {
                 Priority = 100,
                 Value = 100
