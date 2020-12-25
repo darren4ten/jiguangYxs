@@ -32,18 +32,7 @@ namespace Logic.Model.Cards.JinlangCards
             Console.WriteLine($"[{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}的【{cardRequestContext.SrcPlayer.GetCurrentPlayerHero().Hero.DisplayName}】]{(cardRequestContext.TargetPlayers?.Any() == true ? "向" + string.Join(",", cardRequestContext.TargetPlayers.Select(p => p.PlayerName + p.PlayerId)) : "")}打出“{this.DisplayName}”");
 
             CardResponseContext responseContext = new CardResponseContext();
-            //检查是否有无懈可击
-            if (!(this is Shoupenglei))
-            {
-                var wxResponse = await GroupRequestWuxiekeji(cardRequestContext, responseContext, roundContext);
-                if (wxResponse.ResponseResult == Enums.ResponseResultEnum.Wuxiekeji)
-                {
-                    wxResponse.ResponseResult = Enums.ResponseResultEnum.Success;
-                    wxResponse.Message = "请求被无懈可击";
-                    return wxResponse;
-                }
-            }
-
+         
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, cardRequestContext, responseContext, roundContext);
             if (!(this is IDelayJinnang))
             {
@@ -63,6 +52,17 @@ namespace Logic.Model.Cards.JinlangCards
             }
 
             var r2 = await OnPlayCard(cardRequestContext, r1, roundContext);
+            //检查是否有无懈可击
+            if (!(this is IDelayJinnang || this is IGroupJinnang))
+            {
+                var wxResponse = await GroupRequestWuxiekeji(cardRequestContext, responseContext, roundContext);
+                if (wxResponse.ResponseResult == Enums.ResponseResultEnum.Wuxiekeji)
+                {
+                    wxResponse.ResponseResult = Enums.ResponseResultEnum.Success;
+                    wxResponse.Message = "请求被无懈可击";
+                    return wxResponse;
+                }
+            }
 
             var r3 = await OnAfterPlayCard(cardRequestContext, r2, roundContext);
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterZhudongPlayCard, cardRequestContext, responseContext, roundContext);

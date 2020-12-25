@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Logic.Cards;
+using Logic.Model.Cards.Interface;
 
 namespace Logic.Model.Cards.JinlangCards
 {
     /// <summary>
     /// 五谷丰登
     /// </summary>
-    public class Wugufengdeng : JinnangBase
+    public class Wugufengdeng : JinnangBase, IGroupJinnang
     {
         public Wugufengdeng()
         {

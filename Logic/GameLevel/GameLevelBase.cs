@@ -209,7 +209,18 @@ namespace Logic.GameLevel
         }
 
         /// <summary>
-        /// 
+        /// 获取最先出牌的player
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Player GetXianshouPlayer()
+        {
+            var maxXianshou = Players.Max(p => p.GetXianshou());
+            var curPlayer = Players.FirstOrDefault(p => p.GetXianshou() == maxXianshou);
+            return curPlayer;
+        }
+
+        /// <summary>
+        /// 开始游戏
         /// </summary>
         /// <param name="currentPlayer">可选的</param>
         /// <param name="aditionalPlayers">可选的</param>
@@ -218,8 +229,7 @@ namespace Logic.GameLevel
         {
             OnLoad(currentPlayer, aditionalPlayers);
             Console.WriteLine("Game Started!");
-            var maxXianshou = Players.Max(p => p.GetXianshou());
-            var curPlayer = Players.FirstOrDefault(p => p.GetXianshou() == maxXianshou);
+            var curPlayer = GetXianshouPlayer();
             while (!IsGameOver)
             {
                 await curPlayer.StartStep_EnterMyRound();

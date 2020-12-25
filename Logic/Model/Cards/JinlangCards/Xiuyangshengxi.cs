@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Logic.Cards;
+using Logic.Model.Cards.Interface;
 
 namespace Logic.Model.Cards.JinlangCards
 {
     /// <summary>
     /// 休养生息
     /// </summary>
-    public class Xiuyangshengxi : JinnangBase
+    public class Xiuyangshengxi : JinnangBase, IGroupJinnang
     {
         public Xiuyangshengxi()
         {

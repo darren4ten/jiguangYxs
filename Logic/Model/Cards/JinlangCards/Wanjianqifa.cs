@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Logic.Cards;
+using Logic.Model.Cards.Interface;
 
 namespace Logic.Model.Cards.JinlangCards
 {
     /// <summary>
     /// 万箭齐发
     /// </summary>
-    public class Wanjianqifa : JinnangBase
+    public class Wanjianqifa : JinnangBase, IGroupJinnang
     {
         public Wanjianqifa()
         {

@@ -561,7 +561,8 @@ namespace Logic.Model.Player
                     }
                     else
                     {
-                        return next;
+                        //如果下一个player还是自己，则直接返回null
+                        return next == this ? null : next;
                     }
                 }
             }
