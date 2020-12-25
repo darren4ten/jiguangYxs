@@ -36,7 +36,7 @@ namespace Logic.GameLevel
         protected Queue<CardBase> UnUsedCardStack { get; set; }
         protected Queue<CardBase> UsedCardStack { get; set; }
 
-        protected List<Player> Players { get; set; }
+        public List<Player> Players { get; private set; }
 
         /// <summary>
         /// 当前的Player

@@ -241,29 +241,32 @@ namespace Logic.Model.Player
 
                 var defaultRecover = AttackDynamicFactor.GetDefaultBaseAttackFactor();
                 var roundContextAttackDynamicFactor = request.SrcRoundContext?.AttackDynamicFactor;
+                var deltaLife = 0;
                 //吸血
                 if (request.RecoverType == RecoverTypeEnum.Xixue)
                 {
-                    var deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.XixueLife + defaultRecover.Recover.XixueLife + (roundContextAttackDynamicFactor?.Recover.XixueLife ?? 0);
+                    deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.XixueLife + defaultRecover.Recover.XixueLife + (roundContextAttackDynamicFactor?.Recover.XixueLife ?? 0);
                     AddLife(deltaLife, BaseAttackFactor.MaxLife);
                 }
                 //休养生息
                 else if (request.RecoverType == RecoverTypeEnum.Xiuyangshengxi)
                 {
-                    var deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.XiuyangshengxiLife + defaultRecover.Recover.XiuyangshengxiLife + (roundContextAttackDynamicFactor?.Recover.XiuyangshengxiLife ?? 0);
+                    deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.XiuyangshengxiLife + defaultRecover.Recover.XiuyangshengxiLife + (roundContextAttackDynamicFactor?.Recover.XiuyangshengxiLife ?? 0);
                     AddLife(deltaLife, BaseAttackFactor.MaxLife);
                 }
                 //吃药
                 else if (request.RecoverType == RecoverTypeEnum.Yao)
                 {
-                    var deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.YaoLife + defaultRecover.Recover.YaoLife + (roundContextAttackDynamicFactor?.Recover.YaoLife ?? 0);
+                    deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.YaoLife + defaultRecover.Recover.YaoLife + (roundContextAttackDynamicFactor?.Recover.YaoLife ?? 0);
                     AddLife(deltaLife, BaseAttackFactor.MaxLife);
                 }
 
+                //Console.WriteLine($"{PlayerContext.Player.PlayerName + PlayerContext.Player.PlayerId}的【{Hero.DisplayName}】被“{request.RecoverType}”回复{deltaLife}血.");
                 await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterAddLife, request.CardRequestContext,
                     request.CardResponseContext, request.SrcRoundContext);
                 await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterAddLife, null, request.CardRequestContext, request.SrcRoundContext,
                     request.CardResponseContext);
+
                 return true;
             }
             return false;
