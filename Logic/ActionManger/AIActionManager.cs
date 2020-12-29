@@ -13,9 +13,11 @@ using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Cards.EquipmentCards.Defense;
 using Logic.Model.Cards.Interface;
 using Logic.Model.Cards.JinlangCards;
+using Logic.Model.Cards.MutedCards;
 using Logic.Model.Enums;
 using Logic.Model.Interface;
 using Logic.Model.Mark;
+using Logic.Model.Player;
 using Logic.Model.RequestResponse.Request;
 using Logic.Model.RequestResponse.Response;
 using Logic.Model.Skill.Interface;
@@ -231,77 +233,176 @@ namespace Logic.ActionManger
         /// <returns></returns>
         public override async Task OnRequestStartStep_PlayCard()
         {
-            //是否有釜底抽薪？
-            //是否有借刀杀人？
-            //是否有探囊取物？
-            //是否有无中生有？
-            //是否有药？
-            //是否要画地为牢？
-            //是否万箭齐发？
-            //是否烽火狼烟？
-            //是否决斗？
-            //是否无中生有？
-            //是否休养生息？
-            //是否装备武器（虎符。。。）？
-            //是否有能杀？（有杀或者技能能提供杀）如果能杀，是否需要发动增强杀的技能（如三板斧，侠胆、傲剑、武穆）
-            //是否要触发技能（毒计、傲剑、侠胆）？
-            //是否手捧雷？
-
-
-            //出牌逻辑
-            //0. 如果有可以触发的技能，则询问是福触发技能
-            //  如果可以触发,则触发。要解决的问题是，TODO:如果某个技能按钮在触发多次（成功或者失败多次）之后依然可以触发该如何解决？
-            //      正常的如：毒计-手中有多张红牌，该技能能触发多次；装有虎符情况下傲剑、武穆都可以多次触发
-            //      非正常的如：三板斧显示可以触发但攻击范围内没有敌人。同理如此情况下的傲剑、武穆。
-
-            var shouldStopSkill = false;
-            while (!shouldStopSkill)
+            #region 按照固定逻辑处理
+            //具体的逻辑依下面顺序来执行，如果有变化则再从头执行一次。
+            //注（变化）：
+            //      1. 杀成功
+            //      2. 己方掉血
+            //      3. 有新手牌进来（杀贪、五谷丰登、探囊取物、妙计导致的摸牌等。。）
+            //      4.出过牌
+            //TODO: 增加检查能够提供相应牌的逻辑的判断。如，释权可以黑色当釜底抽薪
+            bool shouldContinueLoop = false;
+            do
             {
-                var avSkillBtns = PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled());
-                bool isSuccessTrigger = false;
-                foreach (var skillButton in avSkillBtns)
+                shouldContinueLoop = false;
+
+                #region 是否有釜底抽薪？或者能够提供釜底抽薪
+
+                if (!shouldContinueLoop)
                 {
-                    var shouldTrigger = await PlayerContext.Player.ActionManager.OnRequestTriggerSkill(skillButton.GetButtonInfo().SkillType, null);
-                    if (shouldTrigger)
-                    {
-                        var response = new CardResponseContext();
-                        await skillButton.GetButtonInfo().OnClick(new CardRequestContext(), PlayerContext.Player.RoundContext, response);
-                        isSuccessTrigger = response.ResponseResult == ResponseResultEnum.Failed ||
-                                           response.ResponseResult == ResponseResultEnum.Success ||
-                                           response.ResponseResult == ResponseResultEnum.Cancelled;
-                    }
+                    shouldContinueLoop = await PlayFudichouxin();
                 }
-             
-                shouldStopSkill = !isSuccessTrigger;
-            }
+                #endregion
 
-
-            //将手中的牌按照优先级降序排列，循环检查每张牌是否可以被主动打出，
-            //1. 如果可以被主动打出，则请求选择目标（如果目标可选，则出牌，如果没有可选目标，则跳过）
-            //2. 如果本次循环有出过牌，则继续下次循环，否则结束出牌。
-            var shouldStop = false;
-            while (!shouldStop)
-            {
-                var orderedCards = PlayerContext.Player.CardsInHand.OrderByDescending(c => GetCardAiValue(c).Priority).ToList();
-                bool playedCard = false;
-                orderedCards.ForEach(async o =>
+                #region 是否有借刀杀人
+                if (!shouldContinueLoop)
                 {
-                    if (o.CanBePlayed())
-                    {
-                        var targets = await o.SelectTargets();
-                        if (targets == null || !targets.Any())
-                        {
-                            return;
-                        }
-                        await o.PlayCard(new CardRequestContext()
-                        {
-                            TargetPlayers = targets
-                        }, PlayerContext.Player.RoundContext);
-                        playedCard = true;
-                    }
-                });
-                shouldStop = !playedCard;
-            }
+                    shouldContinueLoop = await PlayJiedaosharen();
+                }
+
+                #endregion
+
+                #region 是否有探囊取物
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await PlayTannangquwu();
+                }
+                #endregion
+
+                //是否有无中生有？
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await PlayWuzhongshengyou();
+                }
+
+                //是否有药？
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await PlayYao();
+                }
+
+                //是否要画地为牢？
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await PlayHuadiweilao();
+                }
+
+                //是否万箭齐发？
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await PlayWanjianqifa();
+                }
+
+                //是否烽火狼烟？
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await PlayFenghuolangyan();
+                }
+
+                //是否决斗？
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await PlayJuedou();
+                }
+
+                //是否休养生息？
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await PlayXiuyangshengxi();
+                }
+
+                //是否装备武器（虎符。。。）？
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await PlayWeaponCards();
+                }
+
+                //是否有能杀？（有杀或者技能能提供杀）如果能杀，是否需要发动增强杀的技能（如三板斧，侠胆、傲剑、武穆）
+                //如果有主动技能能够增强杀（如三板斧,侠胆）
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await TriggerSkill_EnhanceSha();
+                }
+
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await PlaySha();
+                }
+
+                //是否要触发技能（毒计、傲剑、侠胆）？
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await TriggerSkills();
+                }
+
+                //是否手捧雷？
+                if (!shouldContinueLoop)
+                {
+                    shouldContinueLoop = await PlayShoupenglei();
+                }
+
+            } while (shouldContinueLoop);
+
+            #endregion
+
+            #region 动态处理优先级
+
+            ////出牌逻辑
+            ////0. 如果有可以触发的技能，则询问是福触发技能
+            ////  如果可以触发,则触发。要解决的问题是，TODO:如果某个技能按钮在触发多次（成功或者失败多次）之后依然可以触发该如何解决？
+            ////      正常的如：毒计-手中有多张红牌，该技能能触发多次；装有虎符情况下傲剑、武穆都可以多次触发
+            ////      非正常的如：三板斧显示可以触发但攻击范围内没有敌人。同理如此情况下的傲剑、武穆。
+
+            //var shouldStopSkill = false;
+            //while (!shouldStopSkill)
+            //{
+            //    var avSkillBtns = PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled());
+            //    bool isSuccessTrigger = false;
+            //    foreach (var skillButton in avSkillBtns)
+            //    {
+            //        var shouldTrigger = await PlayerContext.Player.ActionManager.OnRequestTriggerSkill(skillButton.GetButtonInfo().SkillType, null);
+            //        if (shouldTrigger)
+            //        {
+            //            var response = new CardResponseContext();
+            //            await skillButton.GetButtonInfo().OnClick(new CardRequestContext(), PlayerContext.Player.RoundContext, response);
+            //            isSuccessTrigger = response.ResponseResult == ResponseResultEnum.Failed ||
+            //                               response.ResponseResult == ResponseResultEnum.Success ||
+            //                               response.ResponseResult == ResponseResultEnum.Cancelled;
+            //        }
+            //    }
+
+            //    shouldStopSkill = !isSuccessTrigger;
+            //}
+
+
+            ////将手中的牌按照优先级降序排列，循环检查每张牌是否可以被主动打出，
+            ////1. 如果可以被主动打出，则请求选择目标（如果目标可选，则出牌，如果没有可选目标，则跳过）
+            ////2. 如果本次循环有出过牌，则继续下次循环，否则结束出牌。
+            //var shouldStop = false;
+            //while (!shouldStop)
+            //{
+            //    var orderedCards = PlayerContext.Player.CardsInHand.OrderByDescending(c => GetCardAiValue(c).Priority).ToList();
+            //    bool playedCard = false;
+            //    orderedCards.ForEach(async o =>
+            //    {
+            //        if (o.CanBePlayed())
+            //        {
+            //            var targets = await o.SelectTargets();
+            //            if (targets == null || !targets.Any())
+            //            {
+            //                return;
+            //            }
+            //            await o.PlayCard(new CardRequestContext()
+            //            {
+            //                TargetPlayers = targets
+            //            }, PlayerContext.Player.RoundContext);
+            //            playedCard = true;
+            //        }
+            //    });
+            //    shouldStop = !playedCard;
+            //}
+
+            #endregion
             await Task.FromResult(0);
         }
 
@@ -444,6 +545,556 @@ namespace Logic.ActionManger
 
         #region 私有方法
 
+        #region 主动出牌逻辑
+
+        /// <summary>
+        /// 打出釜底抽薪
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlayFudichouxin()
+        {
+            bool shouldContinue = false;
+            var fudichouxins = PlayerContext.Player.CardsInHand.Where(p => p is Fudichouxin);
+            foreach (var fudichouxin in fudichouxins)
+            {
+                var targets = await fudichouxin.SelectTargets(new SelectTargetRequest()
+                {
+                    MinCount = 1,
+                    MaxCount = 1
+                });
+                if (targets != null && targets.Any())
+                {
+                    await fudichouxin.PlayCard(new CardRequestContext()
+                    {
+                        AttackType = AttackTypeEnum.Fudichouxin,
+                        TargetPlayers = targets
+                    }, PlayerContext.Player.RoundContext);
+                    //出过牌，继续检查是否有需要出的牌
+                    shouldContinue = true;
+                }
+            }
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 打出有借刀杀人
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlayJiedaosharen()
+        {
+            bool shouldContinue = false;
+            var jiedaosharens = PlayerContext.Player.CardsInHand.Where(p => p is Jiedaosharen);
+            foreach (var jiedaosharen in jiedaosharens)
+            {
+                var targets = await jiedaosharen.SelectTargets(new SelectTargetRequest()
+                {
+                    MinCount = 1,
+                    MaxCount = 1
+                });
+                if (targets != null && targets.Count == 2)
+                {
+                    await jiedaosharen.PlayCard(new CardRequestContext()
+                    {
+                        AttackType = AttackTypeEnum.Jiedaosharen,
+                        TargetPlayers = targets //借刀杀人的targets，第一个player代表被借刀的人，第二个代表是要杀的人
+                    }, PlayerContext.Player.RoundContext);
+                    //出过牌，继续检查是否有需要出的牌
+                    shouldContinue = true;
+                }
+            }
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 打出探囊取物
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlayTannangquwu()
+        {
+            bool shouldContinue = false;
+            var tannangquwus = PlayerContext.Player.CardsInHand.Where(p => p is Tannangquwu);
+            foreach (var tannangquwu in tannangquwus)
+            {
+                var targets = await tannangquwu.SelectTargets(new SelectTargetRequest()
+                {
+                    MinCount = 1,
+                    MaxCount = 1
+                });
+                if (targets != null && targets.Any())
+                {
+                    await tannangquwu.PlayCard(new CardRequestContext()
+                    {
+                        AttackType = AttackTypeEnum.Tannangquwu,
+                        TargetPlayers = targets
+                    }, PlayerContext.Player.RoundContext);
+                    //出过牌，继续检查是否有需要出的牌
+                    shouldContinue = true;
+                }
+            }
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 打出无中生有
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlayWuzhongshengyou()
+        {
+            bool shouldContinue = false;
+            var wuzhongshengyous = PlayerContext.Player.CardsInHand.Where(p => p is Wuzhongshengyou);
+            foreach (var wuzhongshengyou in wuzhongshengyous)
+            {
+                await wuzhongshengyou.PlayCard(new CardRequestContext()
+                {
+                    AttackType = AttackTypeEnum.Wuzhongshengyou,
+                }, PlayerContext.Player.RoundContext);
+                //出过牌，继续检查是否有需要出的牌
+                shouldContinue = true;
+            }
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 打出药
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlayYao()
+        {
+            bool shouldContinue = false;
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Yao);
+            foreach (var card in cards)
+            {
+                await card.PlayCard(new CardRequestContext()
+                {
+                    TargetPlayers = new List<Player>()
+                    {
+                        PlayerContext.Player
+                    }
+                }, PlayerContext.Player.RoundContext);
+                //出过牌，继续检查是否有需要出的牌
+                shouldContinue = true;
+            }
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 打出画地为牢
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlayHuadiweilao()
+        {
+            bool shouldContinue = false;
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Yao);
+            foreach (var card in cards)
+            {
+                var targets = await card.SelectTargets(new SelectTargetRequest()
+                {
+                    MinCount = 1,
+                    MaxCount = 1
+                });
+                if (targets != null && targets.Any())
+                {
+                    await card.PlayCard(new CardRequestContext()
+                    {
+                        TargetPlayers = targets
+                    }, PlayerContext.Player.RoundContext);
+                    //出过牌，继续检查是否有需要出的牌
+                    shouldContinue = true;
+                }
+            }
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 打出万箭齐发
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlayWanjianqifa()
+        {
+            bool shouldContinue = false;
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Wanjianqifa);
+            foreach (var card in cards)
+            {
+                await card.PlayCard(new CardRequestContext(), PlayerContext.Player.RoundContext);
+                //出过牌，继续检查是否有需要出的牌
+                shouldContinue = true;
+            }
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 打出烽火狼烟
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlayFenghuolangyan()
+        {
+            bool shouldContinue = false;
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Fenghuolangyan);
+            foreach (var card in cards)
+            {
+                await card.PlayCard(new CardRequestContext(), PlayerContext.Player.RoundContext);
+                //出过牌，继续检查是否有需要出的牌
+                shouldContinue = true;
+            }
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 打出休养生息
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlayXiuyangshengxi()
+        {
+            bool shouldContinue = false;
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Xiuyangshengxi);
+            foreach (var card in cards)
+            {
+                if (card.CanBePlayed())
+                {
+                    await card.PlayCard(new CardRequestContext(), PlayerContext.Player.RoundContext);
+                    //出过牌，继续检查是否有需要出的牌
+                    shouldContinue = true;
+                }
+            }
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 打出休养生息
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlayShoupenglei()
+        {
+            bool shouldContinue = false;
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Shoupenglei);
+            foreach (var card in cards)
+            {
+                if (card.CanBePlayed())
+                {
+                    await card.PlayCard(new CardRequestContext(), PlayerContext.Player.RoundContext);
+                    //出过牌，继续检查是否有需要出的牌
+                    shouldContinue = true;
+                }
+            }
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 打出决斗
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlayJuedou()
+        {
+            bool shouldContinue = false;
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Juedou);
+            foreach (var card in cards)
+            {
+                var targets = await card.SelectTargets(new SelectTargetRequest()
+                {
+                    MinCount = 1,
+                    MaxCount = 1
+                });
+                if (targets != null && targets.Any())
+                {
+                    await card.PlayCard(new CardRequestContext()
+                    {
+                        TargetPlayers = targets
+                    }, PlayerContext.Player.RoundContext);
+                    //出过牌，继续检查是否有需要出的牌
+                    shouldContinue = true;
+                }
+            }
+
+            return shouldContinue;
+        }
+
+        private async Task<bool> PlaySha(IEnumerable<CardBase> cards)
+        {
+            bool shouldContinue = false;
+            if (!Sha.CanBePlayed(PlayerContext))
+            {
+                return shouldContinue;
+            }
+
+            //有杀的情况，直接出杀
+            foreach (var card in cards)
+            {
+                if ((card is Sha sha && sha.CanBePlayed()) || (card is ChangedCard csha && csha.CanBePlayed()))
+                {
+                    var targets = await card.SelectTargets(new SelectTargetRequest()
+                    {
+                        MinCount = 1,
+                        MaxCount = 1
+                    });
+                    if (targets != null && targets.Any())
+                    {
+                        await card.PlayCard(new CardRequestContext()
+                        {
+                            TargetPlayers = targets
+                        }, PlayerContext.Player.RoundContext);
+                        //出过牌，继续检查是否有需要出的牌
+                        shouldContinue = true;
+                    }
+                }
+            }
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 处理能够增强杀的技能
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> TriggerSkill_EnhanceSha()
+        {
+            var shouldContinue = false;
+            #region 处理能够增强杀的技能
+
+            //目前只有三板斧需要增强
+            var enhanceSkills = PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IEnhanceSha).OrderByDescending(s => (s as IEnhanceSha).EnhancePriority());
+            foreach (var enhanceSkill in enhanceSkills)
+            {
+                var request = new CardRequestContext();
+                var shuouldTrigger =
+                    await OnRequestTriggerSkill(enhanceSkill.GetButtonInfo().SkillType, request);
+                if (shuouldTrigger)
+                {
+                    var response = new CardResponseContext();
+                    await enhanceSkill.GetButtonInfo().OnClick(request, PlayerContext.Player.RoundContext, response);
+                    //如三板斧没有被cancel，（比如要发动三板斧，却没有杀的情况）
+                    if (response.ResponseResult != ResponseResultEnum.Cancelled)
+                    {
+                        shouldContinue = true;
+                    }
+                }
+            }
+
+            #endregion
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 处理所有的主动技能
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> TriggerSkills()
+        {
+            var shouldContinue = false;
+
+            var skills = PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled());
+            foreach (var enhanceSkill in skills)
+            {
+                var request = new CardRequestContext();
+                var shuouldTrigger =
+                    await OnRequestTriggerSkill(enhanceSkill.GetButtonInfo().SkillType, request);
+                if (shuouldTrigger)
+                {
+                    var response = new CardResponseContext();
+                    await enhanceSkill.GetButtonInfo().OnClick(request, PlayerContext.Player.RoundContext, response);
+                    //如果发动过技能，则需要继续下一次判断
+                    if (response.ResponseResult != ResponseResultEnum.Cancelled)
+                    {
+                        shouldContinue = true;
+                    }
+                }
+            }
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 打出杀
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlaySha()
+        {
+            bool shouldContinue = false;
+            if (!Sha.CanBePlayed(PlayerContext))
+            {
+                return shouldContinue;
+            }
+
+
+            //有杀的情况，直接出杀
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Sha);
+            if (!shouldContinue)
+            {
+                shouldContinue = await PlaySha(cards);
+            }
+
+            //没杀的情况，看是否有技能能够提供杀
+            if (!Sha.CanBePlayed(PlayerContext))
+            {
+                return shouldContinue;
+            }
+            //找到所有可以提供杀的且能够启用的技能
+            var shaSkills = PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideSha());
+            foreach (var shaSkill in shaSkills)
+            {
+                if (!Sha.CanBePlayed(PlayerContext))
+                {
+                    break;
+                }
+
+                var request = new CardRequestContext();
+                var shuouldTrigger =
+                    await OnRequestTriggerSkill(shaSkill.GetButtonInfo().SkillType, request);
+                if (shuouldTrigger)
+                {
+                    var response = new CardResponseContext();
+                    await shaSkill.GetButtonInfo().OnClick(request, PlayerContext.Player.RoundContext, response);
+                    if (response.ResponseResult == ResponseResultEnum.Success || response.Cards?.Any() == true)
+                    {
+                        //触发了技能，返回一张ChangedCard或者MutedCard.
+                        var virtualCard = response.Cards.First();
+                        if (!shouldContinue)
+                        {
+                            shouldContinue = await PlaySha(new List<CardBase>() { virtualCard });
+                        }
+                    }
+                }
+            }
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 打出休养生息
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> EquipWeapon<T>() where T : EquipmentBase
+        {
+            bool shouldContinue = true;
+
+            var card = PlayerContext.Player.CardsInHand.FirstOrDefault(p => p is T);
+            if (card != null)
+            {
+                await card.PlayCard(new CardRequestContext(), PlayerContext.Player.RoundContext);
+                //出过牌，继续检查是否有需要出的牌
+                shouldContinue = false;
+            }
+
+            return shouldContinue;
+        }
+
+        /// <summary>
+        /// 是否应该装备虎符。
+        ///     如果当前攻击范围内（没有武器情况下）有敌人且手中有杀或者能够提供杀，则装备
+        /// </summary>
+        /// <returns></returns>
+        private bool ShouldEquipHufu()
+        {
+            var shaDistance = PlayerContext.Player.RoundContext.AttackDynamicFactor.ShaDistance +
+                              PlayerContext.Player.RoundContext.AttackDynamicFactor.TannangDistance;
+            var nextPlayer = PlayerContext.Player.GetNextPlayer(false);
+            bool shouldEquip = false;
+            //检查没有武器情况下攻击范围内是否有敌人
+            while (nextPlayer != null && nextPlayer != PlayerContext.Player)
+            {
+                if (!nextPlayer.IsSameGroup(PlayerContext.Player))
+                {
+                    var dist = PlayerContext.GameLevel.GetPlayersDistance(PlayerContext.Player, nextPlayer);
+                    if (dist.ShaDistanceWithouWeapon <= shaDistance)
+                    {
+                        shouldEquip = true;
+                        break;
+                    }
+                }
+
+                nextPlayer = nextPlayer.GetNextPlayer(false);
+            }
+            //检查是否有杀或者技能能提供杀
+            if (shouldEquip)
+            {
+                shouldEquip = PlayerContext.Player.CardsInHand?.Any(p => p is Sha) == true;
+                if (shouldEquip)
+                {
+                    return shouldEquip;
+                }
+                var shaSkills = PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideSha());
+                shouldEquip = shaSkills.Any();
+            }
+            return shouldEquip;
+        }
+
+        /// <summary>
+        /// 打出武器牌
+        /// </summary>
+        /// <returns>返回是否要继续下个回合检查出牌</returns>
+        private async Task<bool> PlayWeaponCards()
+        {
+            bool shouldContinueEquipWeapon = true;
+            //装备武器逻辑：默认装备攻击距离最远的装备和进攻马
+
+            //武器牌：
+            //  博浪锤
+            if (shouldContinueEquipWeapon)
+            {
+                shouldContinueEquipWeapon = await EquipWeapon<Bolangchui>();
+            }
+            //  霸王弓
+            if (shouldContinueEquipWeapon)
+            {
+                shouldContinueEquipWeapon = await EquipWeapon<Bawanggong>();
+            }
+            //  狼牙棒
+            if (shouldContinueEquipWeapon)
+            {
+                shouldContinueEquipWeapon = await EquipWeapon<Langyabang>();
+            }
+            //  芦叶枪
+            if (shouldContinueEquipWeapon)
+            {
+                shouldContinueEquipWeapon = await EquipWeapon<Luyeqiang>();
+            }
+            //  盘龙棍
+            if (shouldContinueEquipWeapon)
+            {
+                shouldContinueEquipWeapon = await EquipWeapon<Panlonggun>();
+            }
+            //  龙鳞刀
+            if (shouldContinueEquipWeapon)
+            {
+                shouldContinueEquipWeapon = await EquipWeapon<Luyeqiang>();
+            }
+
+            //  鱼肠剑
+            if (shouldContinueEquipWeapon)
+            {
+                shouldContinueEquipWeapon = await EquipWeapon<Yuchangjian>();
+            }
+            //  进攻马
+            if (shouldContinueEquipWeapon)
+            {
+                shouldContinueEquipWeapon = await EquipWeapon<Jingongma>();
+            }
+            //  虎符
+            if (shouldContinueEquipWeapon && ShouldEquipHufu())
+            {
+                //是否要装备虎符？
+                shouldContinueEquipWeapon = await EquipWeapon<Hufu>();
+            }
+
+            //防具：
+            //  防御马
+            //  玉如意 
+            await EquipWeapon<Yuruyi>();
+            await EquipWeapon<Fangyuma>();
+
+            return !shouldContinueEquipWeapon;
+        }
+
+        #endregion
+
         #region 芦叶枪技能
         /// <summary>
         /// 是否要发动龙鳞刀.
@@ -470,6 +1121,7 @@ namespace Logic.ActionManger
 
 
         #endregion
+
         #region 玉如意技能
         /// <summary>
         /// 是否要发动玉如意.

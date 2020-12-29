@@ -13,6 +13,17 @@ namespace Logic.Model.Enums
         Xiadan,
         Hongyan,
         Gongxin,
+        /// <summary>
+        /// 无中生有
+        /// </summary>
+        Wuzhongshengyou,
+        /// <summary>
+        /// 借刀杀人
+        /// </summary>
+        Jiedaosharen,
+        /// <summary>
+        /// 釜底抽薪
+        /// </summary>
         Fudichouxin,
         /// <summary>
         /// 五谷丰登

@@ -121,7 +121,11 @@ namespace Logic.Model.Cards.BaseCards
         {
             if (CanBePlayed())
             {
-                await SelectTargets();
+                await SelectTargets(new SelectTargetRequest()
+                {
+                    MinCount = 1,
+                    MaxCount = PlayerContext.Player.RoundContext.AttackDynamicFactor.MaxShaTargetCount,
+                });
             }
         }
 

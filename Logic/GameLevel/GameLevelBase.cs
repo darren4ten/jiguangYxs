@@ -141,7 +141,7 @@ namespace Logic.GameLevel
             Player nextPlayer = src.GetNextPlayer(false);
             while (nextPlayer.PlayerId != targetPlayerId && dist.ShaDistance < 10)
             {
-                dist.ShaDistance++;
+                dist.ShaDistanceWithouWeapon++;
                 dist.TannangDistance++;
                 nextPlayer = nextPlayer.GetNextPlayer(false);
             }
@@ -149,7 +149,8 @@ namespace Logic.GameLevel
             //获取探囊距离
             dist.TannangDistance =
                 dist.TannangDistance + target.GetCurrentPlayerHero().BaseAttackFactor.DefenseDistance;
-
+            dist.ShaDistance = dist.ShaDistanceWithouWeapon - src.GetCurrentPlayerHero().GetAttackFactor().ShaDistance;
+            dist.ShaDistance = dist.ShaDistance <= 1 ? 1 : dist.ShaDistance;
             return dist;
         }
 
@@ -188,11 +189,7 @@ namespace Logic.GameLevel
         {
             foreach (var card in cards)
             {
-                if (card is CombinedCard)
-                {
-                    ThrowBaseCardsToStack((card as CombinedCard).OriginalCards);
-                }
-                else if (card is ChangedCard)
+                if (card is ChangedCard)
                 {
                     ThrowBaseCardsToStack((card as ChangedCard).OriginalCards);
                 }

@@ -70,8 +70,9 @@ namespace Logic.Cards
         /// <summary>
         /// 选择目标,主要用来当前用户需要UI操作选择目标
         /// </summary>
+        /// <param name="request"></param>
         /// <returns></returns>
-        public virtual async Task<List<Player>> SelectTargets()
+        public virtual async Task<List<Player>> SelectTargets(SelectTargetRequest request)
         {
             return await Task.FromResult(default(List<Player>));
         }

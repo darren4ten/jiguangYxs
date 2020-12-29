@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Logic.Cards;
+using Logic.GameLevel;
+using Logic.Model.Enums;
 
 namespace Logic.Model.Cards.MutedCards
 {
@@ -11,6 +13,7 @@ namespace Logic.Model.Cards.MutedCards
     /// </summary>
     public class ChangedCard : CardBase
     {
+        public CardChangeTypeEnum CardChangeType { get; set; }
         /// <summary>
         /// 原始牌
         /// </summary>
@@ -38,6 +41,18 @@ namespace Logic.Model.Cards.MutedCards
         public override async Task Popup()
         {
             await TargetCard.Popup();
+        }
+
+        /// <summary>
+        /// 使用TargetCard的PlayCard方法。
+        /// TODO：检查OnAfter/OnBefore这些方法是否会都使用target的。
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <param name="roundContext"></param>
+        /// <returns></returns>
+        public override async Task<CardResponseContext> PlayCard(CardRequestContext cardRequestContext, RoundContext roundContext)
+        {
+            return await TargetCard.PlayCard(cardRequestContext, roundContext);
         }
     }
 }

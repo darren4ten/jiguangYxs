@@ -11,7 +11,7 @@ namespace Logic.Model.Skill.Zhudong
     /// <summary>
     /// 三板斧
     /// </summary>
-    public class SanbanfuSkill : ZhudongSkillBase, ISkillButton
+    public class SanbanfuSkill : ZhudongSkillBase, ISkillButton, IEnhanceSha
     {
 
         public SanbanfuSkill()
@@ -63,6 +63,11 @@ namespace Logic.Model.Skill.Zhudong
                     await Task.FromResult(0);
                 }
             };
+        }
+
+        public int EnhancePriority()
+        {
+            return 100;
         }
     }
 }
