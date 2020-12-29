@@ -190,6 +190,12 @@ namespace Logic.GameLevel
         /// </summary>
         public bool ShouldSkipEnterMyRound { get; set; }
 
+
+        /// <summary>
+        /// 需要跳过结束回合
+        /// </summary>
+        public bool ShouldSkipExitMyRound { get; set; }
+
         /// <summary>
         /// 需要跳过出牌
         /// </summary>

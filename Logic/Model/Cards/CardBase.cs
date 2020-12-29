@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Logic.GameLevel;
 using Logic.Model.Cards.BaseCards;
+using Logic.Model.Player;
 
 namespace Logic.Cards
 {
@@ -70,9 +71,9 @@ namespace Logic.Cards
         /// 选择目标,主要用来当前用户需要UI操作选择目标
         /// </summary>
         /// <returns></returns>
-        public virtual async Task SelectTargets()
+        public virtual async Task<List<Player>> SelectTargets()
         {
-            await Task.FromResult("");
+            return await Task.FromResult(default(List<Player>));
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Logic.Cards;
+using Logic.GameLevel;
 using Logic.Model.Enums;
 
 namespace Logic.Model.Mark
@@ -14,6 +15,8 @@ namespace Logic.Model.Mark
         public MarkTypeEnum MarkType { get; set; }
 
         public List<CardBase> Cards { get; set; }
+
+        public PlayerContext PlayerContext { get; set; }
 
         public MarkStatusEnum MarkStatus { get; set; }
 

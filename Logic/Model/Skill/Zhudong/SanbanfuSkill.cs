@@ -57,7 +57,11 @@ namespace Logic.Model.Skill.Zhudong
                 Text = "三板斧",
                 Description = "",
                 SkillType = SkillType(),
-                OnClick = async (context, roundContext, responseContext) => { await Task.FromResult(0); }
+                OnClick = async (context, roundContext, responseContext) =>
+                {
+                    //触发时，提示选择一个攻击目标
+                    await Task.FromResult(0);
+                }
             };
         }
     }

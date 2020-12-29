@@ -12,6 +12,13 @@ namespace Logic.Event
 {
     public class EventBus
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <param name="roundContext"></param>
+        /// <param name="cardResponseContext"></param>
+        /// <returns>返回是否成功执行</returns>
         public delegate Task RoundEventHandler(CardRequestContext cardRequestContext, RoundContext roundContext,
             CardResponseContext cardResponseContext);
 

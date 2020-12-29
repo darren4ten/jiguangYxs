@@ -207,29 +207,121 @@ namespace Logic.ActionManger
             return response;
         }
 
+        /// <summary>
+        /// 请求开始我的回合，主要用于询问是否需要发动技能（如：醉酒）
+        /// </summary>
+        /// <returns></returns>
         public override async Task OnRequestStartStep_EnterMyRound()
         {
-            throw new NotImplementedException();
+            await Task.FromResult(0);
         }
 
+        /// <summary>
+        /// 请求处理摸牌阶段逻辑。
+        /// </summary>
+        /// <returns></returns>
         public override async Task OnRequestStartStep_PickCard()
         {
-            throw new NotImplementedException();
+            await Task.FromResult(0);
         }
 
+        /// <summary>
+        /// 请求处理出牌阶段逻辑。
+        /// </summary>
+        /// <returns></returns>
         public override async Task OnRequestStartStep_PlayCard()
         {
-            throw new NotImplementedException();
+            //是否有釜底抽薪？
+            //是否有借刀杀人？
+            //是否有探囊取物？
+            //是否有无中生有？
+            //是否有药？
+            //是否要画地为牢？
+            //是否万箭齐发？
+            //是否烽火狼烟？
+            //是否决斗？
+            //是否无中生有？
+            //是否休养生息？
+            //是否装备武器（虎符。。。）？
+            //是否有能杀？（有杀或者技能能提供杀）如果能杀，是否需要发动增强杀的技能（如三板斧，侠胆、傲剑、武穆）
+            //是否要触发技能（毒计、傲剑、侠胆）？
+            //是否手捧雷？
+
+
+            //出牌逻辑
+            //0. 如果有可以触发的技能，则询问是福触发技能
+            //  如果可以触发,则触发。要解决的问题是，TODO:如果某个技能按钮在触发多次（成功或者失败多次）之后依然可以触发该如何解决？
+            //      正常的如：毒计-手中有多张红牌，该技能能触发多次；装有虎符情况下傲剑、武穆都可以多次触发
+            //      非正常的如：三板斧显示可以触发但攻击范围内没有敌人。同理如此情况下的傲剑、武穆。
+
+            var shouldStopSkill = false;
+            while (!shouldStopSkill)
+            {
+                var avSkillBtns = PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled());
+                bool isSuccessTrigger = false;
+                foreach (var skillButton in avSkillBtns)
+                {
+                    var shouldTrigger = await PlayerContext.Player.ActionManager.OnRequestTriggerSkill(skillButton.GetButtonInfo().SkillType, null);
+                    if (shouldTrigger)
+                    {
+                        var response = new CardResponseContext();
+                        await skillButton.GetButtonInfo().OnClick(new CardRequestContext(), PlayerContext.Player.RoundContext, response);
+                        isSuccessTrigger = response.ResponseResult == ResponseResultEnum.Failed ||
+                                           response.ResponseResult == ResponseResultEnum.Success ||
+                                           response.ResponseResult == ResponseResultEnum.Cancelled;
+                    }
+                }
+             
+                shouldStopSkill = !isSuccessTrigger;
+            }
+
+
+            //将手中的牌按照优先级降序排列，循环检查每张牌是否可以被主动打出，
+            //1. 如果可以被主动打出，则请求选择目标（如果目标可选，则出牌，如果没有可选目标，则跳过）
+            //2. 如果本次循环有出过牌，则继续下次循环，否则结束出牌。
+            var shouldStop = false;
+            while (!shouldStop)
+            {
+                var orderedCards = PlayerContext.Player.CardsInHand.OrderByDescending(c => GetCardAiValue(c).Priority).ToList();
+                bool playedCard = false;
+                orderedCards.ForEach(async o =>
+                {
+                    if (o.CanBePlayed())
+                    {
+                        var targets = await o.SelectTargets();
+                        if (targets == null || !targets.Any())
+                        {
+                            return;
+                        }
+                        await o.PlayCard(new CardRequestContext()
+                        {
+                            TargetPlayers = targets
+                        }, PlayerContext.Player.RoundContext);
+                        playedCard = true;
+                    }
+                });
+                shouldStop = !playedCard;
+            }
+            await Task.FromResult(0);
         }
 
+        /// <summary>
+        /// 请求处理弃牌阶段逻辑
+        /// </summary>
+        /// <returns></returns>
         public override async Task OnRequestStartStep_ThrowCard()
         {
-            throw new NotImplementedException();
+            //弃牌阶段，按照价值、优先级升序取弃牌数张牌弃掉
+            await Task.FromResult(0);
         }
 
+        /// <summary>
+        /// 请求处理结束出牌逻辑。
+        /// </summary>
+        /// <returns></returns>
         public override async Task OnRequestStartStep_ExitMyRound()
         {
-            throw new NotImplementedException();
+            await Task.FromResult(0);
         }
 
         public override async Task<SelectedTargetsResponse> OnRequestSelectTargets(SelectedTargetsRequest request)

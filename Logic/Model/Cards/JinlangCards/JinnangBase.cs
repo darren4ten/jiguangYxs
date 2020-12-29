@@ -32,7 +32,7 @@ namespace Logic.Model.Cards.JinlangCards
             Console.WriteLine($"[{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}的【{cardRequestContext.SrcPlayer.GetCurrentPlayerHero().Hero.DisplayName}】]{(cardRequestContext.TargetPlayers?.Any() == true ? "向" + string.Join(",", cardRequestContext.TargetPlayers.Select(p => p.PlayerName + p.PlayerId)) : "")}打出“{this.DisplayName}”");
 
             CardResponseContext responseContext = new CardResponseContext();
-         
+
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, cardRequestContext, responseContext, roundContext);
             if (!(this is IDelayJinnang))
             {
@@ -82,7 +82,7 @@ namespace Logic.Model.Cards.JinlangCards
         /// 询问无懈可击
         /// </summary>
         /// <returns></returns>
-        protected async Task<CardResponseContext> GroupRequestWuxiekeji(CardRequestContext request, CardResponseContext response, RoundContext roundContext)
+        public static async Task<CardResponseContext> GroupRequestWuxiekeji(CardRequestContext request, CardResponseContext response, RoundContext roundContext)
         {
             //TODO:循环询问无懈可击
             return await Task.FromResult(response);

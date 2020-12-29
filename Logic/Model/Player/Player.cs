@@ -249,7 +249,32 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_EnterMyRound()
         {
+            RoundContext = new RoundContext()
+            {
+                AttackDynamicFactor = AttackDynamicFactor.GetDefaultDeltaAttackFactor(),
+                SkillTriggerTimesDic = new Dictionary<SkillTypeEnum, int>()
+            };
+            var request = new CardRequestContext();
+            var response = new CardResponseContext();
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeEnterMyRound, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.BeforeEnterMyRound, request, response, RoundContext);
+
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.EnterMyRound, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.EnterMyRound, request, response, RoundContext);
+            var combinedRequest = GetCombindCardRequestContext(request, GetCurrentPlayerHero().BaseAttackFactor, RoundContext);
+            if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipEnterMyRound)
+            {
+                Console.WriteLine($"跳过进入我的回合阶段。");
+                return;
+            }
+
             await ActionManager.OnRequestStartStep_EnterMyRound();
+
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterEnterMyRound, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.AfterEnterMyRound, request, response, RoundContext);
         }
 
         /// <summary>
@@ -258,7 +283,27 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_PickCard()
         {
+            var request = new CardRequestContext();
+            var response = new CardResponseContext();
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforePickCard, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.BeforePickCard, request, response, RoundContext);
+
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.PickCard, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.PickCard, request, response, RoundContext);
+            var combinedRequest = GetCombindCardRequestContext(request, GetCurrentPlayerHero().BaseAttackFactor, RoundContext);
+            if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipPickCard)
+            {
+                Console.WriteLine($"跳过摸牌。");
+                return;
+            }
+
             await ActionManager.OnRequestStartStep_PickCard();
+
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterPickCard, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.AfterPickCard, request, response, RoundContext);
         }
 
         /// <summary>
@@ -267,7 +312,28 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_PlayCard()
         {
+            var request = new CardRequestContext();
+            var response = new CardResponseContext();
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, request, response, RoundContext);
+
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.ZhudongPlayCard, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.ZhudongPlayCard, request, response, RoundContext);
+            var combinedRequest = GetCombindCardRequestContext(request, GetCurrentPlayerHero().BaseAttackFactor, RoundContext);
+            if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipPlayCard)
+            {
+                Console.WriteLine($"跳过出牌。");
+                return;
+            }
+
             await ActionManager.OnRequestStartStep_PlayCard();
+
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterZhudongPlayCard, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.AfterZhudongPlayCard, request, response, RoundContext);
+
         }
 
         /// <summary>
@@ -276,7 +342,27 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_ThrowCard()
         {
+            var request = new CardRequestContext();
+            var response = new CardResponseContext();
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeThrowCard, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.BeforeThrowCard, request, response, RoundContext);
+
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.ThrowCard, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.ThrowCard, request, response, RoundContext);
+            var combinedRequest = GetCombindCardRequestContext(request, GetCurrentPlayerHero().BaseAttackFactor, RoundContext);
+            if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipThrowCard)
+            {
+                Console.WriteLine($"跳过弃牌。");
+                return;
+            }
+
             await ActionManager.OnRequestStartStep_ThrowCard();
+
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterThrowCard, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.AfterThrowCard, request, response, RoundContext);
         }
 
         /// <summary>
@@ -285,7 +371,26 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_ExitMyRound()
         {
+            var request = new CardRequestContext();
+            var response = new CardResponseContext();
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeEndRound, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.BeforeEndRound, request, response, RoundContext);
+
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.EndRound, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.EndRound, request, response, RoundContext);
+            var combinedRequest = GetCombindCardRequestContext(request, GetCurrentPlayerHero().BaseAttackFactor, RoundContext);
+            if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipExitMyRound)
+            {
+                Console.WriteLine($"跳过结束出牌阶段。");
+                return;
+            }
+
             await ActionManager.OnRequestStartStep_ExitMyRound();
+            await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterEndRound, _gameLevel.HostPlayerHero,
+                request, RoundContext, response);
+            await TriggerEvent(EventTypeEnum.AfterEndRound, request, response, RoundContext);
         }
 
         /// <summary>
@@ -471,6 +576,11 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task AddMark(MarkBase mark)
         {
+            mark.PlayerContext = new PlayerContext()
+            {
+                GameLevel = _gameLevel,
+                Player = this
+            };
             var existMark = Marks.FirstOrDefault(p => p.MarkTypeId.Equals(mark.MarkTypeId));
             if (existMark != null && existMark.IsSummable())
             {

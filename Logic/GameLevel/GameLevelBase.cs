@@ -39,6 +39,11 @@ namespace Logic.GameLevel
         public List<Player> Players { get; private set; }
 
         /// <summary>
+        /// 游戏主持人
+        /// </summary>
+        public PlayerHero HostPlayerHero { get; private set; }
+
+        /// <summary>
         /// 当前的Player
         /// </summary>
         public Player CurrentPlayer { get; set; }
@@ -260,11 +265,11 @@ namespace Logic.GameLevel
         /// </summary>
         public virtual void SetupGameStatusCheck()
         {
-            var hostPlayer = new PlayerHero(1, new Xiangyu(), null, null);
+            HostPlayerHero = new PlayerHero(1, new Xiangyu(), null, null);
             //监控玩家死亡事件。
             //如果有玩家死亡，则判断是否该方队友是否全部阵亡，如果是，则代表该方玩家游戏结束
             //目前简单处理，我方（当前Player）死亡或者对方全部死亡，则游戏结束.todo:各方是否游戏结束要看具体的条件
-            this.GlobalEventBus.ListenEvent(Guid.NewGuid(), hostPlayer, EventTypeEnum.AfterDying, (
+            this.GlobalEventBus.ListenEvent(Guid.NewGuid(), HostPlayerHero, EventTypeEnum.AfterDying, (
                 async (context, roundContext, responseContext) =>
                 {
                     //我方死亡，则游戏结束
