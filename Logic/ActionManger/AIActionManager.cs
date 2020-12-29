@@ -416,9 +416,9 @@ namespace Logic.ActionManger
             var cards = PlayerContext.Player.CardsInHand.OrderBy(c => GetCardAiValue(c).Value);
             var attackFactor = PlayerContext.Player.MergeAttackDynamicFactor(PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor,
                   PlayerContext.Player.RoundContext.AttackDynamicFactor);
-            if (cards.Count() > attackFactor.MaxCardCountInHand)
+            var throwCount = cards.Count() - Math.Max(attackFactor.MaxCardCountInHand, PlayerContext.Player.GetCurrentPlayerHero().CurrentLife);
+            if (throwCount > 0)
             {
-                var throwCount = cards.Count() - attackFactor.MaxCardCountInHand;
                 var cardsToThrow = cards.Take(throwCount).ToList();
 
                 //将该牌置入TempCardDesk
