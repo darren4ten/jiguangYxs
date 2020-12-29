@@ -62,7 +62,7 @@ namespace Logic.Model.Player
         /// <summary>
         /// 手牌
         /// </summary>
-        public List<CardBase> CardsInHand { get; set; }
+        public List<CardBase> CardsInHand { get; private set; }
 
         /// <summary>
         /// 玩家当前的装备牌
@@ -312,6 +312,11 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_PlayCard()
         {
+            if (RoundContext.AttackDynamicFactor.SkipOption.ShouldSkipPlayCard)
+            {
+                Console.WriteLine($"跳过出牌。");
+                return;
+            }
             var request = new CardRequestContext();
             var response = new CardResponseContext();
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, _gameLevel.HostPlayerHero,
@@ -391,6 +396,17 @@ namespace Logic.Model.Player
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterEndRound, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.AfterEndRound, request, response, RoundContext);
+        }
+
+        /// <summary>
+        /// 将牌放入玩家手中
+        /// </summary>
+        /// <param name="cards"></param>
+        /// <returns></returns>
+        public async Task AddCardsInHand(IEnumerable<CardBase> cards)
+        {
+            CardsInHand.AddRange(cards.Select(c => c.AttachPlayerContext(new PlayerContext() { GameLevel = _gameLevel, Player = this })));
+            await Task.FromResult(0);
         }
 
         /// <summary>
@@ -538,9 +554,9 @@ namespace Logic.Model.Player
         /// 摸牌
         /// </summary>
         /// <param name="count"></param>
-        public void PickCard(int count)
+        public async Task PickCard(int count)
         {
-            CardsInHand.AddRange(_gameLevel.PickNextCardsFromStack(count).Select(c => c.AttachPlayerContext(new PlayerContext() { GameLevel = _gameLevel, Player = this })));
+            await AddCardsInHand(_gameLevel.PickNextCardsFromStack(count));
         }
 
         /// <summary>

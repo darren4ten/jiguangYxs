@@ -52,25 +52,17 @@ namespace Tests.Card
             {
                 PlayerId = 2
             };
-            var player3 = new Player(gameLevel1, new AiActionManager(), new List<PlayerHero>() { star3Zhuyuanzhang1 })
-            {
-                PlayerId = 3
-            };
-
-            gameLevel1.OnLoad(player1, new List<Player>() { player2, player3 });
+            gameLevel1.OnLoad(player1, new List<Player>() { player1, player2 });
             player1.Init();
             player2.Init();
-            player3.Init();
             var cardToPlay = new Huadiweilao().AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });
             player1.CardsInHand.Add(cardToPlay);
             player1.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
             player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
             player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
-            player3.CardsInHand.Add(new Shan().AttachPlayerContext(new PlayerContext() { Player = player3, GameLevel = gameLevel1 }));
-            player3.CardsInHand.Add(new Shoupenglei().AttachPlayerContext(new PlayerContext() { Player = player3, GameLevel = gameLevel1 }));
 
+            Assert.AreEqual(6, player1.GetCurrentPlayerHero().CurrentLife);
             Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(6, player3.GetCurrentPlayerHero().CurrentLife);
 
             var response = await cardToPlay.PlayCard(new CardRequestContext()
             {
@@ -81,11 +73,8 @@ namespace Tests.Card
             }, player1.RoundContext);
 
             await player2.StartStep_EnterMyRound();
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(5, player3.GetCurrentPlayerHero().CurrentLife);
             Assert.AreEqual(1, player1.CardsInHand.Count);
             Assert.AreEqual(1, player2.CardsInHand.Count);
-            Assert.AreEqual(2, player3.CardsInHand.Count);
         }
     }
 }

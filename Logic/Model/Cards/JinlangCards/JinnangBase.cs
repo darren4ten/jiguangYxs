@@ -73,8 +73,8 @@ namespace Logic.Model.Cards.JinlangCards
             }
 
             //将该牌置入TempCardDesk
-            PlayerContext.Player.CardsInHand.Remove(this);
-            PlayerContext.GameLevel.TempCardDesk.Add(this);
+            await PlayerContext.Player.RemoveCardsInHand(new List<CardBase>() { this }, cardRequestContext,
+                responseContext, roundContext);
             return r3;
         }
 

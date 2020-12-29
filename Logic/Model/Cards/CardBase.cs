@@ -123,8 +123,8 @@ namespace Logic.Cards
             if (r1.ResponseResult != ResponseResultEnum.UnKnown) return r1;
 
             //将该牌置入TempCardDesk
-            PlayerContext.Player.CardsInHand.Remove(this);
-            PlayerContext.GameLevel.TempCardDesk.Add(this);
+            await PlayerContext.Player.RemoveCardsInHand(new List<CardBase>() { this }, cardRequestContext, responseContext,
+                 roundContext);
 
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.ZhudongPlayCard, cardRequestContext, responseContext, roundContext);
             var r2 = await OnPlayCard(cardRequestContext, r1, roundContext);
