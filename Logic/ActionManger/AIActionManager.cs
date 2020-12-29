@@ -413,6 +413,20 @@ namespace Logic.ActionManger
         public override async Task OnRequestStartStep_ThrowCard()
         {
             //弃牌阶段，按照价值、优先级升序取弃牌数张牌弃掉
+            var cards = PlayerContext.Player.CardsInHand.OrderBy(c => GetCardAiValue(c).Value);
+            var attackFactor = PlayerContext.Player.MergeAttackDynamicFactor(PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor,
+                  PlayerContext.Player.RoundContext.AttackDynamicFactor);
+            if (cards.Count() > attackFactor.MaxCardCountInHand)
+            {
+                var throwCount = cards.Count() - attackFactor.MaxCardCountInHand;
+                var cardsToThrow = cards.Take(throwCount).ToList();
+
+                //将该牌置入TempCardDesk
+                await PlayerContext.Player.RemoveCardsInHand(cardsToThrow, null, null, null);
+            }
+            //回合结束时将临时牌堆中的牌放入弃牌堆.
+            PlayerContext.GameLevel.ThrowCardToStack(PlayerContext.GameLevel.TempCardDesk.Cards);
+            PlayerContext.GameLevel.TempCardDesk.Clear();
             await Task.FromResult(0);
         }
 
@@ -422,6 +436,7 @@ namespace Logic.ActionManger
         /// <returns></returns>
         public override async Task OnRequestStartStep_ExitMyRound()
         {
+
             await Task.FromResult(0);
         }
 

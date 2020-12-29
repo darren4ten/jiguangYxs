@@ -16,6 +16,11 @@ namespace Logic.GameLevel
         /// </summary>
         public List<CardBase> Cards { get; private set; } = new List<CardBase>();
 
+        public void Clear()
+        {
+            Cards = new List<CardBase>();
+        }
+
         public void Add(CardBase card)
         {
             if (card != null)

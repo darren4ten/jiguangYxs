@@ -322,6 +322,8 @@ namespace Logic.GameLevel
         {
             foreach (var cardBase in cards)
             {
+                //先清除掉上下文
+                cardBase.AttachPlayerContext(null);
                 UnUsedCardStack.Enqueue(cardBase);
             }
         }

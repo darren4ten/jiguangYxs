@@ -413,6 +413,7 @@ namespace Logic.Model.Player
             cards.ForEach(c =>
             {
                 CardsInHand.Remove(c);
+                _gameLevel.TempCardDesk.Add(c);
             });
             await TriggerEvent(EventTypeEnum.AfterLoseCardsInHand, request, response, roundContext);
         }
@@ -539,7 +540,7 @@ namespace Logic.Model.Player
         /// <param name="count"></param>
         public void PickCard(int count)
         {
-            CardsInHand.AddRange(_gameLevel.PickNextCardsFromStack(count));
+            CardsInHand.AddRange(_gameLevel.PickNextCardsFromStack(count).Select(c => c.AttachPlayerContext(new PlayerContext() { GameLevel = _gameLevel, Player = this })));
         }
 
         /// <summary>
@@ -805,7 +806,13 @@ namespace Logic.Model.Player
             return newAttackDynamicFactor;
         }
 
-        private AttackDynamicFactor MergeAttackDynamicFactor(AttackDynamicFactor src, AttackDynamicFactor target)
+        /// <summary>
+        /// 将两个AttackDynamicFactor参数合并
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public AttackDynamicFactor MergeAttackDynamicFactor(AttackDynamicFactor src, AttackDynamicFactor target)
         {
             if (src == null)
             {
