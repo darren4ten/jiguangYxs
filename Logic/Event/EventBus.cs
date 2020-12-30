@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Logic.GameLevel;
 using Logic.Model.Enums;
@@ -12,6 +13,14 @@ namespace Logic.Event
 {
     public class EventBus
     {
+        private static readonly EventBus _instance = new EventBus();
+        public static EventBus GetInstance() => _instance;
+        private object triggerLock = new object();
+        private EventBus()
+        {
+
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -37,6 +46,7 @@ namespace Logic.Event
             {
                 if (eventDic.ContainsKey(player))
                 {
+                    semaphoreSlim.Wait();
                     eventDic[player] = eventDic[player] ?? new EventData() { EventHandlers = new List<EventHandler>() };
                     eventDic[player].EventHandlers = eventDic[player].EventHandlers ?? new List<EventHandler>();
                     eventDic[player].EventHandlers.Add(new EventHandler()
@@ -44,9 +54,11 @@ namespace Logic.Event
                         EventId = evtId,
                         RoundEventHandler = handler
                     });
+                    semaphoreSlim.Release();
                 }
                 else
                 {
+                    semaphoreSlim.Wait();
                     eventDic.TryAdd(player, new EventData()
                     {
                         EventHandlers = new List<EventHandler>()
@@ -58,6 +70,7 @@ namespace Logic.Event
                             }
                         }
                     });
+                    semaphoreSlim.Release();
                 }
             }
             else
@@ -100,6 +113,7 @@ namespace Logic.Event
             }
         }
 
+        static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
         /// <summary>
         /// 触发事件.Todo:listen event和trigger events都必须指定player
         /// </summary>
@@ -141,8 +155,7 @@ namespace Logic.Event
             }
 
             var actDic = eventDic[playerHero];
-
-            foreach (var eventHandler in actDic.EventHandlers)
+            foreach (var eventHandler in actDic.EventHandlers.ToList())
             {
                 if (eventHandler == null)
                 {
@@ -151,6 +164,7 @@ namespace Logic.Event
                 await eventHandler.RoundEventHandler(cardRequestContext, roundContext, cardResponseContext);
                 Console.WriteLine($"TriggerEvent:{eventHandler?.EventId}.");
             }
+
         }
 
         /// <summary>

@@ -31,6 +31,9 @@ namespace Logic.Model.Cards.MutedCards
             this.DisplayName = targetCard.DisplayName;
             Description = targetCard.Description;
             FlowerKind = targetCard.FlowerKind;
+            this.Number = targetCard.Number;
+            this.CardId = targetCard.CardId;
+            this.Image = targetCard.Image;
         }
 
         public override bool CanBePlayed()

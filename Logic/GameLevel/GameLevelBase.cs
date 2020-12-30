@@ -21,7 +21,7 @@ namespace Logic.GameLevel
         /// <summary>
         /// 当前关卡全局事件管理器
         /// </summary>
-        public readonly EventBus GlobalEventBus = new EventBus();
+        public readonly EventBus GlobalEventBus = EventBus.GetInstance();
 
         public int LevelId { get; set; }
 
@@ -110,8 +110,8 @@ namespace Logic.GameLevel
         public virtual async Task<CardResponseContext> Panding(CardRequestContext request, Expression<Func<CardBase, bool>> expression)
         {
             var response = new CardResponseContext() { Cards = new List<CardBase>() };
-            await GlobalEventBus.TriggerEvent(EventTypeEnum.BeforePanding, null, request, null, response);
-            await GlobalEventBus.TriggerEvent(EventTypeEnum.Panding, null, request, null, response);
+            await GlobalEventBus.TriggerEvent(EventTypeEnum.BeforePanding, HostPlayerHero, request, null, response);
+            await GlobalEventBus.TriggerEvent(EventTypeEnum.Panding, HostPlayerHero, request, null, response);
             if (response.ResponseResult == ResponseResultEnum.Cancelled)
             {
                 return response;
@@ -123,7 +123,11 @@ namespace Logic.GameLevel
             {
                 response.ResponseResult = ResponseResultEnum.Success;
             }
-            await GlobalEventBus.TriggerEvent(EventTypeEnum.AfterPanding, null, request, null, response);
+            else
+            {
+                response.ResponseResult = ResponseResultEnum.Failed;
+            }
+            await GlobalEventBus.TriggerEvent(EventTypeEnum.AfterPanding, HostPlayerHero, request, null, response);
             return response;
         }
 
@@ -234,11 +238,7 @@ namespace Logic.GameLevel
             var curPlayer = GetXianshouPlayer();
             while (!IsGameOver)
             {
-                await curPlayer.StartStep_EnterMyRound();
-                await curPlayer.StartStep_PickCard();
-                await curPlayer.StartStep_PlayCard();
-                await curPlayer.StartStep_ThrowCard();
-                await curPlayer.StartStep_ExitMyRound();
+                await curPlayer.StartMyRound();
                 curPlayer = curPlayer.GetNextPlayer(false);
             }
 

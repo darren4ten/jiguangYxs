@@ -243,6 +243,15 @@ namespace Logic.Model.Player
             _gameLevel.GlobalEventBus.ListenEvent(eventId, this.GetCurrentPlayerHero(), eventType, handler);
         }
 
+        public async Task StartMyRound()
+        {
+            await StartStep_EnterMyRound();
+            await StartStep_PickCard();
+            await StartStep_PlayCard();
+            await StartStep_ThrowCard();
+            await StartStep_ExitMyRound();
+        }
+
         /// <summary>
         /// 开始进入我的回合
         /// </summary>
@@ -300,7 +309,7 @@ namespace Logic.Model.Player
             }
 
             await ActionManager.OnRequestStartStep_PickCard();
-
+            await PickCard(combinedRequest.AttackDynamicFactor.PickCardCountPerRound);
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterPickCard, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.AfterPickCard, request, response, RoundContext);
@@ -406,6 +415,17 @@ namespace Logic.Model.Player
         public async Task AddCardsInHand(IEnumerable<CardBase> cards)
         {
             CardsInHand.AddRange(cards.Select(c => c.AttachPlayerContext(new PlayerContext() { GameLevel = _gameLevel, Player = this })));
+            await Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// 将牌放入玩家手中
+        /// </summary>
+        /// <param name="card"></param>
+        /// <returns></returns>
+        public async Task AddCardInHand(CardBase card)
+        {
+            CardsInHand.Add(card.AttachPlayerContext(new PlayerContext() { GameLevel = _gameLevel, Player = this }));
             await Task.FromResult(0);
         }
 

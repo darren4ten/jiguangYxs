@@ -569,7 +569,7 @@ namespace Logic.ActionManger
         private async Task<bool> PlayFudichouxin()
         {
             bool shouldContinue = false;
-            var fudichouxins = PlayerContext.Player.CardsInHand.Where(p => p is Fudichouxin);
+            var fudichouxins = PlayerContext.Player.CardsInHand.Where(p => p is Fudichouxin).ToList();
             foreach (var fudichouxin in fudichouxins)
             {
                 var targets = await fudichouxin.SelectTargets(new SelectTargetRequest()
@@ -599,7 +599,7 @@ namespace Logic.ActionManger
         private async Task<bool> PlayJiedaosharen()
         {
             bool shouldContinue = false;
-            var jiedaosharens = PlayerContext.Player.CardsInHand.Where(p => p is Jiedaosharen);
+            var jiedaosharens = PlayerContext.Player.CardsInHand.Where(p => p is Jiedaosharen).ToList();
             foreach (var jiedaosharen in jiedaosharens)
             {
                 var targets = await jiedaosharen.SelectTargets(new SelectTargetRequest()
@@ -628,7 +628,7 @@ namespace Logic.ActionManger
         private async Task<bool> PlayTannangquwu()
         {
             bool shouldContinue = false;
-            var tannangquwus = PlayerContext.Player.CardsInHand.Where(p => p is Tannangquwu);
+            var tannangquwus = PlayerContext.Player.CardsInHand.Where(p => p is Tannangquwu).ToList();
             foreach (var tannangquwu in tannangquwus)
             {
                 var targets = await tannangquwu.SelectTargets(new SelectTargetRequest()
@@ -658,7 +658,7 @@ namespace Logic.ActionManger
         private async Task<bool> PlayWuzhongshengyou()
         {
             bool shouldContinue = false;
-            var wuzhongshengyous = PlayerContext.Player.CardsInHand.Where(p => p is Wuzhongshengyou);
+            var wuzhongshengyous = PlayerContext.Player.CardsInHand.Where(p => p is Wuzhongshengyou).ToList();
             foreach (var wuzhongshengyou in wuzhongshengyous)
             {
                 await wuzhongshengyou.PlayCard(new CardRequestContext()
@@ -679,7 +679,7 @@ namespace Logic.ActionManger
         private async Task<bool> PlayYao()
         {
             bool shouldContinue = false;
-            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Yao);
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Yao).ToList();
             foreach (var card in cards)
             {
                 await card.PlayCard(new CardRequestContext()
@@ -703,7 +703,7 @@ namespace Logic.ActionManger
         private async Task<bool> PlayHuadiweilao()
         {
             bool shouldContinue = false;
-            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Yao);
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Yao).ToList();
             foreach (var card in cards)
             {
                 var targets = await card.SelectTargets(new SelectTargetRequest()
@@ -732,7 +732,7 @@ namespace Logic.ActionManger
         private async Task<bool> PlayWanjianqifa()
         {
             bool shouldContinue = false;
-            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Wanjianqifa);
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Wanjianqifa).ToList();
             foreach (var card in cards)
             {
                 await card.PlayCard(new CardRequestContext(), PlayerContext.Player.RoundContext);
@@ -750,7 +750,7 @@ namespace Logic.ActionManger
         private async Task<bool> PlayFenghuolangyan()
         {
             bool shouldContinue = false;
-            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Fenghuolangyan);
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Fenghuolangyan).ToList();
             foreach (var card in cards)
             {
                 await card.PlayCard(new CardRequestContext(), PlayerContext.Player.RoundContext);
@@ -768,7 +768,7 @@ namespace Logic.ActionManger
         private async Task<bool> PlayXiuyangshengxi()
         {
             bool shouldContinue = false;
-            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Xiuyangshengxi);
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Xiuyangshengxi).ToList();
             foreach (var card in cards)
             {
                 if (card.CanBePlayed())
@@ -789,7 +789,7 @@ namespace Logic.ActionManger
         private async Task<bool> PlayShoupenglei()
         {
             bool shouldContinue = false;
-            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Shoupenglei);
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Shoupenglei).ToList();
             foreach (var card in cards)
             {
                 if (card.CanBePlayed())
@@ -810,7 +810,7 @@ namespace Logic.ActionManger
         private async Task<bool> PlayJuedou()
         {
             bool shouldContinue = false;
-            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Juedou);
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Juedou).ToList();
             foreach (var card in cards)
             {
                 var targets = await card.SelectTargets(new SelectTargetRequest()
@@ -941,7 +941,7 @@ namespace Logic.ActionManger
 
 
             //有杀的情况，直接出杀
-            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Sha);
+            var cards = PlayerContext.Player.CardsInHand.Where(p => p is Sha).ToList();
             if (!shouldContinue)
             {
                 shouldContinue = await PlaySha(cards);

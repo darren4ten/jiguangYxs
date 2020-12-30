@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Logic.ActionManger;
+using Logic.Cards;
 using Logic.Enums;
 using Logic.GameLevel;
 using Logic.GameLevel.Levels;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.JinlangCards;
+using Logic.Model.Cards.MutedCards;
 using Logic.Model.Enums;
 using Logic.Model.Hero.Presizdent;
 using Logic.Model.Player;
@@ -55,14 +58,13 @@ namespace Tests.Card
             gameLevel1.OnLoad(player1, new List<Player>() { player1, player2 });
             player1.Init();
             player2.Init();
-            var cardToPlay = new Huadiweilao().AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });
-            player1.CardsInHand.Add(cardToPlay);
-            player1.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
-            player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
-            player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
+            var cardToPlay = new Huadiweilao();
+            await player1.AddCardInHand(cardToPlay);
+            await player1.AddCardInHand(new Sha());
+            await player2.AddCardsInHand(new List<CardBase>() { new Sha(), new Shan() });
 
-            Assert.AreEqual(6, player1.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(2, player1.CardsInHand.Count);
+            Assert.AreEqual(2, player2.CardsInHand.Count);
 
             var response = await cardToPlay.PlayCard(new CardRequestContext()
             {
@@ -72,9 +74,28 @@ namespace Tests.Card
                 }
             }, player1.RoundContext);
 
-            await player2.StartStep_EnterMyRound();
+            gameLevel1.GlobalEventBus.ListenEvent(Guid.NewGuid(), gameLevel1.HostPlayerHero, EventTypeEnum.AfterPanding, (
+                async (context, roundContext, responseContext) =>
+                {
+                    responseContext.ResponseResult = ResponseResultEnum.Failed;
+                    var c = responseContext.Cards.FirstOrDefault();
+                    if (c?.FlowerKind == FlowerKindEnum.Hongtao)
+                    {
+                        responseContext.Cards = new List<CardBase>()
+                        {
+                            new ChangedCard(new List<CardBase>(){c}, c)
+                            {
+                                CardChangeType = CardChangeTypeEnum.Changed,
+                                FlowerKind=FlowerKindEnum.Meihua
+                            }
+                        };
+                        responseContext.Message = "测试强制改变判定结果为梅花。";
+                        Console.WriteLine($"测试强制改变判定结果为梅花，原始花色为：{c.FlowerKind}");
+                    }
+                }));
+            await player2.StartMyRound();
             Assert.AreEqual(1, player1.CardsInHand.Count);
-            Assert.AreEqual(1, player2.CardsInHand.Count);
+            Assert.AreEqual(4, player2.CardsInHand.Count);
         }
     }
 }

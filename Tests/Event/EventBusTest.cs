@@ -17,7 +17,7 @@ namespace Tests.Event
 {
     public class EventBusTest
     {
-        EventBus eventBus = new EventBus();
+        EventBus eventBus = EventBus.GetInstance();
 
         [Test]
         public void Test()
