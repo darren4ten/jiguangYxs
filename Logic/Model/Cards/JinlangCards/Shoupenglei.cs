@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Logic.Cards;
+using Logic.GameLevel;
 using Logic.Model.Cards.Interface;
+using Logic.Model.Enums;
+using Logic.Model.Mark;
 
 namespace Logic.Model.Cards.JinlangCards
 {
@@ -19,12 +24,26 @@ namespace Logic.Model.Cards.JinlangCards
 
         public override bool CanBePlayed()
         {
-            return true;
+            return base.CanBePlayed() && PlayerContext.Player.Marks?.Any(m => m is ShoupengleiMark) != true;
         }
 
         public override Task Popup()
         {
             throw new NotImplementedException();
+        }
+
+        protected override async Task<CardResponseContext> OnAfterPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
+            RoundContext roundContext)
+        {
+            //打出牌之后，创建手捧雷标记并将标记转移给目标
+            var mark = new ShoupengleiMark()
+            {
+                MarkType = MarkTypeEnum.Card,
+                MarkStatus = MarkStatusEnum.NotStarted,
+                Cards = new List<CardBase>() { this },
+            };
+            await PlayerContext.Player.AddMark(mark);
+            return cardResponseContext;
         }
     }
 }

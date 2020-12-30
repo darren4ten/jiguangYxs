@@ -117,6 +117,7 @@ namespace Logic.GameLevel
                     WanjianqifaDamage = 1,
                     GongxinDamage = 1,
                     DujiDamage = 1,
+                    ShoupengleiDamage = 3
                 },
                 SkipOption = new SkipOption()
                 {
@@ -253,5 +254,10 @@ namespace Logic.GameLevel
         /// 毒计的伤害
         /// </summary>
         public int DujiDamage { get; set; }
+
+        /// <summary>
+        /// 手捧雷的伤害
+        /// </summary>
+        public int ShoupengleiDamage { get; set; }
     }
 }

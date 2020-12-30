@@ -169,6 +169,8 @@ namespace Logic.Model.Player
                 request.CardResponseContext);
 
             var actDamage = 0;
+            var mergedRequest = PlayerContext.Player.GetCombindCardRequestContext(request.CardRequestContext,
+                  PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor, request.SrcRoundContext);
             //杀
             if (request.DamageType == DamageTypeEnum.Sha)
             {
@@ -204,6 +206,11 @@ namespace Logic.Model.Player
             else if (request.DamageType == DamageTypeEnum.Gongxin)
             {
                 actDamage = request.CardRequestContext.AttackDynamicFactor.Damage.GongxinDamage;
+            }
+            //手捧雷
+            else if (request.DamageType == DamageTypeEnum.Shoupenglei)
+            {
+                actDamage = mergedRequest.AttackDynamicFactor.Damage.ShoupengleiDamage;
             }
             //未知攻击
             else

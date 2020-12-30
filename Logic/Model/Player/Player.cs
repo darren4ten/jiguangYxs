@@ -280,7 +280,7 @@ namespace Logic.Model.Player
             }
 
             await ActionManager.OnRequestStartStep_EnterMyRound();
-
+            Console.WriteLine($"进入{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的回合阶段。");
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterEnterMyRound, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.AfterEnterMyRound, request, response, RoundContext);
@@ -630,6 +630,7 @@ namespace Logic.Model.Player
                 return;
             }
             Marks.Add(mark);
+            mark.Init();
             await Task.FromResult("");
         }
 
@@ -656,6 +657,8 @@ namespace Logic.Model.Player
                 {
                     Marks.RemoveAll(p => p.MarkTypeId.Equals(mark.MarkTypeId));
                 }
+                mark.Reset();
+                mark.PlayerContext = null;
             }
             else
             {
@@ -890,6 +893,7 @@ namespace Logic.Model.Player
             result.Damage.GongxinDamage += src.Damage?.GongxinDamage ?? 0;
             result.Damage.JuedouDamage += src.Damage?.JuedouDamage ?? 0;
             result.Damage.WanjianqifaDamage += src.Damage?.WanjianqifaDamage ?? 0;
+            result.Damage.ShoupengleiDamage += src.Damage?.ShoupengleiDamage ?? 0;
 
             result.MaxLife += target.MaxLife;
             result.DefenseDistance += target.DefenseDistance;
@@ -920,6 +924,7 @@ namespace Logic.Model.Player
             result.Damage.GongxinDamage += target.Damage?.GongxinDamage ?? 0;
             result.Damage.JuedouDamage += target.Damage?.JuedouDamage ?? 0;
             result.Damage.WanjianqifaDamage += target.Damage?.WanjianqifaDamage ?? 0;
+            result.Damage.ShoupengleiDamage += target.Damage?.ShoupengleiDamage ?? 0;
             return result;
         }
 

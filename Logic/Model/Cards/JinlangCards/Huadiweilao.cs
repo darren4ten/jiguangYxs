@@ -49,8 +49,6 @@ namespace Logic.Model.Cards.JinlangCards
                 Cards = new List<CardBase>() { this },
             };
             await target.AddMark(mark);
-            //启动标记事件
-            mark.Init();
             return cardResponseContext;
         }
     }

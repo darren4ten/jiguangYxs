@@ -51,14 +51,14 @@ namespace Logic.Model.Mark
                     {
                         responseContext.ResponseResult = Enums.ResponseResultEnum.Success;
                         responseContext.Message = $"画地为牢判定不生效。";
-                        Console.WriteLine($"【画地为牢】判定不生效，判定牌为【{pandingResponse.Cards.FirstOrDefault()}】" );
+                        Console.WriteLine($"【画地为牢】判定不生效，判定牌为【{pandingResponse.Cards.FirstOrDefault()}】");
                         //移除标记
                         await RemoveMark();
                         return;
                     }
                     else if (pandingResponse.ResponseResult == Enums.ResponseResultEnum.Failed)
                     {
-                        Console.WriteLine($"【画地为牢】判定生效，判定牌为【{pandingResponse.Cards.FirstOrDefault()}】" );
+                        Console.WriteLine($"【画地为牢】判定生效，判定牌为【{pandingResponse.Cards.FirstOrDefault()}】");
                         //判定生效，画地为牢
                         PlayerContext.Player.RoundContext.AttackDynamicFactor.SkipOption.ShouldSkipPlayCard = true;
                         //移除标记
@@ -79,8 +79,6 @@ namespace Logic.Model.Mark
         private async Task RemoveMark()
         {
             await PlayerContext.Player.RemoveMark(this);
-            Reset();
-            PlayerContext = null;
         }
     }
 }

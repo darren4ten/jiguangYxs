@@ -10,7 +10,7 @@ namespace Logic.Model.Mark
         /// <summary>
         /// 标记ID，用来确认标记类型
         /// </summary>
-        public string MarkTypeId { get; private set; }
+        public string MarkTypeId { get; protected set; }
 
         public MarkTypeEnum MarkType { get; set; }
 
