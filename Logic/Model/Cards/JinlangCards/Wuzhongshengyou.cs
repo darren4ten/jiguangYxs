@@ -38,7 +38,7 @@ namespace Logic.Model.Cards.JinlangCards
             CardResponseContext cardResponseContext, RoundContext roundContext)
         {
             var combined = PlayerContext.Player.GetCombindCardRequestContext(cardRequestContext, PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor, roundContext);
-            PlayerContext.Player.PickCard(combined.AttackDynamicFactor.WuzhongshengyouCardCount);
+            await PlayerContext.Player.PickCard(combined.AttackDynamicFactor.WuzhongshengyouCardCount);
             return await Task.FromResult(cardResponseContext);
         }
     }

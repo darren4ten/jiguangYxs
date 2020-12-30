@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Logic.ActionManger;
+using Logic.Cards;
 using Logic.Enums;
 using Logic.GameLevel;
 using Logic.GameLevel.Levels;
@@ -11,6 +12,7 @@ using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Cards.EquipmentCards.Defense;
 using Logic.Model.Cards.JinlangCards;
+using Logic.Model.Cards.MutedCards;
 using Logic.Model.Enums;
 using Logic.Model.Hero.Officer;
 using Logic.Model.Hero.Presizdent;
@@ -69,13 +71,27 @@ namespace Tests.Card
             Assert.AreEqual(2, player1.CardsInHand.Count);
             Assert.AreEqual(1, player2.CardsInHand.Count);
             //强制修改判定结果让判定成功已测试结果
-            gameLevel1.GlobalEventBus.ListenEvent(Guid.NewGuid(), player2.GetCurrentPlayerHero(), EventTypeEnum.AfterPanding, (
+            gameLevel1.GlobalEventBus.ListenEvent(Guid.NewGuid(), gameLevel1.HostPlayerHero, EventTypeEnum.AfterPanding, (
                 async (context, roundContext, responseContext) =>
                 {
                     if (responseContext.ResponseResult != ResponseResultEnum.Success)
                     {
                         responseContext.ResponseResult = ResponseResultEnum.Success;
                         responseContext.Message = "测试判定必然成功";
+                        var c = responseContext.Cards.FirstOrDefault();
+                        if (c?.Color != CardColorEnum.Red)
+                        {
+                            responseContext.Cards = new List<CardBase>()
+                            {
+                                new ChangedCard(new List<CardBase>(){c}, c)
+                                {
+                                    CardChangeType = CardChangeTypeEnum.Changed,
+                                    FlowerKind=FlowerKindEnum.Hongtao
+                                }
+                            };
+                            responseContext.Message = "测试强制改变判定结果为红桃。";
+                            Console.WriteLine($"测试强制改变判定结果为红桃，原始花色为：{c.FlowerKind}");
+                        }
                     }
                     await Task.FromResult(0);
                 }));
