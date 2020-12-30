@@ -170,32 +170,32 @@ namespace Logic.Model.Player
 
             var actDamage = 0;
             var mergedRequest = PlayerContext.Player.GetCombindCardRequestContext(request.CardRequestContext,
-                  PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor, request.SrcRoundContext);
+                  null, request.SrcRoundContext);
             //杀
             if (request.DamageType == DamageTypeEnum.Sha)
             {
-                actDamage = (request.CardRequestContext.AttackDynamicFactor?.Damage?.ShaDamage ?? 0);
+                actDamage = (mergedRequest.AttackDynamicFactor?.Damage?.ShaDamage ?? 0);
             }
             //决斗
             else if (request.DamageType == DamageTypeEnum.Juedou)
             {
-                actDamage = (request.CardRequestContext.AttackDynamicFactor?.Damage?.JuedouDamage ?? 0);
+                actDamage = (mergedRequest.AttackDynamicFactor?.Damage?.JuedouDamage ?? 0);
             }
             //烽火狼烟
             else if (request.DamageType == DamageTypeEnum.Fenghuolangyan)
             {
-                actDamage = (request.CardRequestContext.AttackDynamicFactor?.Damage?.FenghuolangyanDamage ?? 0);
+                actDamage = (mergedRequest.AttackDynamicFactor?.Damage?.FenghuolangyanDamage ?? 0);
             }
             //万箭齐发
             else if (request.DamageType == DamageTypeEnum.Wanjianqifa)
             {
-                actDamage = (request.CardRequestContext.AttackDynamicFactor?.Damage?.WanjianqifaDamage ?? 0);
+                actDamage = (mergedRequest.AttackDynamicFactor?.Damage?.WanjianqifaDamage ?? 0);
             }
             //三板斧
             else if (request.DamageType == DamageTypeEnum.Sanbanfu)
             {
                 //三板斧，判断杀的response到底是几个闪,如果没闪则伤害+1。
-                var shaDamage = (request.CardRequestContext.AttackDynamicFactor?.Damage?.ShaDamage ?? 0);
+                var shaDamage = (mergedRequest.AttackDynamicFactor?.Damage?.ShaDamage ?? 0);
                 if (request.CardResponseContext.Cards.Count == 0)
                 {
                     shaDamage++;
@@ -205,7 +205,7 @@ namespace Logic.Model.Player
             //攻心
             else if (request.DamageType == DamageTypeEnum.Gongxin)
             {
-                actDamage = request.CardRequestContext.AttackDynamicFactor.Damage.GongxinDamage;
+                actDamage = mergedRequest.AttackDynamicFactor.Damage.GongxinDamage;
             }
             //手捧雷
             else if (request.DamageType == DamageTypeEnum.Shoupenglei)

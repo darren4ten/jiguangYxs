@@ -59,9 +59,7 @@ namespace Logic.Model.Cards.JinlangCards
             cardRequestContext.AttackDynamicFactor = cardRequestContext.AttackDynamicFactor ??
                                                      AttackDynamicFactor.GetDefaultDeltaAttackFactor();
             var actResponse = await ExecuteAction(cardRequestContext, cardResponseContext, roundContext);
-            var combindeRequest = PlayerContext.Player.GetCombindCardRequestContext(cardRequestContext,
-                PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor, roundContext);
-            return await LoseLife(combindeRequest, await CheckResponse(cardRequestContext, actResponse, roundContext), roundContext);
+            return await LoseLife(cardRequestContext, await CheckResponse(cardRequestContext, actResponse, roundContext), roundContext);
         }
 
         protected override async Task<CardResponseContext> OnAfterPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,

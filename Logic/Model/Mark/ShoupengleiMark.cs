@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Logic.Enums;
+using Logic.GameLevel;
 using Logic.Model.Cards.JinlangCards;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
@@ -29,6 +30,8 @@ namespace Logic.Model.Mark
             PlayerContext.GameLevel.GlobalEventBus.ListenEvent(eventId, PlayerContext.Player.GetCurrentPlayerHero(), EventTypeEnum.BeforeEnterMyRound, (
                 async (context, roundContext, responseContext) =>
                 {
+                    context.AttackDynamicFactor = context.AttackDynamicFactor ??
+                                                             AttackDynamicFactor.GetDefaultBaseAttackFactor();
                     //检查是否有无懈可击
                     var wxResponse = await JinnangBase.GroupRequestWuxiekeji(context, responseContext, roundContext);
                     if (wxResponse.ResponseResult == Enums.ResponseResultEnum.Wuxiekeji)

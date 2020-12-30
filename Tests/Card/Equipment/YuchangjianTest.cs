@@ -74,7 +74,7 @@ namespace Tests.Card
             Assert.AreEqual(1, player2.CardsInHand.Count);
 
             //强制修改判定结果让判定成功已测试结果
-            gameLevel1.GlobalEventBus.ListenEvent(Guid.NewGuid(), player2.GetCurrentPlayerHero(), EventTypeEnum.AfterPanding, (
+            gameLevel1.GlobalEventBus.ListenEvent(Guid.NewGuid(), gameLevel1.HostPlayerHero, EventTypeEnum.AfterPanding, (
                 async (context, roundContext, responseContext) =>
                 {
                     if (responseContext.ResponseResult != ResponseResultEnum.Success)

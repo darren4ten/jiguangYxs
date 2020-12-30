@@ -60,10 +60,15 @@ namespace Logic.Model.Cards.BaseCards
             roundContext.ShaedTimes++;
             foreach (var p in cardRequestContext.TargetPlayers)
             {
-                var combindeRequest = PlayerContext.Player.GetCombindCardRequestContext(cardRequestContext,
-                     PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor, roundContext);
+                var combindeRequest = new CardRequestContext()
+                {
+                    AttackType = cardRequestContext.AttackType,
+                    FlowerKind = cardRequestContext.FlowerKind,
+                    AttackDynamicFactor = cardRequestContext.AttackDynamicFactor,
+                    SrcPlayer = cardRequestContext.SrcPlayer,
+                    TargetPlayers = new List<Player.Player>() { p }
+                };
                 //当前杀的目标只有一个
-                combindeRequest.TargetPlayers = new List<Player.Player>() { p };
                 //检查是否杀不可以闪避，如果是，则跳过
                 if (cardRequestContext.AttackDynamicFactor != null && (cardRequestContext.AttackDynamicFactor.IsShaNotAvoidable || roundContext.AttackDynamicFactor.IsShaNotAvoidable))
                 {

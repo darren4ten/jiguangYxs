@@ -37,7 +37,7 @@ namespace Logic.Model.Cards.JinlangCards
         protected async Task<CardResponseContext> ExecuteAction(CardRequestContext cardRequestContext,
             CardResponseContext cardResponseContext, RoundContext roundContext)
         {
-            var combined = PlayerContext.Player.GetCombindCardRequestContext(cardRequestContext, PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor, roundContext);
+            var combined = PlayerContext.Player.GetCombindCardRequestContext(cardRequestContext, null, roundContext);
             await PlayerContext.Player.PickCard(combined.AttackDynamicFactor.WuzhongshengyouCardCount);
             return await Task.FromResult(cardResponseContext);
         }

@@ -826,7 +826,10 @@ namespace Logic.Model.Player
                         FenghuolangyanDamage = factor.Damage.FenghuolangyanDamage,
                         JuedouDamage = factor.Damage.JuedouDamage,
                         ShaDamage = factor.Damage.ShaDamage,
-                        WanjianqifaDamage = factor.Damage.WanjianqifaDamage
+                        WanjianqifaDamage = factor.Damage.WanjianqifaDamage,
+                        ShoupengleiDamage = factor.Damage.ShoupengleiDamage,
+                        GongxinDamage = factor.Damage.GongxinDamage,
+                        DujiDamage = factor.Damage.DujiDamage
                     },
                     Recover = new Recover()
                     {
