@@ -494,6 +494,15 @@ namespace Logic.Model.Player
                 Console.WriteLine($"装备{equipmentCard.DisplayName}失败，不是装备。");
                 return;
             }
+
+            if (equipmentCard.PlayerContext == null)
+            {
+                equipmentCard.AttachPlayerContext(new PlayerContext()
+                {
+                    Player = this,
+                    GameLevel = _gameLevel
+                });
+            }
             var hasEquiped = await EquipEquipment<IWeapon>(equipmentCard);
             if (hasEquiped)
             {

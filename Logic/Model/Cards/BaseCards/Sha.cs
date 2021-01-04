@@ -56,8 +56,10 @@ namespace Logic.Model.Cards.BaseCards
         /// <returns></returns>
         protected async Task<CardResponseContext> ExecuteAction(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
-
-            roundContext.ShaedTimes++;
+            if (roundContext != null)
+            {
+                roundContext.ShaedTimes++;
+            }
             foreach (var p in cardRequestContext.TargetPlayers)
             {
                 var combindeRequest = new CardRequestContext()
@@ -70,7 +72,7 @@ namespace Logic.Model.Cards.BaseCards
                 };
                 //当前杀的目标只有一个
                 //检查是否杀不可以闪避，如果是，则跳过
-                if (cardRequestContext.AttackDynamicFactor != null && (cardRequestContext.AttackDynamicFactor.IsShaNotAvoidable || roundContext.AttackDynamicFactor.IsShaNotAvoidable))
+                if (cardRequestContext.AttackDynamicFactor != null && (cardRequestContext.AttackDynamicFactor.IsShaNotAvoidable || (roundContext != null && roundContext.AttackDynamicFactor.IsShaNotAvoidable)))
                 {
                     cardResponseContext.Cards = null;
                     cardResponseContext.ResponseResult = ResponseResultEnum.Failed;

@@ -6,6 +6,7 @@ namespace Logic.Model.Enums
 {
     public enum AttackTypeEnum
     {
+        None,
         Sha,
         Juedou,
         Fenghuolangyan,

@@ -83,6 +83,11 @@ namespace Logic.ActionManger
                     RequestId = cardRequestContext.RequestId
                 });
             }
+            else if (cardRequestContext.AttackType == AttackTypeEnum.Jiedaosharen)
+            {
+                //处理借刀杀人
+                return await GetResponseCardByCardType_Jiedaosharen(cardRequestContext);
+            }
 
             //处理其他类型
             if (cardRequestContext.CardScope == CardScopeEnum.Any)
@@ -1294,6 +1299,35 @@ namespace Logic.ActionManger
             {
                 Cards = cardsToPlay.ToList(),
             };
+        }
+
+        /// <summary>
+        /// 处理借刀杀人
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <returns></returns>
+        private async Task<CardResponseContext> GetResponseCardByCardType_Jiedaosharen(CardRequestContext cardRequestContext)
+        {
+            //什么情况不出杀？
+            //没有杀或者目标是队友且队友的血量低于3
+            var target = cardRequestContext.TargetPlayers.First();
+            if (target.IsSameGroup(PlayerContext.Player) && target.GetCurrentPlayerHero().CurrentLife <= 3)
+            {
+                return new CardResponseContext()
+                {
+                    ResponseResult = ResponseResultEnum.Failed,
+                    Cards = new List<CardBase>()
+                };
+            }
+
+            var res = await OnRequestResponseCard(new CardRequestContext()
+            {
+                MaxCardCountToPlay = 1,
+                MinCardCountToPlay = 1,
+                AttackType = AttackTypeEnum.None,
+                RequestCard = new Sha()
+            });
+            return res;
         }
 
         /// <summary>
