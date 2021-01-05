@@ -1371,7 +1371,7 @@ namespace Logic.ActionManger
                 }
                 else if (cardRequestContext.AttackType == AttackTypeEnum.Juedou)
                 {
-                    if (cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player) && cardRequestContext.SrcPlayer.GetCurrentPlayerHero().CurrentLife < 3)
+                    if ((cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player) && cardRequestContext.SrcPlayer.GetCurrentPlayerHero().CurrentLife < 3) || cardRequestContext.SrcPlayer == PlayerContext.Player)
                     {
                         return await GetResponseCardByCardType_Any(cardRequestContext);
                     }
@@ -1451,6 +1451,7 @@ namespace Logic.ActionManger
         /// <returns></returns>
         private async Task<CardResponseContext> GetResponseCardByCardType_Any(CardRequestContext cardRequestContext)
         {
+            await Task.Delay(new Random().Next(10, 100));
             var sumCards = new List<CardBase>(PlayerContext.Player.CardsInHand);
             //返回一张价值最低的牌
             if (PlayerContext.Player.EquipmentSet != null)

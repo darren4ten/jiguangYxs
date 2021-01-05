@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Logic.Cards;
+using Logic.GameLevel;
+using Logic.Model.Cards.BaseCards;
+using Logic.Model.Enums;
 
 namespace Logic.Model.Cards.JinlangCards
 {
@@ -19,6 +22,14 @@ namespace Logic.Model.Cards.JinlangCards
         public override Task Popup()
         {
             throw new NotImplementedException();
+        }
+
+        protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
+            RoundContext roundContext)
+        {
+            cardRequestContext.AttackType = AttackTypeEnum.Wuxiekeji;
+            return await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeBeRequestedWuxiekeji, cardRequestContext,
+                cardResponseContext, roundContext);
         }
     }
 }

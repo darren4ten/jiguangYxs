@@ -53,18 +53,29 @@ namespace Logic.Model.Cards.JinlangCards
                     roundContext);
             }
 
-            var r2 = await OnPlayCard(cardRequestContext, r1, roundContext);
             //检查是否有无懈可击
             if (!(this is IDelayJinnang || this is IGroupJinnang))
             {
-                var wxResponse = await GroupRequestWuxiekeji(cardRequestContext, responseContext, roundContext);
+                var wxResponse = await GroupRequestWuxiekeji(new CardRequestContext()
+                {
+                    SrcPlayer = cardRequestContext.TargetPlayers?.FirstOrDefault() ?? cardRequestContext.SrcPlayer,
+                    AttackType = cardRequestContext.AttackType,
+                    SrcCards = cardRequestContext.SrcCards,
+                    AttackDynamicFactor = cardRequestContext.AttackDynamicFactor
+                }, responseContext, roundContext);
                 if (wxResponse.ResponseResult == Enums.ResponseResultEnum.Wuxiekeji)
                 {
                     wxResponse.ResponseResult = Enums.ResponseResultEnum.Success;
                     wxResponse.Message = "请求被无懈可击";
+                    //将该牌置入TempCardDesk
+                    await PlayerContext.Player.RemoveCardsInHand(new List<CardBase>() { this }, cardRequestContext,
+                        responseContext, roundContext);
                     return wxResponse;
                 }
             }
+
+            var r2 = await OnPlayCard(cardRequestContext, r1, roundContext);
+
 
             var r3 = await OnAfterPlayCard(cardRequestContext, r2, roundContext);
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterZhudongPlayCard, cardRequestContext, responseContext, roundContext);

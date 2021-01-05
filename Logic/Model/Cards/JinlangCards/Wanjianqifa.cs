@@ -66,6 +66,7 @@ namespace Logic.Model.Cards.JinlangCards
                 //检查是否有无懈可击
                 var wxResponse = await GroupRequestWuxiekeji(new CardRequestContext()
                 {
+                    AttackType = AttackTypeEnum.Wanjianqifa,
                     SrcPlayer = currentPlayer
                 }, cardResponseContext, roundContext);
                 if (wxResponse.ResponseResult == Enums.ResponseResultEnum.Wuxiekeji)

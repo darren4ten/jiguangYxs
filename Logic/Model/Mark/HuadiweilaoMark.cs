@@ -33,6 +33,7 @@ namespace Logic.Model.Mark
                     var wxResponse = await PlayerContext.GameLevel.GroupRequestWithConfirm(new CardRequestContext()
                     {
                         RequestCard = new Wuxiekeji(),
+                        AttackType = AttackTypeEnum.Huadiweilao,
                         SrcPlayer = PlayerContext.Player,
                         TargetPlayers = PlayerContext.GameLevel.Players
                     });
