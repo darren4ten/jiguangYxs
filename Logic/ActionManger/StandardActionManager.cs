@@ -21,6 +21,11 @@ namespace Logic.ActionManger
             throw new NotImplementedException();
         }
 
+        public override async Task<CardResponseContext> OnParallelRequestResponseCard(CardRequestContext cardRequestContext)
+        {
+            throw new NotImplementedException();
+        }
+
         public override async Task<CardResponseContext> OnRequestResponseCard(CardRequestContext cardRequestContext)
         {
             throw new NotImplementedException();

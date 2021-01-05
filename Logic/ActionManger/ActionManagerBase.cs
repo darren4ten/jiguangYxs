@@ -29,6 +29,9 @@ namespace Logic.ActionManger
         public abstract Task<bool> OnRequestTriggerSkill(SkillTypeEnum skillType,
             CardRequestContext cardRequestContext);
 
+        public abstract Task<CardResponseContext> OnParallelRequestResponseCard(CardRequestContext cardRequestContext);
+      
+
         public abstract Task<CardResponseContext> OnRequestResponseCard(CardRequestContext cardRequestContext);
 
         public abstract Task<CardResponseContext> OnRequestPickCardFromPanel(PickCardFromPanelRequest request);

@@ -62,6 +62,7 @@ namespace Logic.Cards
         public string Image { get; set; }
 
         public PlayerContext PlayerContext { get; private set; }
+
         /// <summary>
         /// 是否能够被主动打出
         /// </summary>

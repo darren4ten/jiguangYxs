@@ -84,10 +84,17 @@ namespace Logic.Model.Cards.JinlangCards
         /// 询问无懈可击
         /// </summary>
         /// <returns></returns>
-        public static async Task<CardResponseContext> GroupRequestWuxiekeji(CardRequestContext request, CardResponseContext response, RoundContext roundContext)
+        public async Task<CardResponseContext> GroupRequestWuxiekeji(CardRequestContext request, CardResponseContext response, RoundContext roundContext)
         {
-            //TODO:循环询问无懈可击
-            return await Task.FromResult(response);
+            return await PlayerContext.GameLevel.GroupRequestWithConfirm(new CardRequestContext()
+            {
+                RequestCard = new Wuxiekeji(),
+                SrcPlayer = request.SrcPlayer,
+                MinCardCountToPlay = 1,
+                MaxCardCountToPlay = 1,
+                AttackType = request.AttackType,
+                TargetPlayers = PlayerContext.GameLevel.Players.Where(p => p.IsAlive()).ToList()
+            });
         }
     }
 }

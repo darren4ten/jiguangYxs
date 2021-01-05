@@ -64,12 +64,16 @@ namespace Logic.Model.Cards.JinlangCards
                     TargetPlayers = new List<Player.Player>() { currentPlayer }
                 };
                 //检查是否有无懈可击
-                var wxResponse = await GroupRequestWuxiekeji(req, cardResponseContext, roundContext);
+                var wxResponse = await GroupRequestWuxiekeji(new CardRequestContext()
+                {
+                    SrcPlayer = currentPlayer
+                }, cardResponseContext, roundContext);
                 if (wxResponse.ResponseResult == Enums.ResponseResultEnum.Wuxiekeji)
                 {
                     wxResponse.ResponseResult = Enums.ResponseResultEnum.Success;
                     wxResponse.Message = "请求被无懈可击";
-                    return wxResponse;
+                    currentPlayer = currentPlayer.GetNextPlayer(false);
+                    continue;
                 }
 
                 var res = await currentPlayer.ResponseCard(req, cardResponseContext, roundContext);

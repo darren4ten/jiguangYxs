@@ -33,7 +33,12 @@ namespace Logic.Model.Mark
                     context.AttackDynamicFactor = context.AttackDynamicFactor ??
                                                              AttackDynamicFactor.GetDefaultBaseAttackFactor();
                     //检查是否有无懈可击
-                    var wxResponse = await JinnangBase.GroupRequestWuxiekeji(context, responseContext, roundContext);
+                    var wxResponse = await PlayerContext.GameLevel.GroupRequestWithConfirm(new CardRequestContext()
+                    {
+                        RequestCard = new Wuxiekeji(),
+                        SrcPlayer = PlayerContext.Player,
+                        TargetPlayers = PlayerContext.GameLevel.Players
+                    });
                     if (wxResponse.ResponseResult == Enums.ResponseResultEnum.Wuxiekeji)
                     {
                         wxResponse.ResponseResult = Enums.ResponseResultEnum.Success;

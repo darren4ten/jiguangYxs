@@ -78,7 +78,8 @@ namespace Logic.Model.Cards.JinlangCards
                 {
                     wxResponse.ResponseResult = Enums.ResponseResultEnum.Success;
                     wxResponse.Message = "请求被无懈可击";
-                    return wxResponse;
+                    currentPlayer = currentPlayer.GetNextPlayer(false);
+                    continue;
                 }
 
 

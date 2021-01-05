@@ -16,11 +16,6 @@ namespace Logic.Model.Cards.JinlangCards
             this.DisplayName = "无懈可击";
         }
 
-        public override bool CanBePlayed()
-        {
-            return false;
-        }
-
         public override Task Popup()
         {
             throw new NotImplementedException();

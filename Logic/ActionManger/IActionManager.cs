@@ -21,7 +21,14 @@ namespace Logic.ActionManger
         Task<bool> OnRequestTriggerSkill(SkillTypeEnum skillType, CardRequestContext cardRequestContext);
 
         /// <summary>
-        /// 被请求出牌杀
+        /// 并行被请求出牌（多个目标只需要一个目标出牌即可）
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <returns></returns>
+        Task<CardResponseContext> OnParallelRequestResponseCard(CardRequestContext cardRequestContext);
+
+        /// <summary>
+        /// 被请求出牌
         /// </summary>
         /// <param name="cardRequestContext"></param>
         /// <returns></returns>

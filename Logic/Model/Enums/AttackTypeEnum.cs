@@ -15,9 +15,17 @@ namespace Logic.Model.Enums
         Hongyan,
         Gongxin,
         /// <summary>
+        /// 群体请求（需要确认）
+        /// </summary>
+        GroupRequestWithConfirm,
+        /// <summary>
         /// 无中生有
         /// </summary>
         Wuzhongshengyou,
+        /// <summary>
+        /// 无懈可击
+        /// </summary>
+        Wuxiekeji,
         /// <summary>
         /// 借刀杀人
         /// </summary>
@@ -42,6 +50,10 @@ namespace Logic.Model.Enums
         /// 芦叶枪
         /// </summary>
         Luyeqiang,
+        /// <summary>
+        /// 画地为牢
+        /// </summary>
+        Huadiweilao,
         Tannangquwu,
         /// <summary>
         /// 博浪锤

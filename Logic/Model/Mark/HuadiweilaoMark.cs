@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Logic.Enums;
+using Logic.GameLevel;
 using Logic.Model.Cards.JinlangCards;
 using Logic.Model.Enums;
 
@@ -29,7 +30,12 @@ namespace Logic.Model.Mark
                 async (context, roundContext, responseContext) =>
                 {
                     //检查是否有无懈可击
-                    var wxResponse = await JinnangBase.GroupRequestWuxiekeji(context, responseContext, roundContext);
+                    var wxResponse = await PlayerContext.GameLevel.GroupRequestWithConfirm(new CardRequestContext()
+                    {
+                        RequestCard = new Wuxiekeji(),
+                        SrcPlayer = PlayerContext.Player,
+                        TargetPlayers = PlayerContext.GameLevel.Players
+                    });
                     if (wxResponse.ResponseResult == Enums.ResponseResultEnum.Wuxiekeji)
                     {
                         wxResponse.ResponseResult = Enums.ResponseResultEnum.Success;

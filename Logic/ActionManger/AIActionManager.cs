@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.Enums;
@@ -62,6 +63,16 @@ namespace Logic.ActionManger
             return await Task.FromResult(false);
         }
 
+        public override async Task<CardResponseContext> OnParallelRequestResponseCard(CardRequestContext cardRequestContext)
+        {
+            var res = await GetResponseCardByCardType_GroupRequestWithConfirm(cardRequestContext);
+            if (res != null && cardRequestContext.RequestCard is Wuxiekeji && res.Cards?.Any() == true)
+            {
+                res.ResponseResult = ResponseResultEnum.Wuxiekeji;
+            }
+            return res;
+        }
+
         /// <summary>
         /// 被动出牌
         /// </summary>
@@ -88,6 +99,7 @@ namespace Logic.ActionManger
                 //处理借刀杀人
                 return await GetResponseCardByCardType_Jiedaosharen(cardRequestContext);
             }
+
 
             //处理其他类型
             if (cardRequestContext.CardScope == CardScopeEnum.Any)
@@ -1298,6 +1310,92 @@ namespace Logic.ActionManger
             return new CardResponseContext()
             {
                 Cards = cardsToPlay.ToList(),
+            };
+        }
+
+        /// <summary>
+        /// 处理响应群体技能，如无懈可击、药
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <returns></returns>
+        private async Task<CardResponseContext> GetResponseCardByCardType_GroupRequestWithConfirm(CardRequestContext cardRequestContext)
+        {
+            if (cardRequestContext.RequestCard is Wuxiekeji)
+            {
+                //出无懈可击的条件：
+                //烽火狼烟、万箭齐发：    请求来源是同阵营的且请求玩家血量低于3时可以出无懈
+                //五谷丰登： 如果请求来源是敌方阵营，且待摸的牌中有AiValue>wuzhongshengyou(药、无中生有、探囊取物、虎符)的则无懈
+                //探囊取物、釜底抽薪、画地为牢：    如果是请求来源是友方，则无懈可击
+                //无中生有： 如果请求来源是敌方，则无懈可击
+                //休养生息： 如果请求来源是敌方且敌方生命<=2则无懈可击
+                //决斗：   如果请求来源是友方且友方血量<=2则无懈
+                //借刀杀人、无懈可击： 如果请求来源（发动借刀的人）是敌方，则无懈可击
+                if (cardRequestContext.AttackType == AttackTypeEnum.Fenghuolangyan ||
+                    cardRequestContext.AttackType == AttackTypeEnum.Wanjianqifa)
+                {
+                    if (cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player) && cardRequestContext.SrcPlayer.GetCurrentPlayerHero().CurrentLife < 3)
+                    {
+                        return await GetResponseCardByCardType_Any(cardRequestContext);
+                    }
+                }
+                else if (cardRequestContext.AttackType == AttackTypeEnum.Wugufengdeng)
+                {
+                    if (!cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player) &&
+                        cardRequestContext.SrcCards?.Any(c => c is Yao || c is Wuzhongshengyou || c is Tannangquwu || c is Hufu) == true)
+                    {
+                        return await GetResponseCardByCardType_Any(cardRequestContext);
+                    }
+                }
+                else if (cardRequestContext.AttackType == AttackTypeEnum.Tannangquwu ||
+                         cardRequestContext.AttackType == AttackTypeEnum.Huadiweilao ||
+                                         cardRequestContext.AttackType == AttackTypeEnum.Fudichouxin)
+                {
+                    if (cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player))
+                    {
+                        return await GetResponseCardByCardType_Any(cardRequestContext);
+                    }
+                }
+                else if (cardRequestContext.AttackType == AttackTypeEnum.Wuzhongshengyou)
+                {
+                    if (!cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player))
+                    {
+                        return await GetResponseCardByCardType_Any(cardRequestContext);
+                    }
+                }
+                else if (cardRequestContext.AttackType == AttackTypeEnum.Xiuyangshengxi)
+                {
+                    if (!cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player) && cardRequestContext.SrcPlayer.GetCurrentPlayerHero().CurrentLife < 3)
+                    {
+                        return await GetResponseCardByCardType_Any(cardRequestContext);
+                    }
+                }
+                else if (cardRequestContext.AttackType == AttackTypeEnum.Juedou)
+                {
+                    if (cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player) && cardRequestContext.SrcPlayer.GetCurrentPlayerHero().CurrentLife < 3)
+                    {
+                        return await GetResponseCardByCardType_Any(cardRequestContext);
+                    }
+                }
+                else if (cardRequestContext.AttackType == AttackTypeEnum.Wuxiekeji || cardRequestContext.AttackType == AttackTypeEnum.Jiedaosharen)
+                {
+                    if (!cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player))
+                    {
+                        return await GetResponseCardByCardType_Any(cardRequestContext);
+                    }
+                }
+            }
+            //出药的条件：是友方需要药
+            else if (cardRequestContext.RequestCard is Yao)
+            {
+                if (!cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player))
+                {
+                    return await GetResponseCardByCardType_Any(cardRequestContext);
+                }
+            }
+
+            return new CardResponseContext()
+            {
+                ResponseResult = ResponseResultEnum.Failed,
             };
         }
 

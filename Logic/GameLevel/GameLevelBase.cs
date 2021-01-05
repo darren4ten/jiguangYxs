@@ -286,6 +286,62 @@ namespace Logic.GameLevel
                     await Task.FromResult(0);
                 }));
         }
+        private object TmpResponseLock = new object();
+        /// <summary>
+        /// 并发请求出牌，只需要某一个人出牌即可。
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<CardResponseContext> GroupRequestWithConfirm(CardRequestContext request)
+        {
+            if (request?.TargetPlayers == null || !request.TargetPlayers.Any())
+            {
+                throw new Exception("没有请求目标");
+            }
+
+            if (request.SrcPlayer == null)
+            {
+                throw new Exception("没有来源目标");
+            }
+
+            var tasks = new List<Task<CardResponseContext>>();
+            foreach (var requestTargetPlayer in request.TargetPlayers)
+            {
+                tasks.Add(requestTargetPlayer.ActionManager.OnParallelRequestResponseCard(new CardRequestContext()
+                {
+                    AttackType = request.AttackType,
+                    RequestCard = request.RequestCard,
+                    SrcPlayer = request.SrcPlayer,
+                    MaxCardCountToPlay = request.MaxCardCountToPlay,
+                    MinCardCountToPlay = request.MinCardCountToPlay,
+                    AttackDynamicFactor = request.AttackDynamicFactor,
+                    TargetPlayers = new List<Player>()
+                    {
+                        requestTargetPlayer
+                    }
+                }));
+            }
+
+            CardResponseContext response = null;
+            do
+            {
+                var task = await Task.WhenAny<CardResponseContext>(tasks);
+                var tmpResult = await task;
+                if (tmpResult.Cards?.Any() == true)
+                {
+                    response = tmpResult;
+                }
+                tasks.Remove(task);
+            } while (response == null && tasks.Count > 0);
+
+            var responseCard = response?.Cards?.FirstOrDefault();
+            if (responseCard != null)
+            {
+                //有人响应出牌，则取其中一个才真实出牌
+                await responseCard.PlayCard(new CardRequestContext(), null);
+            }
+            return response ?? new CardResponseContext();
+        }
 
         /// <summary>
         /// 通知玩家游戏结束
