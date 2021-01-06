@@ -60,12 +60,6 @@ namespace Logic.Model.Cards.EquipmentCards
         {
             return PlayerContext.Player.IsInBeidongMode() || PlayerContext.Player.IsInZhudongMode();
         }
-
-        public override Task Popup()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task Equip()
         {
             await OnBeforeEquip();
@@ -88,6 +82,16 @@ namespace Logic.Model.Cards.EquipmentCards
         }
 
         public virtual bool CanProvideSha()
+        {
+            return false;
+        }
+
+        public bool CanProvideFuidichouxin()
+        {
+            return false;
+        }
+
+        public bool CanProvideJiedaosharen()
         {
             return false;
         }
@@ -123,6 +127,21 @@ namespace Logic.Model.Cards.EquipmentCards
         }
 
         public virtual bool CanProvideTannangquwu()
+        {
+            return false;
+        }
+
+        public bool CanProvideWuzhongshengyou()
+        {
+            return false;
+        }
+
+        public bool CanProvideHudadiweilao()
+        {
+            return false;
+        }
+
+        public bool CanProvideXiuyangshengxi()
         {
             return false;
         }

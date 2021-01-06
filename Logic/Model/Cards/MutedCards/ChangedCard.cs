@@ -41,11 +41,6 @@ namespace Logic.Model.Cards.MutedCards
             return TargetCard.CanBePlayed();
         }
 
-        public override async Task Popup()
-        {
-            await TargetCard.Popup();
-        }
-
         /// <summary>
         /// 使用TargetCard的PlayCard方法。
         /// TODO：检查OnAfter/OnBefore这些方法是否会都使用target的。

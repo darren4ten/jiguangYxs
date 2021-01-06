@@ -79,10 +79,5 @@ namespace Logic.Model.Cards.JinlangCards
             }
             return cardResponseContext;
         }
-
-        public override async Task Popup()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

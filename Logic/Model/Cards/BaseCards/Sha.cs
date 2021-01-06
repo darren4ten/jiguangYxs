@@ -48,6 +48,13 @@ namespace Logic.Model.Cards.BaseCards
             return CanBePlayed(PlayerContext);
         }
 
+        public override SelectedTargetsRequest GetSelectTargetRequest()
+        {
+            var request = base.GetSelectTargetRequest();
+            request.TargetType = AttackTypeEnum.Sha;
+            return request;
+        }
+
         /// <summary>
         /// 具体杀的逻辑
         /// </summary>
@@ -122,18 +129,6 @@ namespace Logic.Model.Cards.BaseCards
             await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterSha, cardRequestContext, cardResponseContext);
 
             return cardResponseContext;
-        }
-
-        public override async Task Popup()
-        {
-            if (CanBePlayed())
-            {
-                await SelectTargets(new SelectTargetRequest()
-                {
-                    MinCount = 1,
-                    MaxCount = PlayerContext.Player.RoundContext.AttackDynamicFactor.MaxShaTargetCount,
-                });
-            }
         }
 
         #region Private

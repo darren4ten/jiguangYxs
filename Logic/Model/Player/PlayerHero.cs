@@ -326,6 +326,16 @@ namespace Logic.Model.Player
             throw new System.NotImplementedException();
         }
 
+        public bool CanProvideFuidichouxin()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CanProvideJiedaosharen()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool CanProvideShan()
         {
             throw new System.NotImplementedException();
@@ -361,6 +371,20 @@ namespace Logic.Model.Player
             throw new System.NotImplementedException();
         }
 
+        public bool CanProvideWuzhongshengyou()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CanProvideHudadiweilao()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CanProvideXiuyangshengxi()
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 

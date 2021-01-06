@@ -24,11 +24,6 @@ namespace Logic.Model.Cards.JinlangCards
             this.DisplayName = "烽火狼烟";
         }
 
-        public override async Task Popup()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
             cardRequestContext.AttackType = Enums.AttackTypeEnum.Fenghuolangyan;

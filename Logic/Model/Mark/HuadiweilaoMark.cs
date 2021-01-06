@@ -23,6 +23,11 @@ namespace Logic.Model.Mark
             Description = "画地为牢";
         }
 
+        public override bool? IsNegativeMark()
+        {
+            return true;
+        }
+
         public override void Init()
         {
             eventId = Guid.NewGuid();

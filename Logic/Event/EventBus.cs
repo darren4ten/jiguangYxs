@@ -122,6 +122,7 @@ namespace Logic.Event
         /// <param name="cardRequestContext"></param>
         /// <param name="roundContext"></param>
         /// <param name="cardResponseContext"></param>
+        /// <param name="additionalContext"></param>
         /// <returns></returns>
         public async Task TriggerEvent(EventTypeEnum eventType, PlayerHero playerHero, CardRequestContext cardRequestContext, RoundContext roundContext, CardResponseContext cardResponseContext)
         {

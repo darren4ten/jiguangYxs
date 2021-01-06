@@ -22,8 +22,6 @@ namespace Logic.Model.Cards.JinlangCards
             return PlayerContext.Player.IsInBeidongMode() || PlayerContext.Player.IsInZhudongMode();
         }
 
-        public abstract override Task Popup();
-
         public override async Task<CardResponseContext> PlayCard(CardRequestContext cardRequestContext,
             RoundContext roundContext)
         {

@@ -42,11 +42,6 @@ namespace Logic.Model.Cards.BaseCards
             return false;
         }
 
-        public override Task Popup()
-        {
-            throw new NotImplementedException();
-        }
-
         #region 覆盖父类方法
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
             RoundContext roundContext)

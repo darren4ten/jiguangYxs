@@ -32,11 +32,6 @@ namespace Logic.Model.Cards.JinlangCards
             return base.CanBePlayed();
         }
 
-        public override Task Popup()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override async Task<CardResponseContext> OnAfterPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
             RoundContext roundContext)
         {

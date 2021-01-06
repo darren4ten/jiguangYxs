@@ -28,6 +28,15 @@ namespace Logic.Model.Mark
         public string Description { get; set; }
 
         /// <summary>
+        /// 是否是负面标记
+        /// </summary>
+        /// <returns>true-是，false-不是，null:未知</returns>
+        public virtual bool? IsNegativeMark()
+        {
+            return null;
+        }
+
+        /// <summary>
         /// 标记是否可以累加，默认false
         /// </summary>
         /// <returns></returns>

@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Logic.GameLevel;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Player;
+using Logic.Model.RequestResponse.Request;
+using Logic.Model.RequestResponse.Response;
 
 namespace Logic.Cards
 {
@@ -73,9 +75,23 @@ namespace Logic.Cards
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public virtual async Task<List<Player>> SelectTargets(SelectTargetRequest request)
+        public virtual async Task<SelectedTargetsResponse> SelectTargets(SelectedTargetsRequest request)
         {
-            return await Task.FromResult(default(List<Player>));
+            var cardRequest = CardRequestContext.GetBaseCardRequestContext();
+            cardRequest.AdditionalContext = request;
+            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeSelectTarget,
+                PlayerContext.Player.GetCurrentPlayerHero(), request.CardRequest,
+                PlayerContext.Player.RoundContext, new CardResponseContext());
+            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.SelectTarget,
+                PlayerContext.Player.GetCurrentPlayerHero(), request.CardRequest,
+                PlayerContext.Player.RoundContext, new CardResponseContext());
+
+            var res = await PlayerContext.Player.ActionManager.OnRequestSelectTargets(request);
+
+            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterSelectTarget,
+                PlayerContext.Player.GetCurrentPlayerHero(), request.CardRequest,
+                PlayerContext.Player.RoundContext, new CardResponseContext());
+            return res;
         }
 
         /// <summary>
@@ -87,6 +103,22 @@ namespace Logic.Cards
         {
             PlayerContext = playerContext;
             return this;
+        }
+
+        /// <summary>
+        /// 目标数量
+        /// </summary>
+        /// <returns></returns>
+        public virtual SelectedTargetsRequest GetSelectTargetRequest()
+        {
+            return new SelectedTargetsRequest()
+            {
+                MinTargetCount = 1,
+                MaxTargetCount = 1,
+                CardRequest = CardRequestContext.GetBaseCardRequestContext(),
+                RoundContext = PlayerContext.Player.RoundContext,
+                TargetType = AttackTypeEnum.Sha
+            };
         }
 
         /// <summary>
@@ -252,6 +284,32 @@ namespace Logic.Cards
             }
         }
 
+
+        /// <summary>
+        /// 弹出卡牌。即如果该牌可以打出，则打出
+        /// </summary>
+        /// <returns>返回是否出过牌</returns>
+        public virtual async Task<bool> Popup()
+        {
+            if (CanBePlayed())
+            {
+                var selectRequest = GetSelectTargetRequest();
+                var targetResponse = await SelectTargets(selectRequest);
+
+                if (selectRequest.MinTargetCount == 0 || (targetResponse?.Targets != null && targetResponse.Targets.Count >= selectRequest.MinTargetCount))
+                {
+                    var request = CardRequestContext.GetBaseCardRequestContext();
+                    request.SrcPlayer = PlayerContext.Player;
+                    request.TargetPlayers = targetResponse.Targets;
+                    request.AttackType = selectRequest.TargetType;
+                    await PlayCard(request, PlayerContext.Player.RoundContext);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public override string ToString()
         {
             var flower = "";
@@ -285,9 +343,6 @@ namespace Logic.Cards
             }
             return $"[{flower}{Number} {DisplayName}]";
         }
-
-        public abstract Task Popup();
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

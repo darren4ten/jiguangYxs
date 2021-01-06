@@ -12,6 +12,8 @@ using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
 using Logic.Model.Interface;
 using Logic.Model.Mark;
+using Logic.Model.RequestResponse.Request;
+using Logic.Model.RequestResponse.Response;
 using Logic.Model.Skill.Interface;
 using Logic.Util;
 
@@ -167,6 +169,104 @@ namespace Logic.Model.Player
         public async Task<CardResponseContext> PlayCard(CardRequestContext cardRequestContext)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 判断当前玩家是否可以选择targetPlayer作为目标
+        /// </summary>
+        /// <param name="targetPlayer"></param>
+        /// <returns></returns>
+        public async Task<bool> IsAvailableForPlayer(Player targetPlayer, AttackTypeEnum attackType)
+        {
+            switch (attackType)
+            {
+                case AttackTypeEnum.None:
+                    break;
+                case AttackTypeEnum.Sha:
+                    {
+                        //是杀，则需要检查攻击范围
+                        return await IsAvailableForPlayer_Sha(targetPlayer, attackType);
+                    }
+                case AttackTypeEnum.Juedou:
+                    break;
+                case AttackTypeEnum.Fenghuolangyan:
+                    break;
+                case AttackTypeEnum.Wanjianqifa:
+                    break;
+                case AttackTypeEnum.Xiadan:
+                    break;
+                case AttackTypeEnum.Hongyan:
+                    break;
+                case AttackTypeEnum.Gongxin:
+                    break;
+                case AttackTypeEnum.GroupRequestWithConfirm:
+                    break;
+                case AttackTypeEnum.Wuzhongshengyou:
+                    break;
+                case AttackTypeEnum.Wuxiekeji:
+                    break;
+                case AttackTypeEnum.Jiedaosharen:
+                    break;
+                case AttackTypeEnum.Fudichouxin:
+                    break;
+                case AttackTypeEnum.Wugufengdeng:
+                    break;
+                case AttackTypeEnum.Xiuyangshengxi:
+                    break;
+                case AttackTypeEnum.Longlindao:
+                    break;
+                case AttackTypeEnum.Luyeqiang:
+                    break;
+                case AttackTypeEnum.Huadiweilao:
+                    break;
+                case AttackTypeEnum.Tannangquwu:
+                    break;
+                case AttackTypeEnum.Bolangchui:
+                    break;
+                case AttackTypeEnum.Panlonggun:
+                    break;
+                case AttackTypeEnum.SelectCard:
+                    break;
+                case AttackTypeEnum.Liaoshang:
+                    break;
+                case AttackTypeEnum.Zhiyu:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(attackType), attackType, null);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 玩家是否可以被选中
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<SelectiblityCheckResponse> SelectiblityCheck(SelectiblityCheckRequest request)
+        {
+            SelectiblityCheckResponse actResponse = new SelectiblityCheckResponse();
+            var response = new CardResponseContext();
+            await TriggerEvent(EventTypeEnum.BeforeBeSelectablityCheck, new CardRequestContext()
+            {
+                AdditionalContext = request
+            }, response, RoundContext);
+
+            await TriggerEvent(EventTypeEnum.BeSelectablityCheck, new CardRequestContext()
+            {
+                AdditionalContext = request
+            }, response, RoundContext);
+
+            if (response.ResponseResult == ResponseResultEnum.Failed)
+            {
+                actResponse.CanBeSelected = false;
+                actResponse.Message = response.Message;
+            }
+
+            await TriggerEvent(EventTypeEnum.AfterBeSelectablityCheck, new CardRequestContext()
+            {
+                AdditionalContext = request
+            }, response, RoundContext);
+            return actResponse;
         }
 
         /// <summary>
@@ -940,6 +1040,33 @@ namespace Logic.Model.Player
             return result;
         }
 
+
+        #endregion
+
+        #region IsAvailableForPlayer的具体逻辑
+
+        private async Task<bool> IsAvailableForPlayer_Sha(Player targetPlayer, AttackTypeEnum attackType)
+        {
+            //获取两个player之间的距离，检查是否在攻击范围内
+            var dist = _gameLevel.GetPlayersDistance(this, targetPlayer);
+            if (dist.ShaDistance > RoundContext.AttackDynamicFactor.ShaDistance)
+            {
+                //不在攻击范围
+                return false;
+            }
+
+            var checkRes = await targetPlayer.SelectiblityCheck(new SelectiblityCheckRequest()
+            {
+                SrcPlayer = this,
+                TargetType = attackType
+            });
+            if (checkRes.CanBeSelected)
+            {
+                return true;
+            }
+
+            return false;
+        }
 
         #endregion
     }

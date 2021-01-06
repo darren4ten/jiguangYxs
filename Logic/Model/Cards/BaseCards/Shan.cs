@@ -36,9 +36,5 @@ namespace Logic.Model.Cards.BaseCards
             return CanBePlayed(PlayerContext);
         }
 
-        public override Task Popup()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

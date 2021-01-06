@@ -27,11 +27,6 @@ namespace Logic.Model.Cards.JinlangCards
             return base.CanBePlayed() && PlayerContext.Player.Marks?.Any(m => m is ShoupengleiMark) != true;
         }
 
-        public override Task Popup()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override async Task<CardResponseContext> OnAfterPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
             RoundContext roundContext)
         {

@@ -40,6 +40,16 @@ namespace Logic.Model.Skill
             return false;
         }
 
+        public bool CanProvideFuidichouxin()
+        {
+            return false;
+        }
+
+        public bool CanProvideJiedaosharen()
+        {
+            return false;
+        }
+
         public virtual bool CanProvideShan()
         {
             return false;
@@ -75,6 +85,20 @@ namespace Logic.Model.Skill
             return false;
         }
 
+        public bool CanProvideWuzhongshengyou()
+        {
+            return false;
+        }
+
+        public bool CanProvideHudadiweilao()
+        {
+            return false;
+        }
+
+        public bool CanProvideXiuyangshengxi()
+        {
+            return false;
+        }
 
         #endregion
 

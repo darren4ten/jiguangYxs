@@ -23,11 +23,6 @@ namespace Logic.Model.Cards.JinlangCards
             this.Name = "Wugufengdeng";
             this.DisplayName = "五谷丰登";
         }
-        public override async Task Popup()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
             cardRequestContext.AttackType = Enums.AttackTypeEnum.Wugufengdeng;

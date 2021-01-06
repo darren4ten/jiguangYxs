@@ -84,6 +84,15 @@ namespace Logic.GameLevel
         }
 
         /// <summary>
+        /// 获取所有活着的玩家
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Player> GetAlivePlayers()
+        {
+            return Players.Where(p => p.IsAlive());
+        }
+
+        /// <summary>
         /// 摸牌
         /// </summary>
         /// <param name="count"></param>

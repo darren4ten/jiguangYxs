@@ -17,11 +17,6 @@ namespace Logic.Model.Cards.JinlangCards
             this.DisplayName = "无中生有";
         }
 
-        public override Task Popup()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override async Task<CardResponseContext> OnPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
             RoundContext roundContext)
         {

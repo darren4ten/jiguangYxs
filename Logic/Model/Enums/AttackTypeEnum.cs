@@ -66,6 +66,14 @@ namespace Logic.Model.Enums
         /// <summary>
         /// 请求选牌
         /// </summary>
-        SelectCard
+        SelectCard,
+        /// <summary>
+        /// 疗伤
+        /// </summary>
+        Liaoshang,
+        /// <summary>
+        /// 治愈
+        /// </summary>
+        Zhiyu,
     }
 }

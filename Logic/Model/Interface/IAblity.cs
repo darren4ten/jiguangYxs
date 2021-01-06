@@ -14,6 +14,18 @@ namespace Logic.Model.Interface
         /// </summary>
         /// <returns></returns>
         bool CanProvideSha();
+
+        /// <summary>
+        /// 能提供釜底抽薪
+        /// </summary>
+        /// <returns></returns>
+        bool CanProvideFuidichouxin();
+
+        /// <summary>
+        /// 能够提供借刀杀人
+        /// </summary>
+        /// <returns></returns>
+        bool CanProvideJiedaosharen();
         /// <summary>
         /// 能提供闪
         /// </summary>
@@ -27,5 +39,11 @@ namespace Logic.Model.Interface
         bool CanProvideFenghuolangyan();
         bool CanProvideWanjianqifa();
         bool CanProvideTannangquwu();
+
+        bool CanProvideWuzhongshengyou();
+
+        bool CanProvideHudadiweilao();
+
+        bool CanProvideXiuyangshengxi();
     }
 }

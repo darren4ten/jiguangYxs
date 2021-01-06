@@ -19,11 +19,6 @@ namespace Logic.Model.Cards.JinlangCards
             this.DisplayName = "无懈可击";
         }
 
-        public override Task Popup()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
             RoundContext roundContext)
         {

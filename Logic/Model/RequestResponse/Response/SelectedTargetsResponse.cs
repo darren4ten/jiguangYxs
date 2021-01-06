@@ -1,4 +1,4 @@
-﻿using Logic.Model.Player;
+﻿using System.Collections.Generic;
 
 namespace Logic.Model.RequestResponse.Response
 {
@@ -7,11 +7,6 @@ namespace Logic.Model.RequestResponse.Response
     /// </summary>
     public class SelectedTargetsResponse : BaseResponse
     {
-        /// <summary>
-        /// 第一个
-        /// </summary>
-        public PlayerHero FirstPlayerHero { get; set; }
-        public PlayerHero SecondPlayerHero { get; set; }
-        public PlayerHero ThirdPlayerHero { get; set; }
+        public List<Player.Player> Targets { get; set; } = new List<Player.Player>();
     }
 }
