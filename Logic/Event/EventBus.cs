@@ -144,7 +144,7 @@ namespace Logic.Event
                             continue;
                         }
                         await eventHandler.RoundEventHandler(cardRequestContext, roundContext, cardResponseContext);
-                        Console.WriteLine($"TriggerEvent:{eventHandler?.EventId}.");
+                        //Console.WriteLine($"TriggerEvent:{eventHandler?.EventId}.");
                     }
                 }
                 return;
@@ -163,7 +163,7 @@ namespace Logic.Event
                     continue;
                 }
                 await eventHandler.RoundEventHandler(cardRequestContext, roundContext, cardResponseContext);
-                Console.WriteLine($"TriggerEvent:{eventHandler?.EventId}.");
+                //Console.WriteLine($"TriggerEvent:{eventHandler?.EventId}.");
             }
 
         }

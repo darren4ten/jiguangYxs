@@ -448,10 +448,12 @@ namespace Logic.ActionManger
             var throwCount = cards.Count() - Math.Max(attackFactor.MaxCardCountInHand, PlayerContext.Player.GetCurrentPlayerHero().CurrentLife);
             if (throwCount > 0)
             {
+                Console.WriteLine($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】需要弃{throwCount}张牌。");
                 var cardsToThrow = cards.Take(throwCount).ToList();
 
                 //将该牌置入TempCardDesk
                 await PlayerContext.Player.RemoveCardsInHand(cardsToThrow, null, null, null);
+                Console.WriteLine($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】弃掉了{string.Join(",", cardsToThrow)}。");
             }
             //回合结束时将临时牌堆中的牌放入弃牌堆.
             PlayerContext.GameLevel.ThrowCardToStack(PlayerContext.GameLevel.TempCardDesk.Cards);
@@ -1697,14 +1699,14 @@ namespace Logic.ActionManger
         /// <returns></returns>
         private bool ShouldTriggerSkill_Luyeqiang(CardRequestContext cardRequestContext)
         {
-            var target = cardRequestContext.TargetPlayers.FirstOrDefault();
-            if (target == null)
+            var target = cardRequestContext.TargetPlayers?.FirstOrDefault();
+            if (target == null && PlayerContext.Player.CardsInHand.Count < 4)
             {
-                throw new Exception("攻击目标不能为空。");
+                return false;
             }
             //如果是队友，血量低于3则卸牌，否则不触发，其他情况都触发
 
-            if (target.IsSameGroup(cardRequestContext.SrcPlayer) && target.GetCurrentPlayerHero().CurrentLife <= 3)
+            if (target != null && target.IsSameGroup(cardRequestContext.SrcPlayer) && target.GetCurrentPlayerHero().CurrentLife <= 3)
             {
                 return false;
             }

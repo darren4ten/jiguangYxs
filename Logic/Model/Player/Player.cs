@@ -268,7 +268,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task<SelectiblityCheckResponse> SelectiblityCheck(SelectiblityCheckRequest request)
         {
-            SelectiblityCheckResponse actResponse = new SelectiblityCheckResponse();
+            SelectiblityCheckResponse actResponse = new SelectiblityCheckResponse() { CanBeSelected = true };
             var response = new CardResponseContext();
             await TriggerEvent(EventTypeEnum.BeforeBeSelectablityCheck, new CardRequestContext()
             {
@@ -323,8 +323,8 @@ namespace Logic.Model.Player
                 //将牌置于临时牌堆
                 res.Cards.ForEach(async c =>
                 {
-                    //是装备牌
-                    if (EquipmentSet.Any(p => p == c))
+            //是装备牌
+            if (EquipmentSet.Any(p => p == c))
                     {
                         await RemoveEquipment(c, null, null, null);
                     }
@@ -369,10 +369,15 @@ namespace Logic.Model.Player
 
         public async Task StartMyRound()
         {
+            int waitTme = 1200;
             await StartStep_EnterMyRound();
+            await Task.Delay(waitTme);
             await StartStep_PickCard();
+            await Task.Delay(waitTme);
             await StartStep_PlayCard();
+            await Task.Delay(waitTme);
             await StartStep_ThrowCard();
+            await Task.Delay(waitTme);
             await StartStep_ExitMyRound();
         }
 
@@ -387,6 +392,7 @@ namespace Logic.Model.Player
                 AttackDynamicFactor = AttackDynamicFactor.GetDefaultDeltaAttackFactor(),
                 SkillTriggerTimesDic = new Dictionary<SkillTypeEnum, int>()
             };
+            RoundContext.AttackDynamicFactor.MaxShaTimes = 1;
             var request = new CardRequestContext();
             var response = new CardResponseContext();
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeEnterMyRound, _gameLevel.HostPlayerHero,
@@ -437,6 +443,7 @@ namespace Logic.Model.Player
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterPickCard, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.AfterPickCard, request, response, RoundContext);
+            Console.WriteLine($"进入{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的摸牌阶段。");
         }
 
         /// <summary>
@@ -445,6 +452,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_PlayCard()
         {
+            Console.WriteLine($"进入{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的出牌阶段。");
             if (RoundContext.AttackDynamicFactor.SkipOption.ShouldSkipPlayCard)
             {
                 Console.WriteLine($"跳过出牌。");
@@ -480,6 +488,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_ThrowCard()
         {
+            Console.WriteLine($"进入{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的弃牌阶段。");
             var request = new CardRequestContext();
             var response = new CardResponseContext();
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeThrowCard, _gameLevel.HostPlayerHero,
@@ -709,7 +718,9 @@ namespace Logic.Model.Player
         /// <param name="count"></param>
         public async Task PickCard(int count)
         {
-            await AddCardsInHand(_gameLevel.PickNextCardsFromStack(count));
+            var cards = _gameLevel.PickNextCardsFromStack(count);
+            Console.WriteLine($"{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】摸牌：{string.Join(",", cards)}");
+            await AddCardsInHand(cards);
         }
 
         /// <summary>
@@ -722,6 +733,7 @@ namespace Logic.Model.Player
             CardsInHand.RemoveAll(c => cards.Any(m => m.CardId == c.CardId));
             //将弃掉的牌装入弃牌堆
             _gameLevel.ThrowCardToStack(cards);
+            Console.WriteLine($"{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】弃牌：{string.Join(",", cards)}");
             await Task.FromResult("");
         }
 
@@ -736,6 +748,7 @@ namespace Logic.Model.Player
             CardsInHand.RemoveAll(c => cards.Any(m => m.CardId == c.CardId));
             //将弃掉的牌装目标手牌
             toPlayer.CardsInHand.AddRange(cards);
+            Console.WriteLine($"{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】将牌：{string.Join(",", cards)}移交给{toPlayer.PlayerId}【{toPlayer.GetCurrentPlayerHero().Hero.DisplayName}】");
             await Task.FromResult("");
         }
 
@@ -1217,7 +1230,7 @@ namespace Logic.Model.Player
         {
             //获取两个player之间的距离，检查是否在攻击范围内
             var dist = _gameLevel.GetPlayersDistance(this, targetPlayer);
-            if (dist.ShaDistance > RoundContext.AttackDynamicFactor.ShaDistance)
+            if (dist.ShaDistance > RoundContext.AttackDynamicFactor.ShaDistance + GetCurrentPlayerHero().GetAttackFactor().ShaDistance)
             {
                 //不在攻击范围
                 return false;

@@ -2,7 +2,9 @@
 using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.GameLevel;
+using Logic.Model.Enums;
 using Logic.Model.Player;
+using Logic.Model.RequestResponse.Request;
 
 namespace Logic.Model.Cards.BaseCards
 {

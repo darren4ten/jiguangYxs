@@ -51,6 +51,10 @@ namespace Logic.Model.Cards.JinlangCards
                     roundContext);
             }
 
+            //将该牌置入TempCardDesk
+            await PlayerContext.Player.RemoveCardsInHand(new List<CardBase>() { this }, cardRequestContext,
+                responseContext, roundContext);
+
             //检查是否有无懈可击
             if (!(this is IDelayJinnang || this is IGroupJinnang))
             {
@@ -65,9 +69,6 @@ namespace Logic.Model.Cards.JinlangCards
                 {
                     wxResponse.ResponseResult = Enums.ResponseResultEnum.Success;
                     wxResponse.Message = "请求被无懈可击";
-                    //将该牌置入TempCardDesk
-                    await PlayerContext.Player.RemoveCardsInHand(new List<CardBase>() { this }, cardRequestContext,
-                        responseContext, roundContext);
                     return wxResponse;
                 }
             }
@@ -83,9 +84,6 @@ namespace Logic.Model.Cards.JinlangCards
                     responseContext, roundContext);
             }
 
-            //将该牌置入TempCardDesk
-            await PlayerContext.Player.RemoveCardsInHand(new List<CardBase>() { this }, cardRequestContext,
-                responseContext, roundContext);
             return r3;
         }
 

@@ -7,6 +7,7 @@ using Logic.GameLevel;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
+using Logic.Model.RequestResponse.Request;
 
 namespace Logic.Model.Cards.JinlangCards
 {
@@ -28,6 +29,13 @@ namespace Logic.Model.Cards.JinlangCards
             //1. 被动出牌
             //2. 主动出牌，且场上有英雄装备武器（不保证是真的能借，如诸葛亮不能被黑色牌所借）
             return (PlayerContext.Player.IsInZhudongMode() && PlayerContext.GameLevel.Players.Any(p => p.IsAlive() && p.EquipmentSet.Any(e => e is IWeapon))) || PlayerContext.Player.IsInBeidongMode();
+        }
+
+        public override SelectedTargetsRequest GetSelectTargetRequest()
+        {
+            var request = base.GetSelectTargetRequest();
+            request.TargetType = AttackTypeEnum.Jiedaosharen;
+            return request;
         }
 
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)

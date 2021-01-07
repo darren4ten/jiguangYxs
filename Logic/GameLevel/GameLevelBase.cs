@@ -237,8 +237,8 @@ namespace Logic.GameLevel
         /// <summary>
         /// 开始游戏
         /// </summary>
-        /// <param name="currentPlayer">可选的</param>
-        /// <param name="aditionalPlayers">可选的</param>
+        /// <param name="currentPlayer">当前玩家</param>
+        /// <param name="aditionalPlayers">其他玩家</param>
         /// <returns></returns>
         public virtual async Task Start(Player currentPlayer, List<Player> aditionalPlayers)
         {

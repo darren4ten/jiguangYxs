@@ -17,7 +17,7 @@ namespace Logic.Model.Cards.JinlangCards
             this.DisplayName = "无中生有";
         }
 
-        protected override async Task<CardResponseContext> OnPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
+        protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
             RoundContext roundContext)
         {
             return await ExecuteAction(cardRequestContext, cardResponseContext, roundContext);

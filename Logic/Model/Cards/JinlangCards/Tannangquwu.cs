@@ -6,6 +6,7 @@ using Logic.Cards;
 using Logic.GameLevel;
 using Logic.GameLevel.Panel;
 using Logic.Model.Enums;
+using Logic.Model.RequestResponse.Request;
 
 namespace Logic.Model.Cards.JinlangCards
 {
@@ -19,6 +20,13 @@ namespace Logic.Model.Cards.JinlangCards
             this.Description = "探囊取物";
             this.Name = "Tannangquwu";
             this.DisplayName = "探囊取物";
+        }
+
+        public override SelectedTargetsRequest GetSelectTargetRequest()
+        {
+            var request = base.GetSelectTargetRequest();
+            request.TargetType = AttackTypeEnum.Tannangquwu;
+            return request;
         }
 
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)

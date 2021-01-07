@@ -32,6 +32,13 @@ namespace Logic.Model.Cards.JinlangCards
             return PlayerContext.Player.IsInBeidongMode() || PlayerContext.Player.IsInZhudongMode();
         }
 
+        public override SelectedTargetsRequest GetSelectTargetRequest()
+        {
+            var request = base.GetSelectTargetRequest();
+            request.TargetType = AttackTypeEnum.Juedou;
+            return request;
+        }
+
         #region 覆盖父类方法
 
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,

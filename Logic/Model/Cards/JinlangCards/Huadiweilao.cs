@@ -7,6 +7,7 @@ using Logic.GameLevel;
 using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
 using Logic.Model.Mark;
+using Logic.Model.RequestResponse.Request;
 
 namespace Logic.Model.Cards.JinlangCards
 {
@@ -30,6 +31,13 @@ namespace Logic.Model.Cards.JinlangCards
         {
             //主动情况下，如果有可选的目标（玩家英雄能被选中（如：控局），且改目标没有画地为牢标记）
             return base.CanBePlayed();
+        }
+
+        public override SelectedTargetsRequest GetSelectTargetRequest()
+        {
+            var request = base.GetSelectTargetRequest();
+            request.TargetType = AttackTypeEnum.Huadiweilao;
+            return request;
         }
 
         protected override async Task<CardResponseContext> OnAfterPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
