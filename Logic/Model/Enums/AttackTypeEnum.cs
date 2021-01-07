@@ -15,6 +15,10 @@ namespace Logic.Model.Enums
         Hongyan,
         Gongxin,
         /// <summary>
+        /// 求药
+        /// </summary>
+        Qiuyao,
+        /// <summary>
         /// 群体请求（需要确认）
         /// </summary>
         GroupRequestWithConfirm,

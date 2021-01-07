@@ -8,11 +8,13 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Logic.ActionManger;
 using Logic.Event;
+using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Cards.MutedCards;
 using Logic.Model.Enums;
 using Logic.Model.Hero.Presizdent;
 using Logic.Model.Player;
+using Logic.Model.RequestResponse.Request;
 
 namespace Logic.GameLevel
 {
@@ -213,6 +215,28 @@ namespace Logic.GameLevel
             }
         }
 
+        /// <summary>
+        /// 游戏开始时玩家手中的牌。如果初始摸牌数有变化，可以重写这个方法。
+        /// </summary>
+        public virtual void InitCardsForPlayers(Player currentPlayer, List<Player> aditionalPlayers)
+        {
+            var cards1 = PickNextCardsFromStack(4).ToList();
+            currentPlayer.CardsInHand.AddRange(cards1.Select(c => c.AttachPlayerContext(new PlayerContext()
+            {
+                Player = currentPlayer,
+                GameLevel = this
+            })));
+            foreach (var aditionalPlayer in aditionalPlayers)
+            {
+                aditionalPlayer.CardsInHand.AddRange(PickNextCardsFromStack(4).ToList().Select(c => c.AttachPlayerContext(new PlayerContext()
+                {
+                    Player = aditionalPlayer,
+                    GameLevel = this
+                })));
+            }
+        }
+
+
         public virtual void OnLoad(Player currentPlayer, List<Player> aditionalPlayers)
         {
             this.CurrentPlayer = currentPlayer;
@@ -243,6 +267,7 @@ namespace Logic.GameLevel
         public virtual async Task Start(Player currentPlayer, List<Player> aditionalPlayers)
         {
             OnLoad(currentPlayer, aditionalPlayers);
+            InitCardsForPlayers(currentPlayer, aditionalPlayers);
             Console.WriteLine("Game Started!");
             var curPlayer = GetXianshouPlayer();
             while (!IsGameOver)
@@ -272,28 +297,59 @@ namespace Logic.GameLevel
         public virtual void SetupGameStatusCheck()
         {
             HostPlayerHero = new PlayerHero(1, new Xiangyu(), null, null);
+
+            //处理掉血
+            EventBus.RoundEventHandler roundHandler = async (context, roundContext, responseContext) =>
+            {
+                if (context.AdditionalContext is Player srcPlayer)
+                {
+                    if (srcPlayer.GetCurrentPlayerHero().CurrentLife <= 0)
+                    {
+                        await this.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterDying, HostPlayerHero, context, roundContext, responseContext);
+                    }
+                }
+            };
+            this.GlobalEventBus.ListenEvent(Guid.NewGuid(), HostPlayerHero, EventTypeEnum.AfterLoseLife, (roundHandler));
+            this.GlobalEventBus.ListenEvent(Guid.NewGuid(), HostPlayerHero, EventTypeEnum.AfterAddLife, (roundHandler));
+
             //监控玩家死亡事件。
             //如果有玩家死亡，则判断是否该方队友是否全部阵亡，如果是，则代表该方玩家游戏结束
             //目前简单处理，我方（当前Player）死亡或者对方全部死亡，则游戏结束.todo:各方是否游戏结束要看具体的条件
-            this.GlobalEventBus.ListenEvent(Guid.NewGuid(), HostPlayerHero, EventTypeEnum.AfterDying, (
-                async (context, roundContext, responseContext) =>
+            EventBus.RoundEventHandler roundDyingHandler = async (context, roundContext, responseContext) =>
+            {
+                if (context.AdditionalContext is Player srcPlayer)
                 {
+                    //死前求药:todo:yao.PlayeCard()
+                    var res = await GroupRequestYaoWithConfirm(new CardRequestContext()
+                    {
+                        RequestCard = new Yao(),
+                        SrcPlayer = srcPlayer,
+                        MinCardCountToPlay = 1,
+                        MaxCardCountToPlay = 1,
+                        AttackType = AttackTypeEnum.Qiuyao,
+                        TargetPlayers = Players.Where(p => p.IsAlive()).ToList()
+                    });
+
+                    //await srcPlayer.GetCurrentPlayerHero().AddLife(new AddLifeRequest());
                     //我方死亡，则游戏结束
-                    if (CurrentPlayer == context.SrcPlayer)
+                    if (CurrentPlayer == srcPlayer)
                     {
                         IsGameOver = true;
                         await NotifyPlayersGameEnd(CurrentPlayer.GroupId);
-                        return;
                     }
+
                     //对方全部死亡，则游戏结束
-                    if (context.SrcPlayer != null && Players.All(p => !p.IsAlive() && p.GroupId == context.SrcPlayer.GroupId))
+                    if (context.SrcPlayer != null &&
+                        Players.All(p => !p.IsAlive() && p.GroupId == context.SrcPlayer.GroupId))
                     {
                         IsGameOver = true;
                         await NotifyPlayersGameEnd(context.SrcPlayer.GroupId);
-                        return;
                     }
-                    await Task.FromResult(0);
-                }));
+
+                }
+            };
+            this.GlobalEventBus.ListenEvent(Guid.NewGuid(), HostPlayerHero, EventTypeEnum.AfterDying, (roundDyingHandler));
+
         }
         private object TmpResponseLock = new object();
         /// <summary>
@@ -355,6 +411,62 @@ namespace Logic.GameLevel
                 }
             }
 
+            return response ?? new CardResponseContext();
+        }
+
+        /// <summary>
+        /// 并发请求出药，只需要某一个人出牌即可。
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<CardResponseContext> GroupRequestYaoWithConfirm(CardRequestContext request)
+        {
+            if (request?.TargetPlayers == null || !request.TargetPlayers.Any())
+            {
+                throw new Exception("没有请求目标");
+            }
+
+            if (request.SrcPlayer == null)
+            {
+                throw new Exception("没有来源目标");
+            }
+
+            var tasks = new List<Task<CardResponseContext>>();
+            foreach (var requestTargetPlayer in request.TargetPlayers)
+            {
+                tasks.Add(requestTargetPlayer.ActionManager.OnParallelRequestResponseCard(new CardRequestContext()
+                {
+                    AttackType = request.AttackType,
+                    RequestCard = request.RequestCard,
+                    SrcPlayer = request.SrcPlayer,
+                    MaxCardCountToPlay = request.MaxCardCountToPlay,
+                    MinCardCountToPlay = request.MinCardCountToPlay,
+                    AttackDynamicFactor = request.AttackDynamicFactor,
+                    TargetPlayers = new List<Player>()
+                    {
+                        requestTargetPlayer
+                    }
+                }));
+            }
+
+            CardResponseContext response = null;
+            do
+            {
+                var task = await Task.WhenAny<CardResponseContext>(tasks);
+                var tmpResult = await task;
+                if (tmpResult.Cards?.Any() == true)
+                {
+                    response = tmpResult;
+                }
+                tasks.Remove(task);
+            } while (response == null && tasks.Count > 0);
+
+            var responseCard = response?.Cards?.FirstOrDefault();
+            if (responseCard != null)
+            {
+                //有人响应出牌，则取其中一个才真实出牌
+                var extraRes = await responseCard.PlayCard(new CardRequestContext(), null);
+            }
             return response ?? new CardResponseContext();
         }
 

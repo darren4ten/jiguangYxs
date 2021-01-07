@@ -59,7 +59,7 @@ namespace JiguangYxsConsole
                 PlayerId = 3
             };
 
-            _gameLevel.OnLoad(_player1, new List<Player>() { _player2, _player3 });
+            //_gameLevel.OnLoad(_player1, new List<Player>() { _player2, _player3 });
             _player1.Init();
             _player2.Init();
             _player3.Init();

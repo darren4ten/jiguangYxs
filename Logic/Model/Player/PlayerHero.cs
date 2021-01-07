@@ -159,13 +159,13 @@ namespace Logic.Model.Player
         {
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeLoseLife, request.CardRequestContext,
                  request.CardResponseContext, request.SrcRoundContext);
-            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeLoseLife, null, request.CardRequestContext, request.SrcRoundContext,
+            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeLoseLife, PlayerContext.GameLevel.HostPlayerHero, request.CardRequestContext, request.SrcRoundContext,
                 request.CardResponseContext);
 
 
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.LoseLife, request.CardRequestContext,
                 request.CardResponseContext, request.SrcRoundContext);
-            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.LoseLife, null, request.CardRequestContext, request.SrcRoundContext,
+            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.LoseLife, PlayerContext.GameLevel.HostPlayerHero, request.CardRequestContext, request.SrcRoundContext,
                 request.CardResponseContext);
 
             var actDamage = 0;
@@ -220,10 +220,10 @@ namespace Logic.Model.Player
 
             CurrentLife -= actDamage;
 
-            Console.WriteLine($"{PlayerContext.Player.PlayerName + PlayerContext.Player.PlayerId}的【{Hero.DisplayName}】被“{request.DamageType}”掉血{actDamage}.");
+            Console.WriteLine($"{PlayerContext.Player.PlayerName + PlayerContext.Player.PlayerId}的【{Hero.DisplayName}】被“{request.DamageType.GetDescription()}”掉血{actDamage}.");
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterLoseLife, request.CardRequestContext,
                 request.CardResponseContext, request.SrcRoundContext);
-            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterLoseLife, null, request.CardRequestContext, request.SrcRoundContext,
+            await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterLoseLife, PlayerContext.GameLevel.HostPlayerHero, request.CardRequestContext, request.SrcRoundContext,
                 request.CardResponseContext);
         }
 
@@ -236,42 +236,42 @@ namespace Logic.Model.Player
         {
             if (CurrentLife < BaseAttackFactor.MaxLife)
             {
+                request.CardRequestContext.AdditionalContext = PlayerContext.Player;
                 await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeAddLife, request.CardRequestContext,
                     request.CardResponseContext, request.SrcRoundContext);
-                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeAddLife, null, request.CardRequestContext, request.SrcRoundContext,
+                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeAddLife, PlayerContext.GameLevel.HostPlayerHero, request.CardRequestContext, request.SrcRoundContext,
                     request.CardResponseContext);
 
                 await PlayerContext.Player.TriggerEvent(EventTypeEnum.AddLife, request.CardRequestContext,
                     request.CardResponseContext, request.SrcRoundContext);
-                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AddLife, null, request.CardRequestContext, request.SrcRoundContext,
+                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AddLife, PlayerContext.GameLevel.HostPlayerHero, request.CardRequestContext, request.SrcRoundContext,
                     request.CardResponseContext);
 
-                var defaultRecover = AttackDynamicFactor.GetDefaultBaseAttackFactor();
                 var roundContextAttackDynamicFactor = request.SrcRoundContext?.AttackDynamicFactor;
                 var deltaLife = 0;
                 //吸血
                 if (request.RecoverType == RecoverTypeEnum.Xixue)
                 {
-                    deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.XixueLife + defaultRecover.Recover.XixueLife + (roundContextAttackDynamicFactor?.Recover.XixueLife ?? 0);
+                    deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.XixueLife + (roundContextAttackDynamicFactor?.Recover.XixueLife ?? 0);
                     AddLife(deltaLife, BaseAttackFactor.MaxLife);
                 }
                 //休养生息
                 else if (request.RecoverType == RecoverTypeEnum.Xiuyangshengxi)
                 {
-                    deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.XiuyangshengxiLife + defaultRecover.Recover.XiuyangshengxiLife + (roundContextAttackDynamicFactor?.Recover.XiuyangshengxiLife ?? 0);
+                    deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.XiuyangshengxiLife + (roundContextAttackDynamicFactor?.Recover.XiuyangshengxiLife ?? 0);
                     AddLife(deltaLife, BaseAttackFactor.MaxLife);
                 }
                 //吃药
                 else if (request.RecoverType == RecoverTypeEnum.Yao)
                 {
-                    deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.YaoLife + defaultRecover.Recover.YaoLife + (roundContextAttackDynamicFactor?.Recover.YaoLife ?? 0);
+                    deltaLife = request.CardRequestContext.AttackDynamicFactor.Recover.YaoLife + (roundContextAttackDynamicFactor?.Recover.YaoLife ?? 0);
                     AddLife(deltaLife, BaseAttackFactor.MaxLife);
                 }
 
                 //Console.WriteLine($"{PlayerContext.Player.PlayerName + PlayerContext.Player.PlayerId}的【{Hero.DisplayName}】被“{request.RecoverType}”回复{deltaLife}血.");
                 await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterAddLife, request.CardRequestContext,
                     request.CardResponseContext, request.SrcRoundContext);
-                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterAddLife, null, request.CardRequestContext, request.SrcRoundContext,
+                await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterAddLife, PlayerContext.GameLevel.HostPlayerHero, request.CardRequestContext, request.SrcRoundContext,
                     request.CardResponseContext);
 
                 return true;

@@ -100,6 +100,7 @@ namespace Logic.GameLevel
                 MaxShaTargetCount = 1,
                 MaxShaTimes = 1,
                 PickCardCountPerRound = 2,
+
                 ShaCountAvoidJuedou = 1,
                 ShaDistance = 1,
                 ShanCountAvoidSha = 1,

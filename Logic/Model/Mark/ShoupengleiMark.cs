@@ -56,7 +56,7 @@ namespace Logic.Model.Mark
                         responseContext.Message = "请求被取消，停止判定";
                         return;
                     }
-                    else if (pandingResponse.ResponseResult == Enums.ResponseResultEnum.Success)
+                    else if (pandingResponse.ResponseResult == Enums.ResponseResultEnum.Failed)
                     {
                         responseContext.ResponseResult = Enums.ResponseResultEnum.Success;
                         responseContext.Message = $"手捧雷判定不生效。";
@@ -65,7 +65,7 @@ namespace Logic.Model.Mark
                         await MoveMark();
                         return;
                     }
-                    else if (pandingResponse.ResponseResult == Enums.ResponseResultEnum.Failed)
+                    else if (pandingResponse.ResponseResult == Enums.ResponseResultEnum.Success)
                     {
                         Console.WriteLine($"【手捧雷】判定生效，判定牌为【{pandingResponse.Cards.FirstOrDefault()}】");
                         //判定生效，爆炸

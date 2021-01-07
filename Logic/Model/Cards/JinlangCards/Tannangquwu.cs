@@ -92,7 +92,7 @@ namespace Logic.Model.Cards.JinlangCards
             panelCards = panel.EquipmentCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
             panelCards?.ForEach(async p =>
             {
-                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card}");
                 await panel.CardOwner.RemoveEquipment(p.Card, request, response, roundContext);
                 panel.EquipmentCards.Remove(p);
                 //将此牌放置入手牌中
@@ -102,7 +102,7 @@ namespace Logic.Model.Cards.JinlangCards
             panelCards = panel.InHandCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
             panelCards?.ForEach(async p =>
             {
-                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card}");
                 await panel.CardOwner.RemoveCardsInHand(new List<CardBase>() { p.Card }, request, response, roundContext);
                 //将此牌放置入手牌中
                 await PlayerContext.Player.AddCardsInHand(new List<CardBase>() { p.Card });
