@@ -168,6 +168,84 @@ namespace Tests.Card
             Assert.AreEqual(5, _player3.GetCurrentPlayerHero().CurrentLife);
         }
 
+
+        /// <summary>
+        /// 多个无懈可击（3个无懈可击）
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task WuxiekejiTest_Tannangquwu_MultipleWuxie_Success()
+        {
+
+            var cardToPlay = new Tannangquwu();
+            await _player1.AddCardInHand(cardToPlay);
+            await _player1.AddCardInHand(new Wuxiekeji());
+            await _player2.AddCardsInHand(new List<CardBase>()
+            {
+                new Panlonggun(),
+                new Wuxiekeji()
+            });
+            await _player3.AddCardsInHand(new List<CardBase>()
+            {
+                new Shoupenglei(),
+            });
+
+            Assert.AreEqual(2, _player1.CardsInHand.Count);
+            Assert.AreEqual(2, _player2.CardsInHand.Count);
+            Assert.AreEqual(1, _player3.CardsInHand.Count);
+
+            var response = await cardToPlay.PlayCard(new CardRequestContext()
+            {
+                TargetPlayers = new List<Player>()
+                {
+                    _player2
+                }
+            }, _player1.RoundContext);
+
+            Assert.AreEqual(1, _player1.CardsInHand.Count);
+            Assert.AreEqual(0, _player2.CardsInHand.Count);
+            Assert.AreEqual(1, _player3.CardsInHand.Count);
+        }
+
+        /// <summary>
+        /// 多个无懈可击（4个无懈可击）
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task WuxiekejiTest_Tannangquwu_MultipleWuxie_Failed()
+        {
+            _player3.GroupId = _player2.GroupId;
+            var cardToPlay = new Tannangquwu();
+            await _player1.AddCardInHand(cardToPlay);
+            await _player1.AddCardInHand(new Wuxiekeji());
+            await _player2.AddCardsInHand(new List<CardBase>()
+            {
+                new Panlonggun(),
+                new Wuxiekeji()
+            });
+            await _player3.AddCardsInHand(new List<CardBase>()
+            {
+                new Shoupenglei(),
+                new Wuxiekeji()
+            });
+
+            Assert.AreEqual(2, _player1.CardsInHand.Count);
+            Assert.AreEqual(2, _player2.CardsInHand.Count);
+            Assert.AreEqual(2, _player3.CardsInHand.Count);
+
+            var response = await cardToPlay.PlayCard(new CardRequestContext()
+            {
+                TargetPlayers = new List<Player>()
+                {
+                    _player2
+                }
+            }, _player1.RoundContext);
+
+            Assert.AreEqual(0, _player1.CardsInHand.Count);
+            Assert.AreEqual(1, _player2.CardsInHand.Count);
+            Assert.AreEqual(1, _player3.CardsInHand.Count);
+        }
+
         [Test]
         public async Task WuxiekejiTest_Tannangquwu_Success()
         {

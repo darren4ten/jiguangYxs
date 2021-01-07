@@ -14,7 +14,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 画地为牢
     /// </summary>
-    public class Huadiweilao : JinnangBase, IDelayJinnang
+    public class Huadiweilao : JinnangBase, IDelayJinnang, INeedTargets
     {
         public Huadiweilao()
         {
@@ -33,11 +33,16 @@ namespace Logic.Model.Cards.JinlangCards
             return base.CanBePlayed();
         }
 
-        public override SelectedTargetsRequest GetSelectTargetRequest()
+        public SelectedTargetsRequest GetSelectTargetRequest()
         {
-            var request = base.GetSelectTargetRequest();
-            request.TargetType = AttackTypeEnum.Huadiweilao;
-            return request;
+            return new SelectedTargetsRequest()
+            {
+                MinTargetCount = 1,
+                MaxTargetCount = 1,
+                CardRequest = CardRequestContext.GetBaseCardRequestContext(),
+                RoundContext = PlayerContext.Player.RoundContext,
+                TargetType = AttackTypeEnum.Huadiweilao
+            };
         }
 
         protected override async Task<CardResponseContext> OnAfterPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,

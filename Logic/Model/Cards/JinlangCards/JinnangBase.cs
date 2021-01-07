@@ -67,7 +67,7 @@ namespace Logic.Model.Cards.JinlangCards
                 }, responseContext, roundContext);
                 if (wxResponse.ResponseResult == Enums.ResponseResultEnum.Wuxiekeji)
                 {
-                    wxResponse.ResponseResult = Enums.ResponseResultEnum.Success;
+                    wxResponse.ResponseResult = Enums.ResponseResultEnum.Wuxiekeji;
                     wxResponse.Message = "请求被无懈可击";
                     return wxResponse;
                 }

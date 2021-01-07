@@ -323,8 +323,8 @@ namespace Logic.Model.Player
                 //将牌置于临时牌堆
                 res.Cards.ForEach(async c =>
                 {
-            //是装备牌
-            if (EquipmentSet.Any(p => p == c))
+                    //是装备牌
+                    if (EquipmentSet.Any(p => p == c))
                     {
                         await RemoveEquipment(c, null, null, null);
                     }
@@ -370,15 +370,19 @@ namespace Logic.Model.Player
         public async Task StartMyRound()
         {
             int waitTme = 1200;
+            Console.WriteLine($"");
+            Console.WriteLine($"------------------{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的回合开始------------------");
             await StartStep_EnterMyRound();
             await Task.Delay(waitTme);
             await StartStep_PickCard();
+            Console.WriteLine($"    {PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】【血量：{GetCurrentPlayerHero().CurrentLife},装备:({string.Join(",", EquipmentSet)}),手牌:({string.Join(",", CardsInHand)})，标记牌:({string.Join(",", Marks)})】");
             await Task.Delay(waitTme);
             await StartStep_PlayCard();
             await Task.Delay(waitTme);
             await StartStep_ThrowCard();
             await Task.Delay(waitTme);
             await StartStep_ExitMyRound();
+            Console.WriteLine($"------------------{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的回合结束------------------");
         }
 
         /// <summary>
@@ -410,7 +414,6 @@ namespace Logic.Model.Player
             }
 
             await ActionManager.OnRequestStartStep_EnterMyRound();
-            Console.WriteLine($"进入{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的回合阶段。");
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterEnterMyRound, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.AfterEnterMyRound, request, response, RoundContext);
@@ -718,7 +721,7 @@ namespace Logic.Model.Player
         /// <param name="count"></param>
         public async Task PickCard(int count)
         {
-            var cards = _gameLevel.PickNextCardsFromStack(count);
+            var cards = _gameLevel.PickNextCardsFromStack(count).ToList();
             Console.WriteLine($"{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】摸牌：{string.Join(",", cards)}");
             await AddCardsInHand(cards);
         }

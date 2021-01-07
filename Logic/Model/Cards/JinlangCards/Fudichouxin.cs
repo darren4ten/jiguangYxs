@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.GameLevel;
 using Logic.GameLevel.Panel;
+using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
 
@@ -13,7 +14,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 釜底抽薪
     /// </summary>
-    public class Fudichouxin : JinnangBase
+    public class Fudichouxin : JinnangBase, INeedTargets
     {
         public Fudichouxin()
         {
@@ -21,11 +22,16 @@ namespace Logic.Model.Cards.JinlangCards
             this.Name = "Fudichouxin";
             this.DisplayName = "釜底抽薪";
         }
-        public override SelectedTargetsRequest GetSelectTargetRequest()
+        public SelectedTargetsRequest GetSelectTargetRequest()
         {
-            var request = base.GetSelectTargetRequest();
-            request.TargetType = AttackTypeEnum.Fudichouxin;
-            return request;
+            return new SelectedTargetsRequest()
+            {
+                MinTargetCount = 1,
+                MaxTargetCount = 1,
+                CardRequest = CardRequestContext.GetBaseCardRequestContext(),
+                RoundContext = PlayerContext.Player.RoundContext,
+                TargetType = AttackTypeEnum.Fudichouxin
+            };
         }
 
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)

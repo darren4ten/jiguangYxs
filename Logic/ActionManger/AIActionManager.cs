@@ -285,7 +285,7 @@ namespace Logic.ActionManger
                 #region 是否有探囊取物
                 if (!shouldContinueLoop)
                 {
-                    shouldContinueLoop = await PlayCard<Jiedaosharen>(
+                    shouldContinueLoop = await PlayCard<Tannangquwu>(
                         PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideTannangquwu()));
                 }
                 #endregion
@@ -307,36 +307,42 @@ namespace Logic.ActionManger
                 //是否要画地为牢？
                 if (!shouldContinueLoop)
                 {
-                    shouldContinueLoop = await PlayCard<Yao>(
+                    shouldContinueLoop = await PlayCard<Huadiweilao>(
                         PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideHudadiweilao()));
                 }
 
                 //是否万箭齐发？
                 if (!shouldContinueLoop)
                 {
-                    shouldContinueLoop = await PlayCard<Yao>(
+                    shouldContinueLoop = await PlayCard<Wanjianqifa>(
                         PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideWanjianqifa()));
                 }
 
                 //是否烽火狼烟？
                 if (!shouldContinueLoop)
                 {
-                    shouldContinueLoop = await PlayCard<Yao>(
+                    shouldContinueLoop = await PlayCard<Fenghuolangyan>(
                         PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideFenghuolangyan()));
                 }
 
                 //是否决斗？
                 if (!shouldContinueLoop)
                 {
-                    shouldContinueLoop = await PlayCard<Yao>(
+                    shouldContinueLoop = await PlayCard<Juedou>(
                         PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideJuedou()));
                 }
 
                 //是否休养生息？
                 if (!shouldContinueLoop)
                 {
-                    shouldContinueLoop = await PlayCard<Xiuyangshengxi>(
-                        PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideXiuyangshengxi()));
+                    //如果血量不满的队友的数量>血量不满的敌人，则打出
+                    var alivePlayers = PlayerContext.GameLevel.GetAlivePlayers();
+                    if (alivePlayers.Count(a => a.IsSameGroup(PlayerContext.Player) && a.GetCurrentPlayerHero().CurrentLife < a.GetCurrentPlayerHero().GetAttackFactor().MaxLife) >
+                        alivePlayers.Count(a => !a.IsSameGroup(PlayerContext.Player) && a.GetCurrentPlayerHero().CurrentLife < a.GetCurrentPlayerHero().GetAttackFactor().MaxLife))
+                    {
+                        shouldContinueLoop = await PlayCard<Xiuyangshengxi>(
+                            PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideXiuyangshengxi()));
+                    }
                 }
 
                 //是否装备武器（虎符。。。）？

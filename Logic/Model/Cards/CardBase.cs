@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Logic.GameLevel;
 using Logic.Model.Cards.BaseCards;
+using Logic.Model.Cards.Interface;
 using Logic.Model.Player;
 using Logic.Model.RequestResponse.Request;
 using Logic.Model.RequestResponse.Response;
@@ -105,21 +106,21 @@ namespace Logic.Cards
             return this;
         }
 
-        /// <summary>
-        /// 目标数量
-        /// </summary>
-        /// <returns></returns>
-        public virtual SelectedTargetsRequest GetSelectTargetRequest()
-        {
-            return new SelectedTargetsRequest()
-            {
-                MinTargetCount = 1,
-                MaxTargetCount = 1,
-                CardRequest = CardRequestContext.GetBaseCardRequestContext(),
-                RoundContext = PlayerContext.Player.RoundContext,
-                TargetType = AttackTypeEnum.Sha
-            };
-        }
+        ///// <summary>
+        ///// 目标数量
+        ///// </summary>
+        ///// <returns></returns>
+        //public virtual SelectedTargetsRequest GetSelectTargetRequest()
+        //{
+        //    return new SelectedTargetsRequest()
+        //    {
+        //        MinTargetCount = 1,
+        //        MaxTargetCount = 1,
+        //        CardRequest = CardRequestContext.GetBaseCardRequestContext(),
+        //        RoundContext = PlayerContext.Player.RoundContext,
+        //        TargetType = AttackTypeEnum.Sha
+        //    };
+        //}
 
         /// <summary>
         /// 能够被动出牌
@@ -293,18 +294,29 @@ namespace Logic.Cards
         {
             if (CanBePlayed())
             {
-                var selectRequest = GetSelectTargetRequest();
-                var targetResponse = await SelectTargets(selectRequest);
-
-                if (selectRequest.MinTargetCount == 0 || (targetResponse?.Targets != null && targetResponse.Targets.Count >= selectRequest.MinTargetCount))
+                var request = CardRequestContext.GetBaseCardRequestContext();
+                if (this is INeedTargets)
                 {
-                    var request = CardRequestContext.GetBaseCardRequestContext();
+                    var selectRequest = ((INeedTargets)this).GetSelectTargetRequest();
+                    var targetResponse = await SelectTargets(selectRequest);
+
+                    if (selectRequest.MinTargetCount == 0 || (targetResponse?.Targets != null && targetResponse.Targets.Count >= selectRequest.MinTargetCount))
+                    {
+                        request.SrcPlayer = PlayerContext.Player;
+                        request.TargetPlayers = targetResponse.Targets;
+                        request.AttackType = selectRequest.TargetType;
+                        await PlayCard(request, PlayerContext.Player.RoundContext);
+                        return true;
+                    }
+                }
+                else
+                {
                     request.SrcPlayer = PlayerContext.Player;
-                    request.TargetPlayers = targetResponse.Targets;
-                    request.AttackType = selectRequest.TargetType;
                     await PlayCard(request, PlayerContext.Player.RoundContext);
                     return true;
                 }
+
+                return false;
             }
 
             return false;

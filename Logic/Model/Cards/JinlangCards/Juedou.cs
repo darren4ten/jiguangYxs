@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.GameLevel;
 using Logic.Model.Cards.BaseCards;
+using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
 
@@ -12,7 +13,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 决斗
     /// </summary>
-    public class Juedou : JinnangBase
+    public class Juedou : JinnangBase, INeedTargets
     {
         public Juedou()
         {
@@ -32,11 +33,16 @@ namespace Logic.Model.Cards.JinlangCards
             return PlayerContext.Player.IsInBeidongMode() || PlayerContext.Player.IsInZhudongMode();
         }
 
-        public override SelectedTargetsRequest GetSelectTargetRequest()
+        public SelectedTargetsRequest GetSelectTargetRequest()
         {
-            var request = base.GetSelectTargetRequest();
-            request.TargetType = AttackTypeEnum.Juedou;
-            return request;
+            return new SelectedTargetsRequest()
+            {
+                MinTargetCount = 1,
+                MaxTargetCount = 1,
+                CardRequest = CardRequestContext.GetBaseCardRequestContext(),
+                RoundContext = PlayerContext.Player.RoundContext,
+                TargetType = AttackTypeEnum.Juedou
+            };
         }
 
         #region 覆盖父类方法

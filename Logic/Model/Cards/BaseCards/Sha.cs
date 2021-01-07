@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.GameLevel;
+using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
 
@@ -12,7 +13,7 @@ namespace Logic.Model.Cards.BaseCards
     /// <summary>
     /// 杀
     /// </summary>
-    public class Sha : CardBase
+    public class Sha : CardBase, INeedTargets
     {
         public Sha()
         {
@@ -48,11 +49,16 @@ namespace Logic.Model.Cards.BaseCards
             return CanBePlayed(PlayerContext);
         }
 
-        public override SelectedTargetsRequest GetSelectTargetRequest()
+        public  SelectedTargetsRequest GetSelectTargetRequest()
         {
-            var request = base.GetSelectTargetRequest();
-            request.TargetType = AttackTypeEnum.Sha;
-            return request;
+            return new SelectedTargetsRequest()
+            {
+                MinTargetCount = 1,
+                MaxTargetCount = 1,
+                CardRequest = CardRequestContext.GetBaseCardRequestContext(),
+                RoundContext = PlayerContext.Player.RoundContext,
+                TargetType = AttackTypeEnum.Sha
+            };
         }
 
         /// <summary>

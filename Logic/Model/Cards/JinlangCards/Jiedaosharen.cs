@@ -14,7 +14,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 借刀杀人
     /// </summary>
-    public class Jiedaosharen : JinnangBase
+    public class Jiedaosharen : JinnangBase, INeedTargets
     {
         public Jiedaosharen()
         {
@@ -31,11 +31,16 @@ namespace Logic.Model.Cards.JinlangCards
             return (PlayerContext.Player.IsInZhudongMode() && PlayerContext.GameLevel.Players.Any(p => p.IsAlive() && p.EquipmentSet.Any(e => e is IWeapon))) || PlayerContext.Player.IsInBeidongMode();
         }
 
-        public override SelectedTargetsRequest GetSelectTargetRequest()
+        public SelectedTargetsRequest GetSelectTargetRequest()
         {
-            var request = base.GetSelectTargetRequest();
-            request.TargetType = AttackTypeEnum.Jiedaosharen;
-            return request;
+            return new SelectedTargetsRequest()
+            {
+                MinTargetCount = 1,
+                MaxTargetCount = 1,
+                CardRequest = CardRequestContext.GetBaseCardRequestContext(),
+                RoundContext = PlayerContext.Player.RoundContext,
+                TargetType = AttackTypeEnum.Jiedaosharen
+            };
         }
 
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)

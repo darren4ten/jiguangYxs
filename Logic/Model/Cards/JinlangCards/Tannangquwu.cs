@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.GameLevel;
 using Logic.GameLevel.Panel;
+using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
 
@@ -13,7 +14,7 @@ namespace Logic.Model.Cards.JinlangCards
     /// <summary>
     /// 探囊取物
     /// </summary>
-    public class Tannangquwu : JinnangBase
+    public class Tannangquwu : JinnangBase, INeedTargets
     {
         public Tannangquwu()
         {
@@ -21,12 +22,16 @@ namespace Logic.Model.Cards.JinlangCards
             this.Name = "Tannangquwu";
             this.DisplayName = "探囊取物";
         }
-
-        public override SelectedTargetsRequest GetSelectTargetRequest()
+        public SelectedTargetsRequest GetSelectTargetRequest()
         {
-            var request = base.GetSelectTargetRequest();
-            request.TargetType = AttackTypeEnum.Tannangquwu;
-            return request;
+            return new SelectedTargetsRequest()
+            {
+                MinTargetCount = 1,
+                MaxTargetCount = 1,
+                CardRequest = CardRequestContext.GetBaseCardRequestContext(),
+                RoundContext = PlayerContext.Player.RoundContext,
+                TargetType = AttackTypeEnum.Tannangquwu
+            };
         }
 
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)

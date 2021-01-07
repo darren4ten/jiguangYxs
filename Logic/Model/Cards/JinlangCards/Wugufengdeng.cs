@@ -92,7 +92,7 @@ namespace Logic.Model.Cards.JinlangCards
                     Panel = panel
                 }, cardResponseContext, roundContext);
                 //todo:摸牌动画以及触发摸牌事件
-                currentPlayer.CardsInHand.AddRange(res.Cards);
+                await currentPlayer.AddCardsInHand(res.Cards);
                 currentPlayer = currentPlayer.GetNextPlayer(false);
             } while (currentPlayer != null && currentPlayer != PlayerContext.Player);
 

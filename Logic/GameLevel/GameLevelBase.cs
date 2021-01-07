@@ -347,8 +347,14 @@ namespace Logic.GameLevel
             if (responseCard != null)
             {
                 //有人响应出牌，则取其中一个才真实出牌
-                await responseCard.PlayCard(new CardRequestContext(), null);
+                var extraRes = await responseCard.PlayCard(new CardRequestContext(), null);
+                if (response.ResponseResult == ResponseResultEnum.Wuxiekeji && extraRes.ResponseResult == ResponseResultEnum.Wuxiekeji)
+                {
+                    response.ResponseResult = ResponseResultEnum.Failed;
+                    response.Message = "";
+                }
             }
+
             return response ?? new CardResponseContext();
         }
 

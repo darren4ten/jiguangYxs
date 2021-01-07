@@ -29,6 +29,7 @@ namespace Logic.Model.Cards.JinlangCards
             //必须场上活人有血量不满时才能打出
             return base.CanBePlayed() && PlayerContext.GameLevel.Players.Any(p => p.IsAlive() && p.GetCurrentPlayerHero().CurrentLife < p.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
         }
+
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
             cardRequestContext.AttackType = Enums.AttackTypeEnum.Wanjianqifa;
