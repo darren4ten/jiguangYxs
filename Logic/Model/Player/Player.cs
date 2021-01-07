@@ -172,11 +172,13 @@ namespace Logic.Model.Player
         }
 
         /// <summary>
-        /// 判断当前玩家是否可以选择targetPlayer作为目标
+        /// 判断当前玩家是否可以选择targetPlayer作为目标，会考虑所有因素，如距离，控局，不能被特定牌选中
         /// </summary>
         /// <param name="targetPlayer"></param>
+        /// <param name="card">用来检查的牌</param>
+        /// <param name="attackType"></param>
         /// <returns></returns>
-        public async Task<bool> IsAvailableForPlayer(Player targetPlayer, AttackTypeEnum attackType)
+        public async Task<bool> IsAvailableForPlayer(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
         {
             switch (attackType)
             {
@@ -185,54 +187,76 @@ namespace Logic.Model.Player
                 case AttackTypeEnum.Sha:
                     {
                         //是杀，则需要检查攻击范围
-                        return await IsAvailableForPlayer_Sha(targetPlayer, attackType);
+                        return await IsAvailableForPlayer_Sha(targetPlayer, card, attackType);
                     }
                 case AttackTypeEnum.Juedou:
-                    break;
-                case AttackTypeEnum.Fenghuolangyan:
-                    break;
-                case AttackTypeEnum.Wanjianqifa:
+                    {
+                        //是决斗
+                        return await IsAvailableForPlayer_Juedou(targetPlayer, card, attackType);
+                    }
+                    //case AttackTypeEnum.Fenghuolangyan:
+                    //    break;
+                    //case AttackTypeEnum.Wanjianqifa:
+                    //    break;
+                    //case AttackTypeEnum.Bolangchui:
+                    //    break;
+                    //case AttackTypeEnum.Panlonggun:
+                    //    break;
+                    //case AttackTypeEnum.SelectCard:
+                    //    break;
+                    //case AttackTypeEnum.Wugufengdeng:
+                    //    break;
+                    //case AttackTypeEnum.Xiuyangshengxi:
+                    //    break;
+                    //case AttackTypeEnum.Longlindao:
+                    //    break;
+                    //case AttackTypeEnum.Luyeqiang:
+                    //    break;
+                    //case AttackTypeEnum.Wuzhongshengyou:
+                    //    break;
+                    //case AttackTypeEnum.Wuxiekeji:
+                    //    break;
+                    //case AttackTypeEnum.GroupRequestWithConfirm:
                     break;
                 case AttackTypeEnum.Xiadan:
-                    break;
+                    {
+                        //是侠胆
+                        return true;
+                    }
                 case AttackTypeEnum.Hongyan:
-                    break;
+                    {
+                        return await IsAvailableForPlayer_Hongyan(targetPlayer, card, attackType);
+                    }
                 case AttackTypeEnum.Gongxin:
-                    break;
-                case AttackTypeEnum.GroupRequestWithConfirm:
-                    break;
-                case AttackTypeEnum.Wuzhongshengyou:
-                    break;
-                case AttackTypeEnum.Wuxiekeji:
-                    break;
+                    {
+                        return await IsAvailableForPlayer_Gongxin(targetPlayer, card, attackType);
+                    }
                 case AttackTypeEnum.Jiedaosharen:
-                    break;
+                    {
+                        return await IsAvailableForPlayer_Jiedaosharen(targetPlayer, card, attackType);
+                    }
                 case AttackTypeEnum.Fudichouxin:
-                    break;
-                case AttackTypeEnum.Wugufengdeng:
-                    break;
-                case AttackTypeEnum.Xiuyangshengxi:
-                    break;
-                case AttackTypeEnum.Longlindao:
-                    break;
-                case AttackTypeEnum.Luyeqiang:
-                    break;
+                    {
+                        return await IsAvailableForPlayer_Fudichouxin(targetPlayer, card, attackType);
+                    }
                 case AttackTypeEnum.Huadiweilao:
-                    break;
+                    {
+                        return await IsAvailableForPlayer_Huadiweilao(targetPlayer, card, attackType);
+                    }
                 case AttackTypeEnum.Tannangquwu:
-                    break;
-                case AttackTypeEnum.Bolangchui:
-                    break;
-                case AttackTypeEnum.Panlonggun:
-                    break;
-                case AttackTypeEnum.SelectCard:
-                    break;
+                    {
+                        return await IsAvailableForPlayer_Tannangquwu(targetPlayer, card, attackType);
+                    }
                 case AttackTypeEnum.Liaoshang:
-                    break;
+                    {
+                        return await IsAvailableForPlayer_Liaoshang(targetPlayer, card, attackType);
+                    }
                 case AttackTypeEnum.Zhiyu:
-                    break;
+                    {
+                        return await IsAvailableForPlayer_Zhiyu(targetPlayer, card, attackType);
+                    }
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(attackType), attackType, null);
+                    return false;
             }
             return false;
         }
@@ -1044,8 +1068,152 @@ namespace Logic.Model.Player
         #endregion
 
         #region IsAvailableForPlayer的具体逻辑
+        /// <summary>
+        /// 是否可以被治愈
+        /// </summary>
+        /// <param name="targetPlayer"></param>
+        /// <param name="card"></param>
+        /// <param name="attackType"></param>
+        /// <returns></returns>
+        private async Task<bool> IsAvailableForPlayer_Zhiyu(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
+        {
+            //血量不能为满
+            if (targetPlayer.GetCurrentPlayerHero().CurrentLife < targetPlayer.GetCurrentPlayerHero().GetAttackFactor().MaxLife)
+            {
+                return await IsAvailableForPlayer_NoLimit(targetPlayer, card, attackType);
+            }
 
-        private async Task<bool> IsAvailableForPlayer_Sha(Player targetPlayer, AttackTypeEnum attackType)
+            return false;
+        }
+
+        /// <summary>
+        /// 是否可以被疗伤
+        /// </summary>
+        /// <param name="targetPlayer"></param>
+        /// <param name="card"></param>
+        /// <param name="attackType"></param>
+        /// <returns></returns>
+        private async Task<bool> IsAvailableForPlayer_Liaoshang(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
+        {
+            if (targetPlayer.GetCurrentPlayerHero().CurrentLife < targetPlayer.GetCurrentPlayerHero().GetAttackFactor().MaxLife)
+            {
+                return await IsAvailableForPlayer_NoLimit(targetPlayer, card, attackType);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 是否可以被画地为牢
+        /// </summary>
+        /// <param name="targetPlayer"></param>
+        /// <param name="card"></param>
+        /// <param name="attackType"></param>
+        /// <returns></returns>
+        private async Task<bool> IsAvailableForPlayer_Huadiweilao(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
+        {
+            return await IsAvailableForPlayer_NoLimit(targetPlayer, card, attackType);
+        }
+
+        /// <summary>
+        /// 是否可以被探囊取物
+        /// </summary>
+        /// <param name="targetPlayer"></param>
+        /// <param name="card"></param>
+        /// <param name="attackType"></param>
+        /// <returns></returns>
+        private async Task<bool> IsAvailableForPlayer_Tannangquwu(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
+        {
+            //检查距离
+            //获取两个player之间的距离，检查是否在攻击范围内
+            var dist = _gameLevel.GetPlayersDistance(this, targetPlayer);
+            if (dist.TannangDistance > RoundContext.AttackDynamicFactor.TannangDistance)
+            {
+                //不在攻击范围
+                return false;
+            }
+            return await IsAvailableForPlayer_NoLimit(targetPlayer, card, attackType);
+        }
+
+        /// <summary>
+        /// 是否可以被釜底抽薪
+        /// </summary>
+        /// <param name="targetPlayer"></param>
+        /// <param name="card"></param>
+        /// <param name="attackType"></param>
+        /// <returns></returns>
+        private async Task<bool> IsAvailableForPlayer_Fudichouxin(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
+        {
+            return await IsAvailableForPlayer_NoLimit(targetPlayer, card, attackType);
+        }
+
+        /// <summary>
+        /// 是否可以被借刀杀人
+        /// </summary>
+        /// <param name="targetPlayer"></param>
+        /// <param name="card"></param>
+        /// <param name="attackType"></param>
+        /// <returns></returns>
+        private async Task<bool> IsAvailableForPlayer_Jiedaosharen(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
+        {
+            return await IsAvailableForPlayer_NoLimit(targetPlayer, card, attackType);
+        }
+
+        /// <summary>
+        /// 是否可以被攻心
+        /// </summary>
+        /// <param name="targetPlayer"></param>
+        /// <param name="card"></param>
+        /// <param name="attackType"></param>
+        /// <returns></returns>
+        private async Task<bool> IsAvailableForPlayer_Gongxin(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
+        {
+            return await IsAvailableForPlayer_NoLimit(targetPlayer, card, attackType);
+        }
+
+        /// <summary>
+        /// 是否可以被红颜
+        /// </summary>
+        /// <param name="targetPlayer"></param>
+        /// <param name="card"></param>
+        /// <param name="attackType"></param>
+        /// <returns></returns>
+        private async Task<bool> IsAvailableForPlayer_Hongyan(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
+        {
+            return await IsAvailableForPlayer_NoLimit(targetPlayer, card, attackType);
+        }
+
+        /// <summary>
+        /// 除了技能可能引起的限制外，没有别的限制
+        /// </summary>
+        /// <param name="targetPlayer"></param>
+        /// <param name="card"></param>
+        /// <param name="attackType"></param>
+        /// <returns></returns>
+        private async Task<bool> IsAvailableForPlayer_NoLimit(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
+        {
+            var checkRes = await targetPlayer.SelectiblityCheck(new SelectiblityCheckRequest()
+            {
+                SrcPlayer = this,
+                TargetType = attackType,
+                SrcCards = new List<CardBase>(1) { card }
+            });
+            if (checkRes.CanBeSelected)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 是否可以被杀
+        /// </summary>
+        /// <param name="targetPlayer"></param>
+        /// <param name="card"></param>
+        /// <param name="attackType"></param>
+        /// <returns></returns>
+        private async Task<bool> IsAvailableForPlayer_Sha(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
         {
             //获取两个player之间的距离，检查是否在攻击范围内
             var dist = _gameLevel.GetPlayersDistance(this, targetPlayer);
@@ -1058,7 +1226,31 @@ namespace Logic.Model.Player
             var checkRes = await targetPlayer.SelectiblityCheck(new SelectiblityCheckRequest()
             {
                 SrcPlayer = this,
-                TargetType = attackType
+                TargetType = attackType,
+                SrcCards = new List<CardBase>(1) { card }
+            });
+            if (checkRes.CanBeSelected)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 是否可以被决斗
+        /// </summary>
+        /// <param name="targetPlayer"></param>
+        /// <param name="card"></param>
+        /// <param name="attackType"></param>
+        /// <returns></returns>
+        private async Task<bool> IsAvailableForPlayer_Juedou(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
+        {
+            var checkRes = await targetPlayer.SelectiblityCheck(new SelectiblityCheckRequest()
+            {
+                SrcPlayer = this,
+                TargetType = attackType,
+                SrcCards = new List<CardBase>(1) { card }
             });
             if (checkRes.CanBeSelected)
             {

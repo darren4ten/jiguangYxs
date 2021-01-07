@@ -551,16 +551,25 @@ namespace Logic.ActionManger
                         return await GetTargets_Fudichouxin(request, alivePlayers);
                     }
                 case AttackTypeEnum.Huadiweilao:
-                    break;
+                    {
+                        //选择画地为牢的目标
+                        return await GetTargets_Huadiweilao(request, alivePlayers);
+                    }
                 case AttackTypeEnum.Tannangquwu:
                     {
                         //选择探囊取物的目标
                         return await GetTargets_Tannangquwu(request, alivePlayers);
                     }
                 case AttackTypeEnum.Liaoshang:
-                    break;
+                    {
+                        //选择疗伤的目标
+                        return await GetTargets_Liaoshang(request, alivePlayers);
+                    }
                 case AttackTypeEnum.Zhiyu:
-                    break;
+                    {
+                        //选择疗伤的目标
+                        return await GetTargets_Zhiyu(request, alivePlayers);
+                    }
                 default:
                     return new SelectedTargetsResponse()
                     {
@@ -687,6 +696,83 @@ namespace Logic.ActionManger
         #region 私有方法
 
         #region OnRequestSelectTargets 选择目标的逻辑
+        /// <summary>
+        /// 获取治愈的目标
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="players"></param>
+        /// <returns></returns>
+        private async Task<SelectedTargetsResponse> GetTargets_Zhiyu(SelectedTargetsRequest request, IEnumerable<Player> players)
+        {
+            SelectedTargetsResponse response = new SelectedTargetsResponse();
+            //选择的目标：血量最低、手牌最少的友方
+            var targets = players.Where(p => p.IsSameGroup(PlayerContext.Player) && p.GetCurrentPlayerHero().CurrentLife < p.GetCurrentPlayerHero().GetAttackFactor().MaxLife).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife).ThenBy(p => p.CardsInHand.Count);
+            foreach (var target in targets)
+            {
+                if (response.Targets.Count >= request.MaxTargetCount)
+                {
+                    break;
+                }
+                if (await PlayerContext.Player.IsAvailableForPlayer(target, request.SrcCards?.FirstOrDefault(), AttackTypeEnum.Zhiyu))
+                {
+                    response.Targets.Add(target);
+                }
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// 获取疗伤的目标
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="players"></param>
+        /// <returns></returns>
+        private async Task<SelectedTargetsResponse> GetTargets_Liaoshang(SelectedTargetsRequest request, IEnumerable<Player> players)
+        {
+            SelectedTargetsResponse response = new SelectedTargetsResponse();
+            //选择的目标：血量最低、手牌最少的友方
+            var targets = players.Where(p => p.IsSameGroup(PlayerContext.Player) && p.GetCurrentPlayerHero().CurrentLife < p.GetCurrentPlayerHero().GetAttackFactor().MaxLife).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife).ThenBy(p => p.CardsInHand.Count);
+            foreach (var target in targets)
+            {
+                if (response.Targets.Count >= request.MaxTargetCount)
+                {
+                    break;
+                }
+                if (await PlayerContext.Player.IsAvailableForPlayer(target, request.SrcCards?.FirstOrDefault(), AttackTypeEnum.Liaoshang))
+                {
+                    response.Targets.Add(target);
+                }
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// 获取画地为牢的目标
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="players"></param>
+        /// <returns></returns>
+        private async Task<SelectedTargetsResponse> GetTargets_Huadiweilao(SelectedTargetsRequest request, IEnumerable<Player> players)
+        {
+            SelectedTargetsResponse response = new SelectedTargetsResponse();
+            //选择的目标：选择手牌/血量比最高的一个敌方。5牌/4血-3牌/2血
+            var targets = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.CardsInHand.Count / p.GetCurrentPlayerHero().CurrentLife).ThenBy(p => p.CardsInHand.Count);
+            foreach (var target in targets)
+            {
+                if (response.Targets.Count >= request.MaxTargetCount)
+                {
+                    break;
+                }
+                if (await PlayerContext.Player.IsAvailableForPlayer(target, request.SrcCards?.FirstOrDefault(), AttackTypeEnum.Huadiweilao))
+                {
+                    response.Targets.Add(target);
+                }
+            }
+
+            return response;
+        }
 
         /// <summary>
         /// 获取杀的目标
@@ -706,19 +792,8 @@ namespace Logic.ActionManger
                     break;
                 }
                 //获取两个player之间的距离，检查是否在攻击范围内
-                var dist = PlayerContext.GameLevel.GetPlayersDistance(PlayerContext.Player, target);
-                if (dist.ShaDistance > PlayerContext.Player.RoundContext.AttackDynamicFactor.ShaDistance)
-                {
-                    //不在攻击范围，跳过
-                    continue;
-                }
-
-                var checkRes = await target.SelectiblityCheck(new SelectiblityCheckRequest()
-                {
-                    SrcPlayer = PlayerContext.Player,
-                    SrcCards = request.SrcCards
-                });
-                if (checkRes.CanBeSelected)
+                var canBeSelected = await PlayerContext.Player.IsAvailableForPlayer(target, request.SrcCards?.FirstOrDefault(), AttackTypeEnum.Sha);
+                if (canBeSelected)
                 {
                     response.Targets.Add(target);
                 }
@@ -745,12 +820,7 @@ namespace Logic.ActionManger
                     break;
                 }
 
-                var checkRes = await target.SelectiblityCheck(new SelectiblityCheckRequest()
-                {
-                    SrcPlayer = PlayerContext.Player,
-                    SrcCards = request.SrcCards
-                });
-                if (checkRes.CanBeSelected)
+                if (await PlayerContext.Player.IsAvailableForPlayer(target, request.SrcCards?.FirstOrDefault(), AttackTypeEnum.Juedou))
                 {
                     response.Targets.Add(target);
                 }
@@ -776,12 +846,7 @@ namespace Logic.ActionManger
                 {
                     break;
                 }
-                var checkRes = await target.SelectiblityCheck(new SelectiblityCheckRequest()
-                {
-                    SrcPlayer = PlayerContext.Player,
-                    SrcCards = request.SrcCards
-                });
-                if (checkRes.CanBeSelected)
+                if (await PlayerContext.Player.IsAvailableForPlayer(target, request.SrcCards?.FirstOrDefault(), AttackTypeEnum.Xiadan))
                 {
                     response.Targets.Add(target);
                 }
@@ -802,7 +867,16 @@ namespace Logic.ActionManger
             //选择的目标：
             //  1. 敌方存活人数>=2时：选择血量最低的和最高的敌方
             //  2. 敌方存活人数=1时：如果该敌方手中的牌数<=2且己方队友手中杀的数量>=1则选择
-            var enemies = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife).ToList();
+            List<Player> enemies = new List<Player>();
+            foreach (var player in players)
+            {
+                if (!player.IsSameGroup(PlayerContext.Player) &&
+                    (await PlayerContext.Player.IsAvailableForPlayer(player, null, AttackTypeEnum.Hongyan)))
+                {
+                    enemies.Add(player);
+                }
+            }
+            enemies = enemies.OrderBy(p => p.GetCurrentPlayerHero().CurrentLife).ToList();
             if (enemies.Count() >= 2)
             {
                 response.Targets.Add(enemies.First());
@@ -814,8 +888,16 @@ namespace Logic.ActionManger
                 var enemy = enemies.First();
                 if (enemy.CardsInHand.Count <= 2)
                 {
-                    var friend = players.Where(p => p.IsSameGroup(PlayerContext.Player) && p != PlayerContext.Player && p.CardsInHand.Count(c => c is Sha) >= 1)
-                          .OrderByDescending(p => p.CardsInHand.Count(c => c is Sha)).FirstOrDefault();
+                    List<Player> friends = new List<Player>();
+                    foreach (var player in players)
+                    {
+                        if (player.IsSameGroup(PlayerContext.Player) && player != PlayerContext.Player && player.CardsInHand.Count(c => c is Sha) >= 1 &&
+                            (await PlayerContext.Player.IsAvailableForPlayer(player, null, AttackTypeEnum.Hongyan)))
+                        {
+                            friends.Add(player);
+                        }
+                    }
+                    var friend = friends.OrderByDescending(p => p.CardsInHand.Count(c => c is Sha)).FirstOrDefault();
                     if (friend != null)
                     {
                         response.Targets.Add(enemies.First());
@@ -846,12 +928,7 @@ namespace Logic.ActionManger
                     break;
                 }
 
-                var checkRes = await target.SelectiblityCheck(new SelectiblityCheckRequest()
-                {
-                    SrcPlayer = PlayerContext.Player,
-                    SrcCards = request.SrcCards
-                });
-                if (checkRes.CanBeSelected)
+                if (await PlayerContext.Player.IsAvailableForPlayer(target, request.SrcCards?.FirstOrDefault(), AttackTypeEnum.Gongxin))
                 {
                     response.Targets.Add(target);
                 }
@@ -870,9 +947,17 @@ namespace Logic.ActionManger
         {
             SelectedTargetsResponse response = new SelectedTargetsResponse();
             //选择借刀人对象，获取所有的有武器的玩家：
-
             var playersWithWeapons = players.Where(p => p.EquipmentSet?.Any(e => e is IWeapon) == true).ToList();
-            var enemies = playersWithWeapons.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.CardsInHand.Count).ToList();
+            List<Player> enemies = new List<Player>();
+            playersWithWeapons.ForEach(async p =>
+            {
+                if (!p.IsSameGroup(PlayerContext.Player) && (await PlayerContext.Player.IsAvailableForPlayer(p, null, AttackTypeEnum.Jiedaosharen)))
+                {
+                    enemies.Add(p);
+                }
+            });
+            enemies = enemies.OrderBy(p => p.CardsInHand.Count).ToList();
+
             var firstEnemy = enemies.FirstOrDefault();
             if (firstEnemy != null)
             {
@@ -894,12 +979,21 @@ namespace Logic.ActionManger
             else if (playersWithWeapons.Any(p => p.IsSameGroup(PlayerContext.Player)))
             {
                 //2. 敌方没武器，我方有武器。如果敌方有血量=1且该友方手牌中杀的数量>=1，则选择一个杀数量最多的一个友方作为借刀人
-                var friend = playersWithWeapons.Where(p => p.IsSameGroup(PlayerContext.Player) && p.CardsInHand.Count(c => c is Sha) >= 1).OrderByDescending(p => p.CardsInHand.Count(c => c is Sha)).FirstOrDefault();
-                var enemy = players.FirstOrDefault(p => !p.IsSameGroup(PlayerContext.Player) && p.GetCurrentPlayerHero().CurrentLife <= 1);
+                List<Player> friends = new List<Player>();
+                playersWithWeapons.ForEach(async p =>
+                {
+                    if (p.IsSameGroup(PlayerContext.Player) && p.CardsInHand.Count(c => c is Sha) >= 1 && (await PlayerContext.Player.IsAvailableForPlayer(p, null, AttackTypeEnum.Jiedaosharen)))
+                    {
+                        friends.Add(p);
+                    }
+                });
+                friends = friends.OrderBy(p => p.CardsInHand.Count).ToList();
+                var friend = friends.OrderByDescending(p => p.CardsInHand.Count(c => c is Sha)).FirstOrDefault();
+                var enemy = enemies.FirstOrDefault(p => p.GetCurrentPlayerHero().CurrentLife <= 1);
                 if (friend != null && enemy != null)
                 {
-                    response.Targets.Add(enemies.First());
-                    response.Targets.Add(playersWithWeapons.Where(p => p.IsSameGroup(PlayerContext.Player)).OrderByDescending(p => p.GetCurrentPlayerHero().CurrentLife).First());
+                    response.Targets.Add(enemy);
+                    response.Targets.Add(friend);
                     return response;
                 }
             }
@@ -928,12 +1022,7 @@ namespace Logic.ActionManger
                 }
 
                 //todo:潜在的衔接问题，真正执行釜底抽薪的时候，要再判断一下到底是抽牌还是抽标记
-                var checkRes = await friendPlayersWithNegativeMark.SelectiblityCheck(new SelectiblityCheckRequest()
-                {
-                    SrcPlayer = PlayerContext.Player,
-                    SrcCards = request.SrcCards
-                });
-                if (checkRes.CanBeSelected)
+                if (await PlayerContext.Player.IsAvailableForPlayer(friendPlayersWithNegativeMark, request.SrcCards?.FirstOrDefault(), AttackTypeEnum.Fudichouxin))
                 {
                     response.Targets.Add(friendPlayersWithNegativeMark);
                 }
@@ -946,7 +1035,7 @@ namespace Logic.ActionManger
             }
 
             //  2. 友方没有负面标记牌或者不在范围内，则选择敌方血量最低的，手牌最少的（必须有手牌或者装备牌或者标记牌）
-            var enemies = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife);
+            var enemies = players.Where(p => !p.IsSameGroup(PlayerContext.Player) && (p.CardsInHand?.Any() == true || p.EquipmentSet?.Any() == true)).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife);
             foreach (var target in enemies)
             {
                 if (response.Targets.Count >= request.MaxTargetCount)
@@ -954,12 +1043,7 @@ namespace Logic.ActionManger
                     break;
                 }
 
-                var checkRes = await target.SelectiblityCheck(new SelectiblityCheckRequest()
-                {
-                    SrcPlayer = PlayerContext.Player,
-                    SrcCards = request.SrcCards
-                });
-                if (checkRes.CanBeSelected)
+                if (await PlayerContext.Player.IsAvailableForPlayer(target, request.SrcCards?.FirstOrDefault(), AttackTypeEnum.Fudichouxin))
                 {
                     response.Targets.Add(target);
                 }
@@ -969,7 +1053,7 @@ namespace Logic.ActionManger
         }
 
         /// <summary>
-        /// 获取釜底抽薪的目标
+        /// 获取探囊取物的目标
         /// </summary>
         /// <param name="request"></param>
         /// <param name="players"></param>
@@ -989,12 +1073,7 @@ namespace Logic.ActionManger
                 }
 
                 //todo:潜在的衔接问题，真正执行釜底抽薪的时候，要再判断一下到底是抽牌还是抽标记
-                var checkRes = await friendPlayersWithNegativeMark.SelectiblityCheck(new SelectiblityCheckRequest()
-                {
-                    SrcPlayer = PlayerContext.Player,
-                    SrcCards = request.SrcCards
-                });
-                if (checkRes.CanBeSelected)
+                if (await PlayerContext.Player.IsAvailableForPlayer(friendPlayersWithNegativeMark, request.SrcCards?.FirstOrDefault(), AttackTypeEnum.Tannangquwu))
                 {
                     response.Targets.Add(friendPlayersWithNegativeMark);
                 }
@@ -1007,7 +1086,7 @@ namespace Logic.ActionManger
             }
 
             //  2. 友方没有负面标记牌或者不在范围内，则选择敌方血量最低的，手牌最少的（必须有手牌或者装备牌或者标记牌）
-            var enemies = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife);
+            var enemies = players.Where(p => !p.IsSameGroup(PlayerContext.Player) && (p.CardsInHand?.Any() == true || p.EquipmentSet?.Any() == true)).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife);
             foreach (var target in enemies)
             {
                 if (response.Targets.Count >= request.MaxTargetCount)
@@ -1015,12 +1094,7 @@ namespace Logic.ActionManger
                     break;
                 }
 
-                var checkRes = await target.SelectiblityCheck(new SelectiblityCheckRequest()
-                {
-                    SrcPlayer = PlayerContext.Player,
-                    SrcCards = request.SrcCards
-                });
-                if (checkRes.CanBeSelected)
+                if (await PlayerContext.Player.IsAvailableForPlayer(target, request.SrcCards?.FirstOrDefault(), AttackTypeEnum.Fudichouxin))
                 {
                     response.Targets.Add(target);
                 }
