@@ -94,6 +94,10 @@ namespace Logic.Model.Cards.JinlangCards
             while (resTarget.ResponseResult == Enums.ResponseResultEnum.Success)
             {
                 isSuccess = false;
+                //被决斗方有可能要求出多张杀
+                var targetHero = target.GetCurrentPlayerHero();
+                cardRequestContext.MaxCardCountToPlay = targetHero.BaseAttackFactor.ShaCountAvoidJuedou;
+                cardRequestContext.MinCardCountToPlay = targetHero.BaseAttackFactor.ShaCountAvoidJuedou;
                 resTarget = await PlayerContext.Player.ResponseCard(cardRequestContext, cardResponseContext, roundContext);
                 if (resTarget.ResponseResult == ResponseResultEnum.Success)
                 {
