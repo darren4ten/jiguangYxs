@@ -400,7 +400,7 @@ namespace Logic.Model.Player
 
         public async Task StartMyRound()
         {
-            int waitTme = 1200;
+            int waitTme = 200;
             Console.WriteLine($"");
             Console.WriteLine($"------------------{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的回合开始------------------");
             await StartStep_EnterMyRound();
@@ -456,6 +456,10 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_PickCard()
         {
+            if (!IsAlive())
+            {
+                return;
+            }
             var request = new CardRequestContext();
             var response = new CardResponseContext();
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforePickCard, _gameLevel.HostPlayerHero,
@@ -486,6 +490,11 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_PlayCard()
         {
+            if (!IsAlive())
+            {
+                return;
+            }
+
             Console.WriteLine($"进入{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的出牌阶段。");
             if (RoundContext.AttackDynamicFactor.SkipOption.ShouldSkipPlayCard)
             {
@@ -522,6 +531,11 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_ThrowCard()
         {
+            if (!IsAlive())
+            {
+                return;
+            }
+
             Console.WriteLine($"进入{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的弃牌阶段。");
             var request = new CardRequestContext();
             var response = new CardResponseContext();

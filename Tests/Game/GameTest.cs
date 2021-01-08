@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Logic.ActionManger;
 using Logic.GameLevel;
 using Logic.GameLevel.Levels;
+using Logic.Model.Cards.BaseCards;
 using Logic.Model.Hero.Presizdent;
 using Logic.Model.Player;
 using Logic.Model.Skill;
@@ -62,7 +63,6 @@ namespace Tests.Game
                 PlayerId = 3
             };
 
-            _gameLevel.OnLoad(_player1, new List<Player>() { _player2, _player3 });
             _player1.Init();
             _player2.Init();
             _player3.Init();
@@ -70,12 +70,31 @@ namespace Tests.Game
 
         #endregion
         [Test]
-        public async Task RunGame_Success()
+        public async Task GameOver_Success()
         {
-            //Assert.DoesNotThrowAsync(async () =>
-            //{
-            //    await _gameLevel.Start(_player1, new List<Player>() { _player2, _player3 });
-            //});
+
+            //游戏正常结束，且我方胜利
+            Assert.DoesNotThrowAsync(async () =>
+            {
+                await _gameLevel.Start(_player1, new List<Player>() { _player2 }, (delegate
+                     {
+                         var rc = new RoundContext()
+                         {
+                             AttackDynamicFactor = AttackDynamicFactor.GetDefaultDeltaAttackFactor()
+                         };
+                         rc.AttackDynamicFactor.Damage.ShaDamage += 6;
+                         var sha = new Sha();
+                         _player1.AddCardInHand((sha)).GetAwaiter().GetResult();
+                         var res = sha.PlayCard(new CardRequestContext()
+                         {
+                             TargetPlayers = new List<Player>()
+                             {
+                                 _player2
+                             }
+                         }, rc).GetAwaiter().GetResult();
+                         Console.WriteLine(res);
+                     }));
+            });
         }
     }
 }

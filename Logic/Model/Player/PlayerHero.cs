@@ -167,6 +167,7 @@ namespace Logic.Model.Player
             await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeLoseLife, PlayerContext.GameLevel.HostPlayerHero, request.CardRequestContext, request.SrcRoundContext,
                 request.CardResponseContext);
 
+            request.CardRequestContext.AdditionalContext = PlayerContext.Player;
 
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.LoseLife, request.CardRequestContext,
                 request.CardResponseContext, request.SrcRoundContext);

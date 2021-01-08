@@ -36,6 +36,11 @@ namespace Logic.GameLevel
         /// </summary>
         public bool IsGameOver { get; set; }
 
+        /// <summary>
+        /// 胜利方组Id
+        /// </summary>
+        public Guid VictorGroupId { get; set; }
+
         protected Queue<CardBase> UnUsedCardStack { get; set; }
         protected Queue<CardBase> UsedCardStack { get; set; }
 
@@ -248,6 +253,11 @@ namespace Logic.GameLevel
             SetupGameStatusCheck();
         }
 
+        public virtual async Task OnAfterLoaded()
+        {
+            await Task.FromResult(0);
+        }
+
         /// <summary>
         /// 获取最先出牌的player
         /// </summary>
@@ -264,13 +274,16 @@ namespace Logic.GameLevel
         /// </summary>
         /// <param name="currentPlayer">当前玩家</param>
         /// <param name="aditionalPlayers">其他玩家</param>
+        /// <param name="action">OnAfterLoaded之后需要执行的代码</param>
         /// <returns></returns>
-        public virtual async Task Start(Player currentPlayer, List<Player> aditionalPlayers)
+        public virtual async Task Start(Player currentPlayer, List<Player> aditionalPlayers, Action action = null)
         {
             OnLoad(currentPlayer, aditionalPlayers);
             InitCardsForPlayers(currentPlayer, aditionalPlayers);
             Console.WriteLine("Game Started!");
             var curPlayer = GetXianshouPlayer();
+            await OnAfterLoaded();
+            action?.Invoke();
             while (!IsGameOver)
             {
                 await curPlayer.StartMyRound();
@@ -338,25 +351,28 @@ namespace Logic.GameLevel
                         //如果玩家死亡，则判断游戏是否结束
                         if (!srcPlayer.IsAlive())
                         {
-                            //我方死亡，则游戏结束
-                            if (CurrentPlayer == srcPlayer)
+                            //通知所有人该玩家死亡
+                            await NotifyPlayerDeath(srcPlayer);
+
+                            //检查该阵营是否都阵亡了，如果是，则通知该阵营游戏失败
+                            if (Players.Where(p => p.GroupId == srcPlayer.GroupId).All(p => !p.IsAlive()))
                             {
-                                IsGameOver = true;
-                                await NotifyPlayerGameEnd(CurrentPlayer, false);
+                                foreach (var player in Players.Where(p => p.GroupId == srcPlayer.GroupId))
+                                {
+                                    await NotifyPlayerFailure(player);
+                                }
                             }
 
-                            //敌方全部死亡，则游戏结束
-                            if (Players.All(p => !p.IsAlive() && p.GroupId == context.SrcPlayer.GroupId))
-                            {
-                                IsGameOver = true;
-                                await NotifyPlayersGameEnd(srcPlayer.GroupId);
-                            }
-
-                            //如果当前活着的的只剩下一个阵营，则通知该阵营胜利
+                            //检查当前是否只剩下一个阵营，如果是，则游戏结束，该阵营玩家胜利
                             if (GetAlivePlayers().Select(p => p.GroupId).Distinct().Count() == 1)
                             {
-                                var victor = GetAlivePlayers().First();
-                                await NotifyPlayersGameEnd(victor.GroupId);
+                                var first = GetAlivePlayers().First();
+                                foreach (var player in Players.Where(p => p.GroupId == first.GroupId))
+                                {
+                                    await NotifyPlayerSuccess(player);
+                                }
+
+                                IsGameOver = true;
                             }
                         }
                     }
@@ -436,34 +452,50 @@ namespace Logic.GameLevel
         }
 
         /// <summary>
-        /// 通知玩家游戏结束
+        /// 通知玩家游戏成功
         /// </summary>
-        /// <param name="victorGroupId">胜利方的groupdId</param>
+        /// <param name="player"></param>
         /// <returns></returns>
-        protected virtual async Task NotifyPlayersGameEnd(Guid victorGroupId)
+        protected virtual async Task NotifyPlayerSuccess(Player player)
         {
-            foreach (var p in Players)
-            {
-                if (p.GroupId == victorGroupId)
-                {
-                    await NotifyPlayerGameEnd(p, true);
-                }
-                else
-                {
-                    await NotifyPlayerGameEnd(p, false);
-                }
-            }
+            Console.WriteLine($"***{player.PlayerId}【{player.GetCurrentPlayerHero().Hero.DisplayName}】玩家您游戏胜利。");
+            await Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// 通知玩家游戏失败
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        protected virtual async Task NotifyPlayerFailure(Player player)
+        {
+            //通知玩家本人死亡
+            Console.WriteLine($"***{player.PlayerId}【{player.GetCurrentPlayerHero().Hero.DisplayName}】玩家您游戏失败。");
+            await Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// 通知玩家死亡
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        protected virtual async Task NotifyPlayerDeath(Player player)
+        {
+            //通知玩家本人死亡
+            Console.WriteLine($"***{player.PlayerId}【{player.GetCurrentPlayerHero().Hero.DisplayName}】玩家您已经死亡。");
+            //通知在场所有的人player死亡
+            await Task.FromResult(0);
         }
 
         /// <summary>
         /// 通知玩家游戏结束
         /// </summary>
         /// <param name="player"></param>
-        /// <param name="isSucess"></param>
+        /// <param name="isVictor">玩家是否胜利</param>
         /// <returns></returns>
-        protected virtual async Task NotifyPlayerGameEnd(Player player, bool isSucess)
+        protected virtual async Task NotifyPlayerGameEnd(Player player, bool isVictor)
         {
-            Console.WriteLine($"***{player.PlayerId}【{player.GetCurrentPlayerHero().Hero.DisplayName}】游戏{(isSucess ? "胜利！" : "失败！")}");
+            Console.WriteLine($"***{player.PlayerId}【{player.GetCurrentPlayerHero().Hero.DisplayName}】玩家您已经{(isVictor ? "胜利！" : "失败！")}");
             await Task.FromResult(0);
         }
 
