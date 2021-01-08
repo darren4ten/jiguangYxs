@@ -52,6 +52,11 @@ namespace Logic.Model.Player
         public bool IsDead { get; set; }
 
         /// <summary>
+        /// 是否是活跃状态
+        /// </summary>
+        public bool IsActive { get; set; }
+
+        /// <summary>
         /// 基础攻击属性
         /// </summary>
         public AttackDynamicFactor BaseAttackFactor { get; set; }

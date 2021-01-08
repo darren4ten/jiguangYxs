@@ -90,14 +90,19 @@ namespace Logic.Model.Cards.JinlangCards
         {
             var target = cardRequestContext.TargetPlayers.First();
             var resTarget = await target.ResponseCard(cardRequestContext, cardResponseContext, roundContext);
+            bool isSuccess = true;
             while (resTarget.ResponseResult == Enums.ResponseResultEnum.Success)
             {
-                var resSrc = await target.ResponseCard(cardRequestContext, cardResponseContext, roundContext);
-                if (resSrc.ResponseResult == ResponseResultEnum.Success)
+                isSuccess = false;
+                resTarget = await PlayerContext.Player.ResponseCard(cardRequestContext, cardResponseContext, roundContext);
+                if (resTarget.ResponseResult == ResponseResultEnum.Success)
                 {
+                    isSuccess = true;
                     resTarget = await target.ResponseCard(cardRequestContext, cardResponseContext, roundContext);
                 }
             }
+            //如果isSuccess=true则代表当前玩家决斗成功，敌方没有闪避成功
+            resTarget.ResponseResult = isSuccess ? ResponseResultEnum.Failed : ResponseResultEnum.Success;
             return resTarget;
         }
 
@@ -112,10 +117,10 @@ namespace Logic.Model.Cards.JinlangCards
             //如果返回失败，则掉血
             if (actResponse.ResponseResult == ResponseResultEnum.Failed)
             {
-                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeJuedouSuccess,
+                var target = cardRequestContext.TargetPlayers.First();
+                await target.TriggerEvent(Enums.EventTypeEnum.BeforeJuedouSuccess,
                     cardRequestContext, actResponse, roundContext);
-                var player = cardRequestContext.TargetPlayers.First();
-                await player.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
+                await target.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
                 {
                     CardRequestContext = cardRequestContext,
                     SrcRoundContext = roundContext,
@@ -124,15 +129,25 @@ namespace Logic.Model.Cards.JinlangCards
                     RequestId = Guid.NewGuid()
                 });
 
-                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.JuedouSuccess, cardRequestContext,
+                await target.TriggerEvent(Enums.EventTypeEnum.JuedouSuccess, cardRequestContext,
                     actResponse, roundContext);
-                await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterJuedouSuccess,
+                await target.TriggerEvent(Enums.EventTypeEnum.AfterJuedouSuccess,
                     cardRequestContext, actResponse, roundContext);
             }
             else
             {
+                //否则则是决斗失败，自己掉血
+
                 await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeJuedouFailed,
                     cardRequestContext, actResponse, roundContext);
+                await PlayerContext.Player.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
+                {
+                    CardRequestContext = cardRequestContext,
+                    SrcRoundContext = roundContext,
+                    CardResponseContext = actResponse,
+                    DamageType = DamageTypeEnum.Juedou,
+                    RequestId = Guid.NewGuid()
+                });
                 await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.JuedouFailed, cardRequestContext,
                     actResponse, roundContext);
                 await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.AfterJuedouFailed,

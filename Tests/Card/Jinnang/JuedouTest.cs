@@ -74,7 +74,7 @@ namespace Tests.Card
                     }
             }, player1.RoundContext).GetAwaiter().GetResult();
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(4, player1.GetCurrentPlayerHero().CurrentLife);
             Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
         }
 

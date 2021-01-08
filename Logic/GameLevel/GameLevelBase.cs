@@ -10,6 +10,7 @@ using Logic.ActionManger;
 using Logic.Event;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.EquipmentCards;
+using Logic.Model.Cards.JinlangCards;
 using Logic.Model.Cards.MutedCards;
 using Logic.Model.Enums;
 using Logic.Model.Hero.Presizdent;
@@ -320,7 +321,7 @@ namespace Logic.GameLevel
                 if (context.AdditionalContext is Player srcPlayer)
                 {
                     //死前求药:todo:yao.PlayeCard()
-                    var res = await GroupRequestYaoWithConfirm(new CardRequestContext()
+                    var res = await GroupRequestWithConfirm(new CardRequestContext()
                     {
                         RequestCard = new Yao(),
                         SrcPlayer = srcPlayer,
@@ -330,22 +331,35 @@ namespace Logic.GameLevel
                         TargetPlayers = Players.Where(p => p.IsAlive()).ToList()
                     });
 
-                    //await srcPlayer.GetCurrentPlayerHero().AddLife(new AddLifeRequest());
-                    //我方死亡，则游戏结束
-                    if (CurrentPlayer == srcPlayer)
+                    if (res.ResponseResult != ResponseResultEnum.Success)
                     {
-                        IsGameOver = true;
-                        await NotifyPlayersGameEnd(CurrentPlayer.GroupId);
-                    }
+                        //没有人出药则死亡
+                        await srcPlayer.MakeDie();
+                        //如果玩家死亡，则判断游戏是否结束
+                        if (!srcPlayer.IsAlive())
+                        {
+                            //我方死亡，则游戏结束
+                            if (CurrentPlayer == srcPlayer)
+                            {
+                                IsGameOver = true;
+                                await NotifyPlayerGameEnd(CurrentPlayer, false);
+                            }
 
-                    //对方全部死亡，则游戏结束
-                    if (context.SrcPlayer != null &&
-                        Players.All(p => !p.IsAlive() && p.GroupId == context.SrcPlayer.GroupId))
-                    {
-                        IsGameOver = true;
-                        await NotifyPlayersGameEnd(context.SrcPlayer.GroupId);
-                    }
+                            //敌方全部死亡，则游戏结束
+                            if (Players.All(p => !p.IsAlive() && p.GroupId == context.SrcPlayer.GroupId))
+                            {
+                                IsGameOver = true;
+                                await NotifyPlayersGameEnd(srcPlayer.GroupId);
+                            }
 
+                            //如果当前活着的的只剩下一个阵营，则通知该阵营胜利
+                            if (GetAlivePlayers().Select(p => p.GroupId).Distinct().Count() == 1)
+                            {
+                                var victor = GetAlivePlayers().First();
+                                await NotifyPlayersGameEnd(victor.GroupId);
+                            }
+                        }
+                    }
                 }
             };
             this.GlobalEventBus.ListenEvent(Guid.NewGuid(), HostPlayerHero, EventTypeEnum.AfterDying, (roundDyingHandler));
@@ -402,8 +416,15 @@ namespace Logic.GameLevel
             var responseCard = response?.Cards?.FirstOrDefault();
             if (responseCard != null)
             {
+                response.ResponseResult = request.RequestCard is Wuxiekeji ? ResponseResultEnum.Wuxiekeji : ResponseResultEnum.Success;
                 //有人响应出牌，则取其中一个才真实出牌
-                var extraRes = await responseCard.PlayCard(new CardRequestContext(), null);
+                var extraRes = await responseCard.PlayCard(new CardRequestContext()
+                {
+                    TargetPlayers = new List<Player>()
+                    {
+                        responseCard.PlayerContext.Player
+                    }
+                }, null);
                 if (response.ResponseResult == ResponseResultEnum.Wuxiekeji && extraRes.ResponseResult == ResponseResultEnum.Wuxiekeji)
                 {
                     response.ResponseResult = ResponseResultEnum.Failed;
@@ -411,62 +432,6 @@ namespace Logic.GameLevel
                 }
             }
 
-            return response ?? new CardResponseContext();
-        }
-
-        /// <summary>
-        /// 并发请求出药，只需要某一个人出牌即可。
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public async Task<CardResponseContext> GroupRequestYaoWithConfirm(CardRequestContext request)
-        {
-            if (request?.TargetPlayers == null || !request.TargetPlayers.Any())
-            {
-                throw new Exception("没有请求目标");
-            }
-
-            if (request.SrcPlayer == null)
-            {
-                throw new Exception("没有来源目标");
-            }
-
-            var tasks = new List<Task<CardResponseContext>>();
-            foreach (var requestTargetPlayer in request.TargetPlayers)
-            {
-                tasks.Add(requestTargetPlayer.ActionManager.OnParallelRequestResponseCard(new CardRequestContext()
-                {
-                    AttackType = request.AttackType,
-                    RequestCard = request.RequestCard,
-                    SrcPlayer = request.SrcPlayer,
-                    MaxCardCountToPlay = request.MaxCardCountToPlay,
-                    MinCardCountToPlay = request.MinCardCountToPlay,
-                    AttackDynamicFactor = request.AttackDynamicFactor,
-                    TargetPlayers = new List<Player>()
-                    {
-                        requestTargetPlayer
-                    }
-                }));
-            }
-
-            CardResponseContext response = null;
-            do
-            {
-                var task = await Task.WhenAny<CardResponseContext>(tasks);
-                var tmpResult = await task;
-                if (tmpResult.Cards?.Any() == true)
-                {
-                    response = tmpResult;
-                }
-                tasks.Remove(task);
-            } while (response == null && tasks.Count > 0);
-
-            var responseCard = response?.Cards?.FirstOrDefault();
-            if (responseCard != null)
-            {
-                //有人响应出牌，则取其中一个才真实出牌
-                var extraRes = await responseCard.PlayCard(new CardRequestContext(), null);
-            }
             return response ?? new CardResponseContext();
         }
 
@@ -498,6 +463,7 @@ namespace Logic.GameLevel
         /// <returns></returns>
         protected virtual async Task NotifyPlayerGameEnd(Player player, bool isSucess)
         {
+            Console.WriteLine($"***{player.PlayerId}【{player.GetCurrentPlayerHero().Hero.DisplayName}】游戏{(isSucess ? "胜利！" : "失败！")}");
             await Task.FromResult(0);
         }
 

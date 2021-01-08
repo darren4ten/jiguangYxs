@@ -42,6 +42,24 @@ namespace Logic.Model.Player
         }
 
         /// <summary>
+        /// 使当前英雄死亡,如果有其他或者的player则切换
+        /// </summary>
+        /// <returns></returns>
+        public async Task MakeDie()
+        {
+            GetCurrentPlayerHero().IsDead = true;
+            //如果有或者的英雄，则切换
+            var aliveHero = _availablePlayerHeroes.FirstOrDefault(p => !p.IsDead);
+            if (aliveHero != null)
+            {
+                GetCurrentPlayerHero().IsActive = false;
+                aliveHero.IsActive = true;
+            }
+
+            await Task.FromResult(0);
+        }
+
+        /// <summary>
         /// 玩家姓名
         /// </summary>
         public string PlayerName { get; set; }
@@ -121,6 +139,15 @@ namespace Logic.Model.Player
             _gameLevel = gameLevel;
             ActionManager = actionManager;
             _availablePlayerHeroes = availablePlayerHeroes;
+            //如果没有指定过active 玩家则将第一个定为活跃
+            if (!_availablePlayerHeroes.Any(p => p.IsActive))
+            {
+                var first = _availablePlayerHeroes.FirstOrDefault();
+                if (first != null)
+                {
+                    first.IsActive = true;
+                }
+            }
             CardsInHand = new List<CardBase>();
             Marks = new List<Mark.MarkBase>();
             EquipmentSet = new List<CardBase>();
@@ -158,7 +185,7 @@ namespace Logic.Model.Player
         /// </summary>
         public PlayerHero GetCurrentPlayerHero()
         {
-            return _availablePlayerHeroes.OrderByDescending(p => p.IsDead).First();
+            return _availablePlayerHeroes.First(p => p.IsActive);
         }
 
         /// <summary>
@@ -334,6 +361,10 @@ namespace Logic.Model.Player
                     }
                 });
                 _gameLevel.TempCardDesk.Add(res.Cards);
+                if (res.ResponseResult == ResponseResultEnum.UnKnown && res.Cards.Count() >= cardRequestContext.MinCardCountToPlay && res.Cards.Count <= cardRequestContext.MaxCardCountToPlay)
+                {
+                    res.ResponseResult = ResponseResultEnum.Success;
+                }
             }
             //清除被请求的上下文
             CardRequestContext = null;

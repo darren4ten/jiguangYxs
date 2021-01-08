@@ -76,7 +76,8 @@ namespace Logic.Model.Cards.BaseCards
         /// <returns></returns>
         protected async Task<CardResponseContext> ExecuteAction(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
-            await PlayerContext.Player.GetCurrentPlayerHero().AddLife(new AddLifeRequest()
+            var target = cardRequestContext.SrcPlayer ?? PlayerContext.Player;
+            await target.GetCurrentPlayerHero().AddLife(new AddLifeRequest()
             {
                 CardRequestContext = cardRequestContext,
                 CardResponseContext = cardResponseContext,
