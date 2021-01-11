@@ -84,28 +84,22 @@ namespace Logic.Model.Cards.JinlangCards
             panelCards?.ForEach(async p =>
             {
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                await panel.CardOwner.MoveCard(PlayerContext.Player, MoveSourceTypeEnum.Equipment, new List<CardBase>() { p.Card });
                 await panel.CardOwner.RemoveMark(p.Mark);
-                //将此牌放置入手牌中
-                await PlayerContext.Player.AddCardsInHand(new List<CardBase>() { p.Card });
             });
             //检查装备
             panelCards = panel.EquipmentCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
             panelCards?.ForEach(async p =>
             {
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card}");
-                await panel.CardOwner.RemoveEquipment(p.Card, request, response, roundContext);
-                panel.EquipmentCards.Remove(p);
-                //将此牌放置入手牌中
-                await PlayerContext.Player.AddCardsInHand(new List<CardBase>() { p.Card });
+                await panel.CardOwner.MoveCard(PlayerContext.Player, MoveSourceTypeEnum.Equipment, new List<CardBase>() { p.Card });
             });
             //检查手牌
             panelCards = panel.InHandCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
             panelCards?.ForEach(async p =>
             {
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card}");
-                await panel.CardOwner.RemoveCardsInHand(new List<CardBase>() { p.Card }, request, response, roundContext);
-                //将此牌放置入手牌中
-                await PlayerContext.Player.AddCardsInHand(new List<CardBase>() { p.Card });
+                await panel.CardOwner.MoveCard(PlayerContext.Player, MoveSourceTypeEnum.CardsInHand, new List<CardBase>() { p.Card });
             });
             await Task.FromResult(0);
         }

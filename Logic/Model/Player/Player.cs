@@ -460,6 +460,7 @@ namespace Logic.Model.Player
             {
                 return;
             }
+            Console.WriteLine($"进入{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的摸牌阶段。");
             var request = new CardRequestContext();
             var response = new CardResponseContext();
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforePickCard, _gameLevel.HostPlayerHero,
@@ -481,7 +482,6 @@ namespace Logic.Model.Player
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterPickCard, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.AfterPickCard, request, response, RoundContext);
-            Console.WriteLine($"进入{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的摸牌阶段。");
         }
 
         /// <summary>
@@ -613,7 +613,7 @@ namespace Logic.Model.Player
         /// <summary>
         /// 移除手牌，会触发事件
         /// </summary>
-        /// <param name="equipmentCard"></param>
+        /// <param name="cards"></param>
         /// <param name="request"></param>
         /// <param name="response"></param>
         /// <param name="roundContext"></param>
@@ -657,8 +657,10 @@ namespace Logic.Model.Player
                 return;
             }
 
-            var removedEq = EquipmentSet.Remove(equipmentCard);
             await equip.UnEquip();
+            var removedEq = EquipmentSet.Remove(equipmentCard);
+            //卸载装备时将卡牌放入临时弃牌堆
+            _gameLevel.TempCardDesk.Add(equipmentCard);
             //触发卸载装备的事件
             Console.WriteLine($"移除装备{equip.DisplayName}{(removedEq ? "成功!" : "失败!!!")}");
         }
@@ -789,14 +791,42 @@ namespace Logic.Model.Player
         /// 把当前牌移交给toPlayer
         /// </summary>
         /// <param name="toPlayer"></param>
+        /// <param name="sourceType"></param>
         /// <param name="cards"></param>
-        public async Task MoveCard(Player toPlayer, List<CardBase> cards)
+        public async Task MoveCard(Player toPlayer, MoveSourceTypeEnum sourceType, List<CardBase> cards)
         {
+            if (cards == null)
+            {
+                return;
+            }
+            await TriggerEvent(EventTypeEnum.BeforeLoseCardsInHand, null, null, null);
+            await TriggerEvent(EventTypeEnum.LoseCardsInHand, null, null, null);
+            List<CardBase> avCards = null;
+            if (sourceType == MoveSourceTypeEnum.CardsInHand)
+            {
+                avCards = CardsInHand;
+            }
+            else if (sourceType == MoveSourceTypeEnum.Equipment)
+            {
+                avCards = EquipmentSet;
+                cards.ForEach(async c =>
+                {
+                    if (c is EquipmentBase eq)
+                    {
+                        await eq.UnEquip();
+                    }
+                });
+            }
+            else if (sourceType == MoveSourceTypeEnum.Marks)
+            {
+                avCards = Marks.Where(p => p.MarkType == MarkTypeEnum.Card).Select(c => c.Cards.FirstOrDefault()).ToList();
+            }
             //移除手牌中的对应牌
-            CardsInHand.RemoveAll(c => cards.Any(m => m.CardId == c.CardId));
+            cards.ForEach(c => avCards?.Remove(c));
             //将弃掉的牌装目标手牌
-            toPlayer.CardsInHand.AddRange(cards);
-            Console.WriteLine($"{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】将牌：{string.Join(",", cards)}移交给{toPlayer.PlayerId}【{toPlayer.GetCurrentPlayerHero().Hero.DisplayName}】");
+            await toPlayer.AddCardsInHand(cards);
+            await TriggerEvent(EventTypeEnum.AfterLoseCardsInHand, null, null, null);
+            //Console.WriteLine($"{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】将牌：{string.Join(",", cards)}移交给{toPlayer.PlayerId}【{toPlayer.GetCurrentPlayerHero().Hero.DisplayName}】");
             await Task.FromResult("");
         }
 
@@ -982,8 +1012,8 @@ namespace Logic.Model.Player
                 var exist = EquipmentSet.FirstOrDefault(p => p is T);
                 if (exist != null)
                 {
-                    EquipmentSet.Remove(exist);
                     await (exist as EquipmentBase).UnEquip();
+                    EquipmentSet.Remove(exist);
                 }
                 EquipmentSet.Add(equipmentCard);
                 await equipment.Equip();

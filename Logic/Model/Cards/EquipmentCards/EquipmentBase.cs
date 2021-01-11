@@ -72,8 +72,6 @@ namespace Logic.Model.Cards.EquipmentCards
             await OnBeforeUnEquip();
             await OnUnEquip();
             await OnAfterUnEquip();
-            //卸载装备时将卡牌放入临时弃牌堆
-            PlayerContext.GameLevel.TempCardDesk.Add(this);
         }
 
         public bool IsViewableInSkillPanel()

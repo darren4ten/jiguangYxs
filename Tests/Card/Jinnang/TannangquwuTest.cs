@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Logic.ActionManger;
@@ -53,7 +54,6 @@ namespace Tests.Card
             gameLevel1.OnLoad(player1, new List<Player>() { player2 });
             var cardToPlay = new Tannangquwu().AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });
             player1.CardsInHand.Add(cardToPlay);
-            player1.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
             player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
             player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
 
@@ -66,7 +66,9 @@ namespace Tests.Card
                     }
             }, player1.RoundContext);
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
-            Assert.AreEqual(2, player1.CardsInHand.Count);
+            Assert.AreEqual(1, player1.CardsInHand.Count);
+            Assert.AreNotEqual(null, player1.CardsInHand.First().PlayerContext);
+            Assert.AreEqual(player1.PlayerId, player1.CardsInHand.First().PlayerContext.Player.PlayerId);
             Assert.AreEqual(1, player2.CardsInHand.Count);
         }
     }
