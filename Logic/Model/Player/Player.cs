@@ -554,10 +554,7 @@ namespace Logic.Model.Player
             }
 
             await ActionManager.OnRequestStartStep_ThrowCard();
-            //回合结束时将临时牌堆中的牌放入弃牌堆.
-            _gameLevel.ThrowCardToStack(_gameLevel.TempCardDesk.Cards);
-            _gameLevel.TempCardDesk.Clear();
-
+          
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterThrowCard, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.AfterThrowCard, request, response, RoundContext);
@@ -589,6 +586,9 @@ namespace Logic.Model.Player
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterEndRound, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.AfterEndRound, request, response, RoundContext);
+            //回合结束时将临时牌堆中的牌放入弃牌堆.
+            _gameLevel.ThrowCardToStack(_gameLevel.TempCardDesk.Cards);
+            _gameLevel.TempCardDesk.Clear();
         }
 
         /// <summary>
