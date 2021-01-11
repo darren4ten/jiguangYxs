@@ -9,6 +9,7 @@ using Logic.GameLevel;
 using Logic.Model.Cards;
 using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Cards.Interface;
+using Logic.Model.Cards.JinlangCards;
 using Logic.Model.Enums;
 using Logic.Model.Interface;
 using Logic.Model.Mark;
@@ -554,7 +555,7 @@ namespace Logic.Model.Player
             }
 
             await ActionManager.OnRequestStartStep_ThrowCard();
-          
+
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterThrowCard, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.AfterThrowCard, request, response, RoundContext);
@@ -791,46 +792,44 @@ namespace Logic.Model.Player
         }
 
         /// <summary>
-        /// 把当前牌移交给toPlayer
+        /// 把牌从当前玩家手中、装备中移除但不放置如牌堆。（如探囊取物）
         /// </summary>
         /// <param name="toPlayer"></param>
-        /// <param name="sourceType"></param>
         /// <param name="cards"></param>
-        public async Task MoveCard(Player toPlayer, MoveSourceTypeEnum sourceType, List<CardBase> cards)
+        public async Task RemoveCardsButNotThrow(Player toPlayer, List<CardBase> cards)
         {
             if (cards == null)
             {
                 return;
             }
-            await TriggerEvent(EventTypeEnum.BeforeLoseCardsInHand, null, null, null);
-            await TriggerEvent(EventTypeEnum.LoseCardsInHand, null, null, null);
-            List<CardBase> avCards = null;
-            if (sourceType == MoveSourceTypeEnum.CardsInHand)
+            //如果是手牌会触发手牌减少事件。
+            var cardsInhand = CardsInHand.Where(p => cards.Any(c => c == p)).ToList();
+            if (cardsInhand.Any())
             {
-                avCards = CardsInHand;
+                await TriggerEvent(EventTypeEnum.BeforeLoseCardsInHand, null, null, null);
+                await TriggerEvent(EventTypeEnum.LoseCardsInHand, null, null, null);
+                await RemoveCardsInHand(cardsInhand, null, null, null);
+                await TriggerEvent(EventTypeEnum.AfterLoseCardsInHand, null, null, null);
             }
-            else if (sourceType == MoveSourceTypeEnum.Equipment)
+
+            //如果当前牌是武器牌则触发武器牌的卸载
+            var equipments = EquipmentSet.Where(p => cards.Any(c => c == p)).ToList();
+            equipments.ForEach(async eq =>
             {
-                avCards = EquipmentSet;
-                cards.ForEach(async c =>
-                {
-                    if (c is EquipmentBase eq)
-                    {
-                        await eq.UnEquip();
-                    }
-                });
-            }
-            else if (sourceType == MoveSourceTypeEnum.Marks)
-            {
-                avCards = Marks.Where(p => p.MarkType == MarkTypeEnum.Card).Select(c => c.Cards.FirstOrDefault()).ToList();
-            }
-            //移除手牌中的对应牌
-            cards.ForEach(c => avCards?.Remove(c));
+                await RemoveEquipment(eq, null, null, null);
+            });
+        }
+
+        /// <summary>
+        /// 把当前牌移交给toPlayer的手牌中.如，探囊取物。如果当前牌是武器牌，会触发武器牌的卸载；如果是手牌会触发手牌减少事件。
+        /// </summary>
+        /// <param name="toPlayer"></param>
+        /// <param name="cards"></param>
+        public async Task MoveCardToTargetHand(Player toPlayer, List<CardBase> cards)
+        {
+            await RemoveCardsButNotThrow(toPlayer, cards);
             //将弃掉的牌装目标手牌
             await toPlayer.AddCardsInHand(cards);
-            await TriggerEvent(EventTypeEnum.AfterLoseCardsInHand, null, null, null);
-            //Console.WriteLine($"{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】将牌：{string.Join(",", cards)}移交给{toPlayer.PlayerId}【{toPlayer.GetCurrentPlayerHero().Hero.DisplayName}】");
-            await Task.FromResult("");
         }
 
         /// <summary>

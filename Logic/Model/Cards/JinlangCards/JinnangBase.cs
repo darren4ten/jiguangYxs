@@ -49,11 +49,15 @@ namespace Logic.Model.Cards.JinlangCards
             {
                 await PlayerContext.Player.TriggerEvent(EventTypeEnum.PlayJinnang, cardRequestContext, responseContext,
                     roundContext);
+                //非延时锦囊，将该牌置入TempCardDesk
+                await PlayerContext.Player.RemoveCardsInHand(new List<CardBase>() { this }, cardRequestContext,
+                    responseContext, roundContext);
             }
-
-            //将该牌置入TempCardDesk
-            await PlayerContext.Player.RemoveCardsInHand(new List<CardBase>() { this }, cardRequestContext,
-                responseContext, roundContext);
+            else
+            {
+                //延时锦囊，只从手中移除
+                await PlayerContext.Player.RemoveCardsButNotThrow(PlayerContext.Player, new List<CardBase>() { this });
+            }
 
             //检查是否有无懈可击
             if (!(this is IDelayJinnang || this is IGroupJinnang))

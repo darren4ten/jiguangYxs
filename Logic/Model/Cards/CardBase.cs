@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Logic.GameLevel;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.Interface;
+using Logic.Model.Cards.MutedCards;
 using Logic.Model.Player;
 using Logic.Model.RequestResponse.Request;
 using Logic.Model.RequestResponse.Response;
@@ -134,6 +135,22 @@ namespace Logic.Cards
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// 判断给定的卡是否是指定的牌
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="card"></param>
+        /// <returns></returns>
+        public bool Is<T>(CardBase card) where T : CardBase
+        {
+            if (card is ChangedCard c)
+            {
+                return c.TargetCard is T;
+            }
+
+            return card is T;
         }
 
         #region 主动出牌，Play card

@@ -75,14 +75,16 @@ namespace Logic.Model.Cards.JinlangCards
             if (cardRes.Cards != null && cardRes.Cards.Any())
             {
                 var sha = cardRes.Cards.First();
-                await sha.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player.Player>() { to}), null);
+                await sha.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player.Player>() { to }), null);
             }
             else
             {
                 var weapon = from.EquipmentSet.FirstOrDefault(p => p is IWeapon);
                 //没有杀则获得from的武器
-                await from.RemoveEquipment(weapon, null, null, null);
-                await PlayerContext.Player.AddCardInHand(weapon);
+                await from.MoveCardToTargetHand(to, new List<CardBase>()
+                {
+                    weapon
+                });
             }
             return cardResponseContext;
         }
