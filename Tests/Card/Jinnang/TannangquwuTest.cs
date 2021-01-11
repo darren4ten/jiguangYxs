@@ -54,16 +54,17 @@ namespace Tests.Card
             gameLevel1.OnLoad(player1, new List<Player>() { player2 });
             var cardToPlay = new Tannangquwu().AttachPlayerContext(new PlayerContext() { Player = player1, GameLevel = gameLevel1 });
             player1.CardsInHand.Add(cardToPlay);
-            player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
-            player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
-
+            var p2Sha = new Sha();
+            await player2.AddCardInHand(p2Sha);
 
             var response = await cardToPlay.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext);
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
+            Assert.AreEqual(true, gameLevel1.TempCardDesk.Cards.Any(c => c == cardToPlay), "探囊取物应该被放入弃牌堆");
+            Assert.AreEqual(false, gameLevel1.TempCardDesk.Cards.Any(c => c == p2Sha), "该“杀”不应该被放入弃牌堆。");
             Assert.AreEqual(1, player1.CardsInHand.Count);
             Assert.AreNotEqual(null, player1.CardsInHand.First().PlayerContext);
             Assert.AreEqual(player1.PlayerId, player1.CardsInHand.First().PlayerContext.Player.PlayerId);
-            Assert.AreEqual(1, player2.CardsInHand.Count);
+            Assert.AreEqual(0, player2.CardsInHand.Count);
         }
     }
 }

@@ -71,7 +71,7 @@ namespace Logic.Model.Cards.JinlangCards
                 AttackType = AttackTypeEnum.SelectCard,
                 Message = panel.DisplayMessage,
                 Panel = panel
-            }, cardResponseContext, roundContext);
+            }, cardResponseContext, roundContext, false);
             //移除Panel中SelectedBy为当前player的牌
             await RemoveCardsFromPanel(panel, cardRequestContext, cardResponseContext, roundContext);
             return res;

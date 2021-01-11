@@ -325,8 +325,11 @@ namespace Logic.Model.Player
         /// 响应出牌
         /// </summary>
         /// <param name="cardRequestContext"></param>
+        /// <param name="cardResponseContext"></param>
+        /// <param name="roundContext"></param>
+        /// <param name="throwCard">是否在响应出牌之后将该牌放入弃牌堆，默认为true</param>
         /// <returns></returns>
-        public async Task<CardResponseContext> ResponseCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
+        public async Task<CardResponseContext> ResponseCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext, bool throwCard = true)
         {
             cardRequestContext.AttackDynamicFactor =
                 cardRequestContext.AttackDynamicFactor ?? AttackDynamicFactor.GetDefaultDeltaAttackFactor();
@@ -358,10 +361,13 @@ namespace Logic.Model.Player
                     }
                     else
                     {
-                        await RemoveCardsInHand(new List<CardBase>() { c }, null, null, null);
+                        if (throwCard)
+                        {
+                            await RemoveCardsInHand(new List<CardBase>() { c }, null, null, null);
+                        }
                     }
                 });
-                _gameLevel.TempCardDesk.Add(res.Cards);
+
                 if (res.ResponseResult == ResponseResultEnum.UnKnown && res.Cards.Count() >= cardRequestContext.MinCardCountToPlay && res.Cards.Count <= cardRequestContext.MaxCardCountToPlay)
                 {
                     res.ResponseResult = ResponseResultEnum.Success;
@@ -808,7 +814,7 @@ namespace Logic.Model.Player
             {
                 await TriggerEvent(EventTypeEnum.BeforeLoseCardsInHand, null, null, null);
                 await TriggerEvent(EventTypeEnum.LoseCardsInHand, null, null, null);
-                await RemoveCardsInHand(cardsInhand, null, null, null);
+                cardsInhand.ForEach(c => { CardsInHand.Remove(c); });
                 await TriggerEvent(EventTypeEnum.AfterLoseCardsInHand, null, null, null);
             }
 
@@ -1014,8 +1020,7 @@ namespace Logic.Model.Player
                 var exist = EquipmentSet.FirstOrDefault(p => p is T);
                 if (exist != null)
                 {
-                    await (exist as EquipmentBase).UnEquip();
-                    EquipmentSet.Remove(exist);
+                    await RemoveEquipment(exist, null, null, null);
                 }
                 EquipmentSet.Add(equipmentCard);
                 await equipment.Equip();

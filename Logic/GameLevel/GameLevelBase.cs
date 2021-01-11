@@ -144,6 +144,8 @@ namespace Logic.GameLevel
             {
                 response.ResponseResult = ResponseResultEnum.Failed;
             }
+            //将判定牌置入弃牌堆
+            TempCardDesk.Add(pdCard);
             await GlobalEventBus.TriggerEvent(EventTypeEnum.AfterPanding, HostPlayerHero, request, null, response);
             return response;
         }

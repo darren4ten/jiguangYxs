@@ -23,7 +23,7 @@ namespace Logic.GameLevel
 
         public void Add(CardBase card)
         {
-            if (card != null)
+            if (card != null && !Cards.Contains(card))
             {
                 //todo:将所有Card的上下文注销掉
                 //card.AttachPlayerContext(null);
