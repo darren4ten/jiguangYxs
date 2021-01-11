@@ -319,7 +319,7 @@ namespace Logic.GameLevel
                 {
                     if (srcPlayer.GetCurrentPlayerHero().CurrentLife <= 0)
                     {
-                        await this.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterDying, HostPlayerHero, context, roundContext, responseContext);
+                        await this.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeDying, HostPlayerHero, context, roundContext, responseContext);
                     }
                 }
             };
@@ -372,13 +372,14 @@ namespace Logic.GameLevel
                                     await NotifyPlayerSuccess(player);
                                 }
 
+                                VictorGroupId = first.GroupId;
                                 IsGameOver = true;
                             }
                         }
                     }
                 }
             };
-            this.GlobalEventBus.ListenEvent(Guid.NewGuid(), HostPlayerHero, EventTypeEnum.AfterDying, (roundDyingHandler));
+            this.GlobalEventBus.ListenEvent(Guid.NewGuid(), HostPlayerHero, EventTypeEnum.BeforeDying, (roundDyingHandler));
 
         }
         private object TmpResponseLock = new object();

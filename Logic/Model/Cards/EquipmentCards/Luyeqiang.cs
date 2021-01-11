@@ -79,9 +79,10 @@ namespace Logic.Model.Cards.EquipmentCards
                             new ChangedCard(res.Cards,new Sha()
                             {
                                 CardId = -1,
-                                Color=res.Cards.Any(c=>c.Color==CardColorEnum.Red)?CardColorEnum.Red:CardColorEnum.Black,
+                                Color = res.Cards.Any(c=>c.Color==CardColorEnum.Red)?CardColorEnum.Red:CardColorEnum.Black,
                                 FlowerKind=res.Cards.First().FlowerKind,
-                            }){CardChangeType = CardChangeTypeEnum.Combined}.AttachPlayerContext(PlayerContext)
+                            }.AttachPlayerContext(PlayerContext)
+                            ){CardChangeType = CardChangeTypeEnum.Combined}.AttachPlayerContext(PlayerContext)
                         };
                         Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】打出两张牌{String.Join(",", res.Cards?.Select(p => p.ToString()) ?? new List<string>())}当做杀来用。");
                     }

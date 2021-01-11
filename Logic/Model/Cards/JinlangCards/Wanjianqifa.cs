@@ -74,7 +74,7 @@ namespace Logic.Model.Cards.JinlangCards
 
                 var res = await currentPlayer.ResponseCard(req, cardResponseContext, roundContext);
                 //判断是否有成功出杀，如果没有，则掉血
-                if (res.ResponseResult == ResponseResultEnum.Failed || !res.Cards.Any())
+                if (res.ResponseResult == ResponseResultEnum.Failed || res.Cards == null || !res.Cards.Any())
                 {
                     await currentPlayer.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
                     {

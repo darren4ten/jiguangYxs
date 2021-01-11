@@ -23,7 +23,7 @@ namespace JiguangYxsConsole
         {
             _gameLevel = new GameLevel1();
 
-            var star2Xiangyu = new PlayerHero(2, new Xiangyu(), null,
+            var star2Xiangyu = new PlayerHero(5, new Xiangyu(), null,
                 new List<SkillBase>()
                 {
                     new Qianghua(5, 30),

@@ -400,7 +400,7 @@ namespace Logic.Model.Player
 
         public async Task StartMyRound()
         {
-            int waitTme = 200;
+            int waitTme = 10;
             Console.WriteLine($"");
             Console.WriteLine($"------------------{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的回合开始------------------");
             await StartStep_EnterMyRound();
