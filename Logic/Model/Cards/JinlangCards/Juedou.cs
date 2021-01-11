@@ -39,7 +39,7 @@ namespace Logic.Model.Cards.JinlangCards
             {
                 MinTargetCount = 1,
                 MaxTargetCount = 1,
-                CardRequest = CardRequestContext.GetBaseCardRequestContext(),
+                CardRequest = CardRequestContext.GetBaseCardRequestContext(null),
                 RoundContext = PlayerContext.Player.RoundContext,
                 TargetType = AttackTypeEnum.Juedou
             };

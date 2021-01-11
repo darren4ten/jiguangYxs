@@ -80,19 +80,20 @@ namespace Logic.GameLevel
         /// 需要摸牌的面板
         /// </summary>
         public PanelBase Panel { get; set; }
-        
+
         /// <summary>
         /// 备用的请求上下文，可以用来传递SelectTargetcontext
         /// </summary>
         public object AdditionalContext { get; set; }
 
-        public static CardRequestContext GetBaseCardRequestContext()
+        public static CardRequestContext GetBaseCardRequestContext(List<Player> targets)
         {
             return new CardRequestContext()
             {
                 MinCardCountToPlay = 1,
                 MaxCardCountToPlay = 1,
                 RequestId = Guid.NewGuid(),
+                TargetPlayers = targets,
                 AttackDynamicFactor = AttackDynamicFactor.GetDefaultBaseAttackFactor()
             };
         }

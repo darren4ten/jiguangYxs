@@ -65,11 +65,7 @@ namespace Logic.Model.Cards.EquipmentCards
                                throw new Exception("必须出杀才能发动盘龙棍");
                            }
                            Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】发动盘龙棍技能打出【{newSha}】");
-                           var shaRes = await newSha.PlayCard(new CardRequestContext()
-                           {
-                               CardScope = context.CardScope,
-                               TargetPlayers = context.TargetPlayers,
-                           }, roundContext);
+                           var shaRes = await newSha.PlayCard(CardRequestContext.GetBaseCardRequestContext(context.TargetPlayers), roundContext);
                        }
                        else
                        {

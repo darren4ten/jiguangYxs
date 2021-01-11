@@ -99,13 +99,7 @@ namespace Tests.Card
                 AttackDynamicFactor = AttackDynamicFactor.GetDefaultDeltaAttackFactor()
             };
             tmpRoundContext.AttackDynamicFactor.Damage.ShaDamage += 3;
-            await cardToPlay.PlayCard(new CardRequestContext()
-            {
-                TargetPlayers = new List<Player>()
-                {
-                    _player2
-                }
-            }, tmpRoundContext);
+            await cardToPlay.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { _player2 }), tmpRoundContext);
 
             Assert.AreEqual(1, _player1.CardsInHand.Count);
             Assert.AreEqual(2, _player2.CardsInHand.Count);

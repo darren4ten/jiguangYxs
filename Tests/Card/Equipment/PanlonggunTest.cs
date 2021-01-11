@@ -65,15 +65,11 @@ namespace Tests.Card
             player2.CardsInHand.Add(new Shan().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
 
             //装备盘龙棍
-            var response = await panlonggun.PlayCard(new CardRequestContext() { }, player1.RoundContext);
+            var response = await panlonggun.PlayCard(CardRequestContext.GetBaseCardRequestContext(null), player1.RoundContext);
             Assert.AreEqual(3, player1.CardsInHand.Count);
             Assert.AreEqual(2, player2.CardsInHand.Count);
             //攻击
-            var shaResponse = await sha.PlayCard(new CardRequestContext()
-            {
-                RequestId = Guid.NewGuid(),
-                TargetPlayers = new List<Player>() { player2 }
-            }, sha.PlayerContext.Player.RoundContext);
+            var shaResponse = await sha.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), sha.PlayerContext.Player.RoundContext);
 
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
             Assert.AreEqual(ResponseResultEnum.Success, shaResponse.ResponseResult);

@@ -28,7 +28,7 @@ namespace Logic.Model.Cards.JinlangCards
             {
                 MinTargetCount = 1,
                 MaxTargetCount = 1,
-                CardRequest = CardRequestContext.GetBaseCardRequestContext(),
+                CardRequest = CardRequestContext.GetBaseCardRequestContext(null),
                 RoundContext = PlayerContext.Player.RoundContext,
                 TargetType = AttackTypeEnum.Tannangquwu
             };
@@ -84,7 +84,7 @@ namespace Logic.Model.Cards.JinlangCards
             panelCards?.ForEach(async p =>
             {
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card.DisplayName}");
-                await panel.CardOwner.MoveCard(PlayerContext.Player, MoveSourceTypeEnum.Equipment, new List<CardBase>() { p.Card });
+                await panel.CardOwner.MoveCard(PlayerContext.Player, MoveSourceTypeEnum.Marks, new List<CardBase>() { p.Card });
                 await panel.CardOwner.RemoveMark(p.Mark);
             });
             //检查装备

@@ -461,9 +461,6 @@ namespace Logic.ActionManger
                 await PlayerContext.Player.RemoveCardsInHand(cardsToThrow, null, null, null);
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】弃掉了{string.Join(",", cardsToThrow)}。");
             }
-            //回合结束时将临时牌堆中的牌放入弃牌堆.
-            PlayerContext.GameLevel.ThrowCardToStack(PlayerContext.GameLevel.TempCardDesk.Cards);
-            PlayerContext.GameLevel.TempCardDesk.Clear();
             await Task.FromResult(0);
         }
 

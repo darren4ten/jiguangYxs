@@ -31,7 +31,7 @@ namespace Logic.Model.Cards.BaseCards
         {
             //1.主动出杀,检查出杀的次数
             if (playerContext.Player.IsInZhudongMode()
-                && playerContext.Player.RoundContext.AttackDynamicFactor.MaxShaTimes > playerContext.Player.RoundContext.ShaedTimes)
+                && (playerContext.Player.RoundContext.AttackDynamicFactor.MaxShaTimes + playerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.MaxShaTimes) > playerContext.Player.RoundContext.ShaedTimes)
             {
                 return true;
             }
@@ -49,13 +49,13 @@ namespace Logic.Model.Cards.BaseCards
             return CanBePlayed(PlayerContext);
         }
 
-        public  SelectedTargetsRequest GetSelectTargetRequest()
+        public SelectedTargetsRequest GetSelectTargetRequest()
         {
             return new SelectedTargetsRequest()
             {
                 MinTargetCount = 1,
                 MaxTargetCount = 1,
-                CardRequest = CardRequestContext.GetBaseCardRequestContext(),
+                CardRequest = CardRequestContext.GetBaseCardRequestContext(null),
                 RoundContext = PlayerContext.Player.RoundContext,
                 TargetType = AttackTypeEnum.Sha
             };
@@ -103,8 +103,8 @@ namespace Logic.Model.Cards.BaseCards
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
             var phero = PlayerContext.Player.GetCurrentPlayerHero();
-            cardRequestContext.MaxCardCountToPlay += phero.BaseAttackFactor.ShanCountAvoidSha;
-            cardRequestContext.MinCardCountToPlay += phero.BaseAttackFactor.ShanCountAvoidSha;
+            cardRequestContext.MaxCardCountToPlay += phero.BaseAttackFactor.ShanCountAvoidSha - 1;//出牌数应该是基本加成数加上英雄实际数量-1
+            cardRequestContext.MinCardCountToPlay += phero.BaseAttackFactor.ShanCountAvoidSha - 1;
             cardRequestContext.AttackDynamicFactor = cardRequestContext.AttackDynamicFactor ??
                                                      AttackDynamicFactor.GetDefaultDeltaAttackFactor();
             cardRequestContext.AttackType = AttackTypeEnum.Sha;

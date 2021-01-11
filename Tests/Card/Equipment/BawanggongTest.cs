@@ -75,11 +75,7 @@ namespace Tests.Card
             Assert.AreEqual(1, player1.EquipmentSet.Count);
             Assert.AreEqual(3, player1.CardsInHand.Count);
             //攻击
-            var shaResponse = await cardSha.PlayCard(new CardRequestContext()
-            {
-                RequestId = Guid.NewGuid(),
-                TargetPlayers = new List<Player>() { player2 }
-            }, player1.RoundContext);
+            var shaResponse = await cardSha.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext);
 
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
             Assert.AreEqual(2, player1.CardsInHand.Count);
@@ -88,26 +84,19 @@ namespace Tests.Card
             Assert.AreEqual(1, player2.EquipmentSet.Count);
             Assert.AreEqual(true, player2.EquipmentSet.FirstOrDefault() is Jingongma, "进攻马和防御马同时存在时，防御马优先被卸载掉");
             //继续出杀，应该卸载掉进攻马
-            var shaResponse1 = await cardSha1.PlayCard(new CardRequestContext()
-            {
-                RequestId = Guid.NewGuid(),
-                TargetPlayers = new List<Player>() { player2 }
-            }, player1.RoundContext);
+            var shaResponse1 = await cardSha1.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext);
             Assert.AreEqual(1, player1.CardsInHand.Count);
             Assert.AreEqual(2, player2.CardsInHand.Count);
             Assert.AreEqual(1, player1.EquipmentSet.Count);
             Assert.AreEqual(0, player2.EquipmentSet.Count);
 
             //继续出杀
-            var shaResponse2 = await cardSha2.PlayCard(new CardRequestContext()
-            {
-                RequestId = Guid.NewGuid(),
-                TargetPlayers = new List<Player>() { player2 }
-            }, player1.RoundContext);
+            var shaResponse2 = await cardSha2.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext);
             Assert.AreEqual(0, player1.CardsInHand.Count);
             Assert.AreEqual(2, player2.CardsInHand.Count);
             Assert.AreEqual(1, player1.EquipmentSet.Count);
             Assert.AreEqual(0, player2.EquipmentSet.Count);
+            Assert.AreEqual(3, player2.GetCurrentPlayerHero().CurrentLife);
         }
     }
 }

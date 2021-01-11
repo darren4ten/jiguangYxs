@@ -37,7 +37,7 @@ namespace Logic.Model.Cards.JinlangCards
             {
                 MinTargetCount = 1,
                 MaxTargetCount = 1,
-                CardRequest = CardRequestContext.GetBaseCardRequestContext(),
+                CardRequest = CardRequestContext.GetBaseCardRequestContext(null),
                 RoundContext = PlayerContext.Player.RoundContext,
                 TargetType = AttackTypeEnum.Jiedaosharen
             };
@@ -75,13 +75,7 @@ namespace Logic.Model.Cards.JinlangCards
             if (cardRes.Cards != null && cardRes.Cards.Any())
             {
                 var sha = cardRes.Cards.First();
-                await sha.PlayCard(new CardRequestContext()
-                {
-                    TargetPlayers = new List<Player.Player>()
-                    {
-                        to
-                    }
-                }, null);
+                await sha.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player.Player>() { to}), null);
             }
             else
             {

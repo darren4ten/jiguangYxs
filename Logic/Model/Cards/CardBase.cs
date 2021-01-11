@@ -78,7 +78,7 @@ namespace Logic.Cards
         /// <returns></returns>
         public virtual async Task<SelectedTargetsResponse> SelectTargets(SelectedTargetsRequest request)
         {
-            var cardRequest = CardRequestContext.GetBaseCardRequestContext();
+            var cardRequest = CardRequestContext.GetBaseCardRequestContext(null);
             cardRequest.AdditionalContext = request;
             await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeSelectTarget,
                 PlayerContext.Player.GetCurrentPlayerHero(), request.CardRequest,
@@ -294,7 +294,7 @@ namespace Logic.Cards
         {
             if (CanBePlayed())
             {
-                var request = CardRequestContext.GetBaseCardRequestContext();
+                var request = CardRequestContext.GetBaseCardRequestContext(null);
                 if (this is INeedTargets)
                 {
                     var selectRequest = ((INeedTargets)this).GetSelectTargetRequest();

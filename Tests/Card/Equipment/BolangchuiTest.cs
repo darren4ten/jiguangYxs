@@ -64,7 +64,7 @@ namespace Tests.Card
 
             player2.CardsInHand.Add(new Sha() { CardId = 2, Color = CardColorEnum.Black, Number = 8, FlowerKind = FlowerKindEnum.Heitao }.AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
             player2.CardsInHand.Add(new Shan().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
-          
+
             Assert.AreEqual(0, player1.EquipmentSet.Count);
             //装备博浪锤
             var response = await bolangchui.PlayCard(new CardRequestContext() { }, player1.RoundContext);
@@ -72,11 +72,7 @@ namespace Tests.Card
             Assert.AreEqual(4, player1.CardsInHand.Count);
             Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
             //攻击
-            var shaResponse = await cardSha.PlayCard(new CardRequestContext()
-            {
-                RequestId = Guid.NewGuid(),
-                TargetPlayers = new List<Player>() { player2 }
-            }, player1.RoundContext);
+            var shaResponse = await cardSha.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext);
 
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
             Assert.AreEqual(1, player1.CardsInHand.Count);

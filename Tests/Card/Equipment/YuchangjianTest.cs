@@ -92,11 +92,7 @@ namespace Tests.Card
             }, sha.PlayerContext.Player.RoundContext);
             //装备鱼肠剑
             await yuchangjian.PlayCard(new CardRequestContext() { }, player1.RoundContext);
-            var shaResponse1 = await sha1.PlayCard(new CardRequestContext()
-            {
-                RequestId = Guid.NewGuid(),
-                TargetPlayers = new List<Player>() { player2 }
-            }, sha1.PlayerContext.Player.RoundContext);
+            var shaResponse1 = await sha1.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), sha1.PlayerContext.Player.RoundContext);
 
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
             Assert.AreEqual(ResponseResultEnum.Success, shaResponse.ResponseResult);

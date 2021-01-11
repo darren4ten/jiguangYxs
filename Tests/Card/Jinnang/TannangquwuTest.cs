@@ -58,13 +58,7 @@ namespace Tests.Card
             player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
 
 
-            var response = await cardToPlay.PlayCard(new CardRequestContext()
-            {
-                TargetPlayers = new List<Player>()
-                    {
-                        player2
-                    }
-            }, player1.RoundContext);
+            var response = await cardToPlay.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext);
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
             Assert.AreEqual(1, player1.CardsInHand.Count);
             Assert.AreNotEqual(null, player1.CardsInHand.First().PlayerContext);

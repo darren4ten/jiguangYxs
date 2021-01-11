@@ -62,16 +62,7 @@ namespace Tests.Card
             Assert.AreEqual(5, player1.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
             Assert.AreEqual(6, player2.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
 
-            var response = cardSha.PlayCard(new CardRequestContext()
-            {
-                AttackType = AttackTypeEnum.Sha,
-                CardScope = CardScopeEnum.Any,
-                RequestCard = new Shan(),
-                TargetPlayers = new List<Player>()
-                    {
-                        player2
-                    }
-            }, player1.RoundContext).GetAwaiter().GetResult();
+            var response = cardSha.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext).GetAwaiter().GetResult();
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
             Assert.AreEqual(5, player1.GetCurrentPlayerHero().CurrentLife);
             Assert.AreEqual(5, player2.GetCurrentPlayerHero().CurrentLife);

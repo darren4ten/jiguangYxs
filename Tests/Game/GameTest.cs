@@ -6,6 +6,8 @@ using Logic.ActionManger;
 using Logic.GameLevel;
 using Logic.GameLevel.Levels;
 using Logic.Model.Cards.BaseCards;
+using Logic.Model.Cards.EquipmentCards;
+using Logic.Model.Cards.JinlangCards;
 using Logic.Model.Hero.Presizdent;
 using Logic.Model.Player;
 using Logic.Model.Skill;
@@ -85,15 +87,35 @@ namespace Tests.Game
                          rc.AttackDynamicFactor.Damage.ShaDamage += 6;
                          var sha = new Sha();
                          _player1.AddCardInHand((sha)).GetAwaiter().GetResult();
-                         var res = sha.PlayCard(new CardRequestContext()
-                         {
-                             TargetPlayers = new List<Player>()
-                             {
-                                 _player2
-                             }
-                         }, rc).GetAwaiter().GetResult();
+                         var res = sha.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { _player2 }), rc).GetAwaiter().GetResult();
                          Console.WriteLine(res);
                      }));
+            });
+        }
+
+        [Test]
+        public async Task EquipNewEquipment_Success()
+        {
+            Assert.DoesNotThrowAsync(async () =>
+            {
+                await _gameLevel.Start(_player1, new List<Player>() { _player2 }, action: (async delegate
+               {
+                   var rc = new RoundContext()
+                   {
+                       AttackDynamicFactor = AttackDynamicFactor.GetDefaultDeltaAttackFactor()
+                   };
+                   await _player2.AddCardInHand(new Hufu());
+                   var tannang = new Tannangquwu();
+                   await _player1.AddCardInHand(tannang);
+                   await tannang.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { _player2 }), null);
+                   await _player1.AddEquipment(new Panlonggun());
+
+                   rc.AttackDynamicFactor.Damage.ShaDamage += 6;
+                   var sha = new Sha();
+                   _player1.AddCardInHand((sha)).GetAwaiter().GetResult();
+                   var res = await sha.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { _player2 }), rc);
+                   Console.WriteLine(res);
+               }));
             });
         }
     }

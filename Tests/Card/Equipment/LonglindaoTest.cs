@@ -69,17 +69,13 @@ namespace Tests.Card
             Assert.AreEqual(0, player1.EquipmentSet.Count);
             Assert.AreEqual(0, player2.EquipmentSet.Count);
             //装备龙鳞刀
-            var response = await longlindao.PlayCard(new CardRequestContext() { }, player1.RoundContext);
-            var response1 = await hufu.PlayCard(new CardRequestContext() { }, player2.RoundContext);
+            var response = await longlindao.PlayCard(CardRequestContext.GetBaseCardRequestContext(null), player1.RoundContext);
+            var response1 = await hufu.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() {null }), player2.RoundContext);
             Assert.AreEqual(1, player1.EquipmentSet.Count);
             Assert.AreEqual(1, player2.EquipmentSet.Count);
             Assert.AreEqual(3, player1.CardsInHand.Count);
             //攻击
-            var shaResponse = await cardSha.PlayCard(new CardRequestContext()
-            {
-                RequestId = Guid.NewGuid(),
-                TargetPlayers = new List<Player>() { player2 }
-            }, player1.RoundContext);
+            var shaResponse = await cardSha.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext);
 
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
             Assert.AreEqual(2, player1.CardsInHand.Count);
@@ -87,22 +83,14 @@ namespace Tests.Card
             Assert.AreEqual(1, player1.EquipmentSet.Count);
             Assert.AreEqual(0, player2.EquipmentSet.Count);
             //继续出杀，应该卸载最后一张牌
-            var shaResponse1 = await cardSha1.PlayCard(new CardRequestContext()
-            {
-                RequestId = Guid.NewGuid(),
-                TargetPlayers = new List<Player>() { player2 }
-            }, player1.RoundContext);
+            var shaResponse1 = await cardSha1.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext);
             Assert.AreEqual(1, player1.CardsInHand.Count);
             Assert.AreEqual(0, player2.CardsInHand.Count);
             Assert.AreEqual(1, player1.EquipmentSet.Count);
             Assert.AreEqual(0, player2.EquipmentSet.Count);
 
             //继续出杀
-            var shaResponse2 = await cardSha2.PlayCard(new CardRequestContext()
-            {
-                RequestId = Guid.NewGuid(),
-                TargetPlayers = new List<Player>() { player2 }
-            }, player1.RoundContext);
+            var shaResponse2 = await cardSha2.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext);
             Assert.AreEqual(0, player1.CardsInHand.Count);
             Assert.AreEqual(0, player2.CardsInHand.Count);
             Assert.AreEqual(5, player2.GetCurrentPlayerHero().CurrentLife);
