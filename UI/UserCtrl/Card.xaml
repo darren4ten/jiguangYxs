@@ -4,15 +4,23 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UI.UserCtrl"
-             mc:Ignorable="d" Height="90" Width="70">
+             mc:Ignorable="d" Width="80" Height="110">
     <Grid>
-        <Button  Width="70" Height="90" Click="ButtonBase_OnClick">
+        <Button Click="ButtonBase_OnClick" >
             <Grid>
-                <Image Source="C:\MyData\ProgramProject\JiguangYxs\UI\Resources\card\card_sha.jpg" Width="70" Height="90" />
-                <Label x:Name="LblNumber" Content="{Binding Number}" FontSize="16px" Margin="-1,-1,0,53"  FontWeight="Bold"/>
-                <Label x:Name="LblFlower" Content="{Binding Flower}" FontSize="16px" Margin="-3,16,0,36"  FontWeight="Bold"/>
+                <Image Source="C:\MyData\ProgramProject\JiguangYxs\UI\Resources\card\card_sha.jpg" Width="78" Height="108" Margin="-2"  Stretch="Fill"/>
+                <Label x:Name="LblNumber"
+                       Width="28"
+                       Height="28"
+                       HorizontalAlignment="Left"
+                       Content="10"
+                       Foreground="Black"
+                       FontSize="16px" Margin="-4,-3,0,79" />
+
+                <Label  Width="28"
+                        Height="28"
+                        x:Name="LblFlower" Content="♣" Foreground="{Binding Color}" FontSize="16px" Margin="0,12,46,64"  FontWeight="Bold"/>
             </Grid>
         </Button>
-        <!--<Label x:Name="LblNumber1" Content="Number" FontSize="24px" Margin="365,19,379,36"/>-->
     </Grid>
 </UserControl>
