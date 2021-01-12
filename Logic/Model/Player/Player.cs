@@ -354,15 +354,15 @@ namespace Logic.Model.Player
                 //将牌置于临时牌堆
                 res.Cards.ForEach(async c =>
                 {
-                    //是装备牌
-                    if (EquipmentSet.Any(p => p == c))
-                    {
-                        await RemoveEquipment(c, null, null, null);
-                    }
-                    else
-                    {
-                        if (throwCard)
+                    if (throwCard)
+                    {  //是装备牌
+                        if (EquipmentSet.Any(p => p == c))
                         {
+                            await RemoveEquipment(c, null, null, null);
+                        }
+                        else
+                        {
+
                             await RemoveCardsInHand(new List<CardBase>() { c }, null, null, null);
                         }
                     }
@@ -652,8 +652,9 @@ namespace Logic.Model.Player
         /// <param name="request"></param>
         /// <param name="response"></param>
         /// <param name="roundContext"></param>
+        /// <param name="throwCard">是否将该装备牌弃掉，默认为true</param>
         /// <returns></returns>
-        public async Task RemoveEquipment(CardBase equipmentCard, CardRequestContext request, CardResponseContext response, RoundContext roundContext)
+        public async Task RemoveEquipment(CardBase equipmentCard, CardRequestContext request, CardResponseContext response, RoundContext roundContext, bool throwCard = true)
         {
             if (EquipmentSet == null)
             {
@@ -669,8 +670,11 @@ namespace Logic.Model.Player
 
             await equip.UnEquip();
             var removedEq = EquipmentSet.Remove(equipmentCard);
-            //卸载装备时将卡牌放入临时弃牌堆
-            _gameLevel.TempCardDesk.Add(equipmentCard);
+            if (throwCard)
+            {
+                //卸载装备时将卡牌放入临时弃牌堆
+                _gameLevel.TempCardDesk.Add(equipmentCard);
+            }
             //触发卸载装备的事件
             Console.WriteLine($"移除装备{equip.DisplayName}{(removedEq ? "成功!" : "失败!!!")}");
         }
@@ -822,7 +826,7 @@ namespace Logic.Model.Player
             var equipments = EquipmentSet.Where(p => cards.Any(c => c == p)).ToList();
             equipments.ForEach(async eq =>
             {
-                await RemoveEquipment(eq, null, null, null);
+                await RemoveEquipment(eq, null, null, null, false);
             });
         }
 
