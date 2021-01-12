@@ -4,6 +4,8 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <AssemblyName>JgYxs.UI</AssemblyName>
+    <RootNamespace>JgYxs.UI</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +29,13 @@
 
   <ItemGroup>
     <Folder Include="Resources\hero\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="UserCtrl\PlayerPanel.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

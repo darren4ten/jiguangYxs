@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows;
 
-namespace WpfApp1.Model
+namespace JgYxs.UI.Model
 {
     public class UIState
     {

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UI.Levels"
         mc:Ignorable="d"
-        Title="Level_001_NoFriend2Enemies" Height="450" Width="800">
+        Title="Level_001_NoFriend2Enemies" Height="450" Width="900">
     <Grid>
         
     </Grid>
