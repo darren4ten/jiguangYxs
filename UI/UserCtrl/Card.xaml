@@ -7,7 +7,7 @@
     <Grid>
         <Button Click="ButtonBase_OnClick" >
             <Grid>
-                <Image Source="C:\MyData\ProgramProject\JiguangYxs\UI\Resources\card\card_sha.jpg" Width="78" Height="108" Margin="-2"  Stretch="Fill"/>
+                <Image Source="pack://application:,,,/Resources/card/card_sha.jpg" Width="78" Height="108" Margin="-2"  Stretch="Fill"/>
                 <Label x:Name="LblNumber"
                        Width="28"
                        Height="28"

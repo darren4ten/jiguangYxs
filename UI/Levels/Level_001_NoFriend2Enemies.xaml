@@ -1,12 +1,31 @@
-﻿<Window x:Class="UI.Levels.Level_001_NoFriend2Enemies"
+﻿<Window xmlns:UserCtrl="clr-namespace:JgYxs.UI.UserCtrl"  x:Class="UI.Levels.Level_001_NoFriend2Enemies"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:UI.Levels"
         mc:Ignorable="d"
-        Title="Level_001_NoFriend2Enemies" Height="450" Width="900">
-    <Grid>
-        
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        Title="Level_001_NoFriend2Enemies" Height="530" Width="1032">
+    <Grid Height="520" Width="1032">
+        <UserCtrl:PlayerPanel Width="800" 
+                                  VerticalAlignment="Bottom"
+                                  HorizontalAlignment="Left"
+                                 Height="180" Margin="2,0,0,6" 
+                                  />
+        <StackPanel Width="200" 
+                    Height="520"
+                  HorizontalAlignment="Right">
+            <Label Content="战斗信息"/>
+            <RichTextBox Height="360">
+                <FlowDocument>
+                    <Paragraph>
+                        <Run Text="RichTextBox"/>
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+        </StackPanel>
+        <UserCtrl:Hero HorizontalAlignment="Left" Margin="166,29,0,0" VerticalAlignment="Top"/>
+        <UserCtrl:Hero HorizontalAlignment="Left" Margin="559,29,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

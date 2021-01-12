@@ -9,6 +9,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\card\card_sha.jpg" />
+    <None Remove="Resources\card\card_shan.jpg" />
+    <None Remove="Resources\card\card_yao.jpg" />
+    <None Remove="Resources\drj.jpg" />
+    <None Remove="Resources\element\minCard.png" />
+    <None Remove="Resources\element\minCard1png.png" />
+    <None Remove="Resources\hero\zhuyuanzhang.jpg" />
+    <None Remove="Resources\hero_direnjie.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\drj.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\hero_direnjie.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Logic\Logic.csproj" />
   </ItemGroup>
 
@@ -28,7 +48,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\hero\" />
+    <Content Include="Resources\card\card_sha.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\card_shan.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\card_yao.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\element\minCard.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\element\minCard1png.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\hero\zhuyuanzhang.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
