@@ -9,6 +9,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Logic.GameLevel;
+using Logic.GameLevel.Levels;
 
 namespace UI.Levels
 {
@@ -17,9 +19,17 @@ namespace UI.Levels
     /// </summary>
     public partial class Level_001_NoFriend2Enemies : Window
     {
+        private GameLevelBase _gameLevel;
+
         public Level_001_NoFriend2Enemies()
         {
+            InitGame();
             InitializeComponent();
+        }
+
+        public void InitGame()
+        {
+            _gameLevel = new GameLevel1();
         }
     }
 }

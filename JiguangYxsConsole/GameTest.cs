@@ -71,5 +71,11 @@ namespace JiguangYxsConsole
             Init();
             await _gameLevel.Start(_player1, new List<Player>() { _player2, _player3 });
         }
+
+        public async Task RunGameLevel()
+        {
+            Init();
+            await _gameLevel.Start();
+        }
     }
 }
