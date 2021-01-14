@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\bg\cardHistoryBg.png" />
+    <None Remove="Resources\bg\dragon.jpg" />
     <None Remove="Resources\card\card_sha.jpg" />
     <None Remove="Resources\card\card_shan.jpg" />
     <None Remove="Resources\card\card_yao.jpg" />
@@ -20,6 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Resources\bg\cardHistoryBg.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\bg\dragon.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\drj.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

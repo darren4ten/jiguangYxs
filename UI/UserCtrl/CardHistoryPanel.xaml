@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="JgYxs.UI.UserCtrl.CardHistoryPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:JgYxs.UI.UserCtrl"
+             mc:Ignorable="d" 
+             Width="200" Height="530"
+             d:DesignHeight="530" d:DesignWidth="200">
+    <Grid>
+        <Image Source="pack://application:,,,/Resources/bg/cardHistoryBg.png" Stretch="Fill"></Image>
+        <StackPanel>
+            <Label Content="战斗信息" FontSize="12" HorizontalAlignment="Center" Height="22"  Width="200" Background="Transparent" />
+            <RichTextBox Margin="0,0,0,15" Name="RtxtHistory" Height="504"  Background="Transparent" IsReadOnly="True">
+                <FlowDocument>
+                    <Paragraph>
+                        <Run Text="RichTextBox" />
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+        </StackPanel>
+    </Grid>
+</UserControl>

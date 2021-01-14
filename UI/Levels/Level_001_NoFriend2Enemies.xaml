@@ -8,7 +8,8 @@
         ResizeMode="NoResize"
         Title="Level_001_NoFriend2Enemies" Height="530" Width="1032">
     <Grid Height="520" Width="1032">
-        <UserCtrl:PlayerPanel Width="800" 
+        <Image Source="pack://application:,,,/Resources/bg/dragon.jpg" Stretch="Fill"></Image>
+        <UserCtrl:PlayerPanel Width="825" 
                                   VerticalAlignment="Bottom"
                                   HorizontalAlignment="Left"
                                  Height="180" Margin="2,0,0,6" 
@@ -16,14 +17,7 @@
         <StackPanel Width="200" 
                     Height="520"
                   HorizontalAlignment="Right">
-            <Label Content="战斗信息"/>
-            <RichTextBox Height="360">
-                <FlowDocument>
-                    <Paragraph>
-                        <Run Text="RichTextBox"/>
-                    </Paragraph>
-                </FlowDocument>
-            </RichTextBox>
+            <UserCtrl:CardHistoryPanel Height="523"/>
         </StackPanel>
         <UserCtrl:Hero HorizontalAlignment="Left" Margin="166,29,0,0" VerticalAlignment="Top"/>
         <UserCtrl:Hero HorizontalAlignment="Left" Margin="559,29,0,0" VerticalAlignment="Top"/>
