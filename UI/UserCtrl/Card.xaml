@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             DataContext="card"
              mc:Ignorable="d" Width="80" Height="110">
     <Grid>
         <Button Click="ButtonBase_OnClick" >
@@ -12,13 +13,13 @@
                        Width="28"
                        Height="28"
                        HorizontalAlignment="Left"
-                       Content="10"
-                       Foreground="Black"
+                       Content="{Binding card.Number}"
+                       Foreground="{Binding card.Color}"
                        FontSize="16px" Margin="-4,-3,0,79" />
 
                 <Label  Width="28"
                         Height="28"
-                        x:Name="LblFlower" Content="♣" Foreground="{Binding Color}" FontSize="16px" Margin="0,12,46,64"  FontWeight="Bold"/>
+                        x:Name="LblFlower" Content="{Binding card.FlowerKind}" Foreground="{Binding Color}" FontSize="16px" Margin="0,12,46,64"  FontWeight="Bold"/>
             </Grid>
         </Button>
     </Grid>

@@ -275,7 +275,7 @@ namespace Logic.GameLevel
         /// 开始游戏。在此方法中构造初始化玩家
         /// </summary>
         /// <returns></returns>
-        public abstract Task Start();
+        public abstract Task Start(Action action = null);
 
         /// <summary>
         /// 开始游戏

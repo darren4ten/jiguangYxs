@@ -35,10 +35,20 @@ namespace Logic.Cards
 
         public string DisplayNumberText { get; set; }
 
+        
+        private int _num;
         /// <summary>
         /// 卡牌数字
         /// </summary>
-        public int Number { get; set; }
+        public int Number
+        {
+            get { return _num;}
+            set
+            {
+                _num = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Number"));
+            }
+        }
 
         public string Description { get; set; }
 

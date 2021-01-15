@@ -6,19 +6,30 @@
              mc:Ignorable="d" 
              Height="170"
              Width="116"
+             DataContext="player"
              d:DesignHeight="170" d:DesignWidth="116">
     <Grid >
         <Image Name="ImgBackgroundHero" HorizontalAlignment="Left" Height="170"  Width="116" Source="pack://application:,,,/Resources/hero/zhuyuanzhang.jpg" Stretch="Fill"/>
-        <TextBlock Name="LblHeroDisplayName" TextAlignment="Center" FontSize="14" FontWeight="Bold" Height="100" MaxHeight="300" TextWrapping="Wrap" Margin="1,30,97,40">朱元璋</TextBlock>
+        <TextBlock Name="LblHeroDisplayName" 
+                  Text="朱元璋"
+                   TextAlignment="Center" FontSize="14" FontWeight="Bold" Height="100" MaxHeight="300" TextWrapping="Wrap" Margin="1,30,97,40"></TextBlock>
         <Ellipse Name="FriendMark" HorizontalAlignment="Left" Height="26" Stroke="#803837" VerticalAlignment="Top" Width="26" Fill="#803837" Margin="-2,-2,0,0"></Ellipse>
         <Label Name="LblFriendMark" Content="敌"  Height="32" 
                FontSize="14px" FontWeight="Bold" FontStyle="Oblique"  Margin="-2,-4,94,142"  Foreground="#fff"/>
         <ListView Name="LvEquipment" Width="100" Height="64" Margin="8,76,8,30" Background="Transparent" />
         <Image Name="ImgSkillBar" VerticalAlignment="Bottom" Height="22"  Width="116" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
-        <Image Name="ImgCardNumber" HorizontalAlignment="Left"  Height="32"  Width="24" Margin="-2,138,0,0" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
-        <Label Name="LblCardNumber" HorizontalAlignment="Left" Content="4"  Height="32" Width="24" FontSize="16px" FontWeight="Bold" Margin="-2,138,0,0"  Foreground="#6C5237"></Label>
+        <Image Name="ImgCardNumber" 
+               HorizontalAlignment="Left"  Height="32"  Width="24" Margin="-2,138,0,0" 
+               Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
+        <Label Name="LblCardNumber"
+               HorizontalAlignment="Left"
+               Content="{Binding player.CardsInHand.Count}" 
+               Height="32" Width="24" FontSize="16px" FontWeight="Bold" Margin="-2,138,0,0"  Foreground="#6C5237"></Label>
         <Ellipse Name="EllipseCurrentLife" HorizontalAlignment="Right" Height="32" Margin="0,138,0,0" Stroke="#803837" VerticalAlignment="Top" Width="26" Fill="#803837"/>
-        <Label Name="LblCurrentLife" HorizontalAlignment="Right" Content="4"  Height="32" Width="24" FontSize="16px" FontWeight="Bold" Margin="0,138,0,0"  Foreground="#fff"></Label>
+        <Label Name="LblCurrentLife" 
+               HorizontalAlignment="Right"
+               Content="4"  
+               Height="32" Width="24" FontSize="16px" FontWeight="Bold" Margin="0,138,0,0"  Foreground="#fff"></Label>
         <Image Name="ImgSkill1" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="24,151,0,3" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
         <Image Name="ImgSkill2" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="40,151,0,3" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
         <Image Name="ImgSkill3" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="56,151,0,3" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
