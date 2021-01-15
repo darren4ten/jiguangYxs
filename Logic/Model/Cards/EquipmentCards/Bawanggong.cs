@@ -24,6 +24,7 @@ namespace Logic.Model.Cards.EquipmentCards
             this.Description = "霸王弓";
             this.Name = "Bawanggong";
             this.DisplayName = "霸王弓";
+            this.Image = "/Resources/card/equipment/card_bawanggong.jpg";
 
             BaseAttackFactor.TannangDistance = 0;
             BaseAttackFactor.ShaDistance = 5;

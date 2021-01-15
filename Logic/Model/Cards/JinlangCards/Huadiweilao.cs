@@ -21,6 +21,7 @@ namespace Logic.Model.Cards.JinlangCards
             this.Description = "画地为牢";
             this.Name = "Huadiweilao";
             this.DisplayName = "画地为牢";
+            this.Image = "/Resources/card/jinnang/card_huadiweilao.jpg";
         }
 
         /// <summary>

@@ -25,6 +25,7 @@ namespace Logic.Model.Cards.EquipmentCards
             this.Description = "龙鳞刀";
             this.Name = "Longlindao";
             this.DisplayName = "龙鳞刀";
+            this.Image = "/Resources/card/equipment/card_longlindao.jpg";
             BaseAttackFactor.ShaDistance = 2;
         }
 

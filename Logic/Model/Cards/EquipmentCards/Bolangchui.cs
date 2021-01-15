@@ -23,6 +23,7 @@ namespace Logic.Model.Cards.EquipmentCards
             this.Description = "博浪锤";
             this.Name = "Bolangchui";
             this.DisplayName = "博浪锤";
+            this.Image = "/Resources/card/equipment/card_bolangchui.jpg";
             BaseAttackFactor.ShaDistance = 3;
         }
 

@@ -21,6 +21,7 @@ namespace Logic.Model.Cards.JinlangCards
             this.Description = "釜底抽薪";
             this.Name = "Fudichouxin";
             this.DisplayName = "釜底抽薪";
+            this.Image = "/Resources/card/jinnang/card_fudichouxin.jpg";
         }
         public SelectedTargetsRequest GetSelectTargetRequest()
         {

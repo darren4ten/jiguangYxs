@@ -16,6 +16,7 @@ namespace Logic.Model.Cards.EquipmentCards
             this.DisplayName = "虎符";
             BaseAttackFactor.ShaDistance = 1;
             BaseAttackFactor.MaxShaTimes = 9999;
+            this.Image = "/Resources/card/equipment/card_hufu.jpg";
         }
         protected override async Task OnEquip()
         {

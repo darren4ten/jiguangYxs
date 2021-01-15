@@ -13,6 +13,7 @@ namespace Logic.Model.Cards.EquipmentCards
             this.Description = "进攻马";
             this.Name = "Jingongma";
             this.DisplayName = "进攻马";
+            this.Image = "/Resources/card/equipment/card_jingongma.jpg";
             BaseAttackFactor.TannangDistance = 1;
             BaseAttackFactor.ShaDistance = 1;
         }

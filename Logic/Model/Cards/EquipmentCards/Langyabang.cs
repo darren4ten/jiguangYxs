@@ -18,6 +18,7 @@ namespace Logic.Model.Cards.EquipmentCards
             this.Description = "狼牙棒";
             this.Name = "Langyabang";
             this.DisplayName = "狼牙棒";
+            this.Image = "/Resources/card/equipment/card_langyabang.jpg";
             BaseAttackFactor.ShaDistance = 4;
         }
         protected override async Task OnEquip()

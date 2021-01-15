@@ -21,6 +21,7 @@ namespace Logic.Model.Cards.JinlangCards
             this.Description = "借刀杀人";
             this.Name = "Jiedaosharen";
             this.DisplayName = "借刀杀人";
+            this.Image = "/Resources/card/jinnang/card_jiedaosharen.jpg";
         }
 
         public override bool CanBePlayed()

@@ -12,6 +12,7 @@ namespace Logic.Model.Cards.EquipmentCards
             this.Description = "防御马";
             this.Name = "Fangyuma";
             this.DisplayName = "防御马";
+            this.Image = "/Resources/card/equipment/card_fangyuma.jpg";
             BaseAttackFactor.DefenseDistance = 1;
         }
 

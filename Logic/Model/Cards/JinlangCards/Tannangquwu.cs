@@ -21,6 +21,7 @@ namespace Logic.Model.Cards.JinlangCards
             this.Description = "探囊取物";
             this.Name = "Tannangquwu";
             this.DisplayName = "探囊取物";
+            this.Image = "/Resources/card/jinnang/card_tannangquwu.jpg";
         }
         public SelectedTargetsRequest GetSelectTargetRequest()
         {

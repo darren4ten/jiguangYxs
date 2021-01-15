@@ -20,6 +20,7 @@ namespace Logic.Model.Cards.JinlangCards
             this.Description = "手捧雷";
             this.Name = "Shoupenglei";
             this.DisplayName = "手捧雷";
+            this.Image = "/Resources/card/jinnang/card_shoupenglei.jpg";
         }
 
         public override bool CanBePlayed()

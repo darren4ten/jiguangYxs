@@ -20,6 +20,7 @@ namespace Logic.Model.Cards.JinlangCards
             this.Description = "决斗";
             this.Name = "Juedou";
             this.DisplayName = "决斗";
+            this.Image = "/Resources/card/jinnang/card_juedou.jpg";
         }
 
         /// <summary>

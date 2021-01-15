@@ -22,6 +22,7 @@ namespace Logic.Model.Cards.JinlangCards
             this.Description = "五谷丰登";
             this.Name = "Wugufengdeng";
             this.DisplayName = "五谷丰登";
+            this.Image = "/Resources/card/jinnang/card_wugufengdeng.jpg";
         }
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {

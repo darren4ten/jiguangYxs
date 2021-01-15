@@ -19,6 +19,7 @@ namespace Logic.Model.Cards.EquipmentCards.Defense
             this.Description = "玉如意";
             this.Name = "Yuruyi";
             this.DisplayName = "玉如意";
+            this.Image = "/Resources/card/equipment/card_yuruyi.jpg";
         }
 
         protected override async Task OnEquip()

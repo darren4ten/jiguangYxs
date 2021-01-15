@@ -22,6 +22,7 @@ namespace Logic.Model.Cards.JinlangCards
             this.Description = "休养生息";
             this.Name = "Xiuyangshengxi";
             this.DisplayName = "休养生息";
+            this.Image = "/Resources/card/jinnang/card_xiuyangshengxi.jpg";
         }
 
         public override bool CanBePlayed()

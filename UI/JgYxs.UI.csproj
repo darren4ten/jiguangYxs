@@ -14,6 +14,28 @@
     <None Remove="Resources\card\card_sha.jpg" />
     <None Remove="Resources\card\card_shan.jpg" />
     <None Remove="Resources\card\card_yao.jpg" />
+    <None Remove="Resources\card\equipment\card_bolangchui.jpg" />
+    <None Remove="Resources\card\equipment\card_fangyuma.jpg" />
+    <None Remove="Resources\card\equipment\card_hufu.jpg" />
+    <None Remove="Resources\card\equipment\card_jingongma.jpg" />
+    <None Remove="Resources\card\equipment\card_langyabang.jpg" />
+    <None Remove="Resources\card\equipment\card_longlindao.jpg" />
+    <None Remove="Resources\card\equipment\card_luyeqiang.jpg" />
+    <None Remove="Resources\card\equipment\card_panlonggun.jpg" />
+    <None Remove="Resources\card\equipment\card_yuchangjian.jpg" />
+    <None Remove="Resources\card\equipment\card_yuruyi.jpg" />
+    <None Remove="Resources\card\jinnang\card_fenghuolangyan.jpg" />
+    <None Remove="Resources\card\jinnang\card_fudichouxin.jpg" />
+    <None Remove="Resources\card\jinnang\card_huadiweilao.jpg" />
+    <None Remove="Resources\card\jinnang\card_jiedaosharen.jpg" />
+    <None Remove="Resources\card\jinnang\card_juedou.jpg" />
+    <None Remove="Resources\card\jinnang\card_shoupenglei.jpg" />
+    <None Remove="Resources\card\jinnang\card_tannangquwu.jpg" />
+    <None Remove="Resources\card\jinnang\card_wanjianqifa.jpg" />
+    <None Remove="Resources\card\jinnang\card_wugufengdeng.jpg" />
+    <None Remove="Resources\card\jinnang\card_wuxiekeji.jpg" />
+    <None Remove="Resources\card\jinnang\card_wuzhongshengyou.jpg" />
+    <None Remove="Resources\card\jinnang\card_xiuyangshengxi.jpg" />
     <None Remove="Resources\drj.jpg" />
     <None Remove="Resources\element\minCard.png" />
     <None Remove="Resources\element\minCard1png.png" />
@@ -26,6 +48,72 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\bg\dragon.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\equipment\card_bolangchui.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\equipment\card_fangyuma.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\equipment\card_hufu.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\equipment\card_jingongma.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\equipment\card_langyabang.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\equipment\card_longlindao.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\equipment\card_luyeqiang.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\equipment\card_panlonggun.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\equipment\card_yuchangjian.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\equipment\card_yuruyi.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\jinnang\card_fenghuolangyan.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\jinnang\card_fudichouxin.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\jinnang\card_huadiweilao.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\jinnang\card_jiedaosharen.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\jinnang\card_juedou.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\jinnang\card_shoupenglei.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\jinnang\card_tannangquwu.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\jinnang\card_wanjianqifa.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\jinnang\card_wugufengdeng.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\jinnang\card_wuxiekeji.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\jinnang\card_wuzhongshengyou.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\jinnang\card_xiuyangshengxi.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\drj.jpg">
