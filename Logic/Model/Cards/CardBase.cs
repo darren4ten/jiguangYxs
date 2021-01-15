@@ -19,30 +19,77 @@ namespace Logic.Cards
 {
     public abstract class CardBase : INotifyPropertyChanged
     {
-        public int CardId { get; set; }
+        #region 属性
 
-        public string Name { get; set; }
+        private int _cardId;
+        public int CardId
+        {
+            get { return _cardId; }
+            set
+            {
+                _num = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _name { get; set; }
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 是否对别人可见
         /// </summary>
-        public bool IsViewableForOthers { get; set; }
+        private bool _isViewableForOthers;
+        public bool IsViewableForOthers
+        {
+            get { return _isViewableForOthers; }
+            set
+            {
+                _isViewableForOthers = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 显示名称
         /// </summary>
-        public string DisplayName { get; set; }
+        private string _displayName;
+        public string DisplayName
+        {
+            get { return _displayName; }
+            set
+            {
+                _displayName = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public string DisplayNumberText { get; set; }
+        private string _displayNumberText;
+        public string DisplayNumberText
+        {
+            get { return _displayNumberText; }
+            set
+            {
+                _displayNumberText = value;
+                OnPropertyChanged();
+            }
+        }
 
-        
+
         private int _num;
         /// <summary>
         /// 卡牌数字
         /// </summary>
         public int Number
         {
-            get { return _num;}
+            get { return _num; }
             set
             {
                 _num = value;
@@ -50,12 +97,30 @@ namespace Logic.Cards
             }
         }
 
-        public string Description { get; set; }
+        private string _description;
+        public string Description
+        {
+            get { return _description; }
+            set
+            {
+                _description = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 花色
         /// </summary>
-        public FlowerKindEnum FlowerKind { get; set; }
+        private FlowerKindEnum _flowerKind;
+        public FlowerKindEnum FlowerKind
+        {
+            get { return _flowerKind; }
+            set
+            {
+                _flowerKind = value;
+                OnPropertyChanged();
+            }
+        }
 
         private CardColorEnum? _Color = null;
         /// <summary>
@@ -67,15 +132,29 @@ namespace Logic.Cards
             {
                 return _Color == null ? (FlowerKind == FlowerKindEnum.Hongtao || FlowerKind == FlowerKindEnum.Fangkuai ? CardColorEnum.Red : CardColorEnum.Black) : _Color.Value;
             }
-            set => _Color = value;
+            set
+            {
+                _Color = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
         /// 图像path
         /// </summary>
-        public string Image { get; set; }
+        private string _img;
+        public string Image {
+            get { return _img; }
+            set
+            {
+                _img = value;
+                OnPropertyChanged();
+            }
+        }
 
         public PlayerContext PlayerContext { get; private set; }
+
+        #endregion
 
         /// <summary>
         /// 是否能够被主动打出

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Logic.ActionManger;
+using Logic.Annotations;
 using Logic.Cards;
 using Logic.Event;
 using Logic.GameLevel;
@@ -17,16 +21,27 @@ using Logic.Model.RequestResponse.Request;
 using Logic.Model.RequestResponse.Response;
 using Logic.Model.Skill.Interface;
 using Logic.Util;
+using Logic.Util.Extension;
 
 namespace Logic.Model.Player
 {
     /// <summary>
     /// 玩家，可以包含多个英雄
     /// </summary>
-    public class Player
+    public class Player : INotifyPropertyChanged
     {
         #region 属性
-        public int PlayerId { get; set; }
+
+        private int _PlayerId;
+        public int PlayerId
+        {
+            get { return _PlayerId; }
+            set
+            {
+                _PlayerId = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 玩家所在阵营id，用来标记各个player之间是否为敌对关系
@@ -34,48 +49,60 @@ namespace Logic.Model.Player
         public Guid GroupId { get; set; } = Guid.NewGuid();
 
         /// <summary>
-        /// 是否死亡
-        /// </summary>
-        /// <returns></returns>
-        public bool IsAlive()
-        {
-            return _availablePlayerHeroes.Any(p => !p.IsDead);
-        }
-
-        /// <summary>
-        /// 使当前英雄死亡,如果有其他或者的player则切换
-        /// </summary>
-        /// <returns></returns>
-        public async Task MakeDie()
-        {
-            GetCurrentPlayerHero().IsDead = true;
-            //如果有或者的英雄，则切换
-            var aliveHero = _availablePlayerHeroes.FirstOrDefault(p => !p.IsDead);
-            if (aliveHero != null)
-            {
-                GetCurrentPlayerHero().IsActive = false;
-                aliveHero.IsActive = true;
-            }
-
-            await Task.FromResult(0);
-        }
-
-        /// <summary>
         /// 玩家姓名
         /// </summary>
-        public string PlayerName { get; set; }
+        private string _PlayerName;
+        public string PlayerName
+        {
+            get { return _PlayerName; }
+            set
+            {
+                _PlayerName = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 玩家描述
         /// </summary>
-        public string Description { get; set; }
+        private string _Description;
+        public string Description
+        {
+            get { return _Description; }
+            set
+            {
+                _Description = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 进入角色回合的次数
         /// </summary>
-        public int Round { get; set; }
+        private int _Round;
+        public int Round
+        {
+            get { return _Round; }
+            set
+            {
+                _Round = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public int ExtraXianshou { get; set; }
+        /// <summary>
+        /// 先手
+        /// </summary>
+        private int _ExtraXianshou;
+        public int ExtraXianshou
+        {
+            get { return _ExtraXianshou; }
+            set
+            {
+                _ExtraXianshou = value;
+                OnPropertyChanged();
+            }
+        }
 
         public PlayerUIState PlayerUiState { get; }
 
@@ -83,7 +110,7 @@ namespace Logic.Model.Player
         /// <summary>
         /// 手牌
         /// </summary>
-        public List<CardBase> CardsInHand { get; private set; }
+        public ObservableCollection<CardBase> CardsInHand { get; private set; }
 
         /// <summary>
         /// 玩家当前的装备牌
@@ -149,7 +176,7 @@ namespace Logic.Model.Player
                     first.IsActive = true;
                 }
             }
-            CardsInHand = new List<CardBase>();
+            CardsInHand = new ObservableCollection<CardBase>();
             Marks = new List<Mark.MarkBase>();
             EquipmentSet = new List<CardBase>();
             PlayerUiState = new PlayerUIState(this);
@@ -170,6 +197,33 @@ namespace Logic.Model.Player
 
             var curHero = GetCurrentPlayerHero();
             curHero.SetupSkills();
+        }
+
+        /// <summary>
+        /// 是否死亡
+        /// </summary>
+        /// <returns></returns>
+        public bool IsAlive()
+        {
+            return _availablePlayerHeroes.Any(p => !p.IsDead);
+        }
+
+        /// <summary>
+        /// 使当前英雄死亡,如果有其他或者的player则切换
+        /// </summary>
+        /// <returns></returns>
+        public async Task MakeDie()
+        {
+            GetCurrentPlayerHero().IsDead = true;
+            //如果有或者的英雄，则切换
+            var aliveHero = _availablePlayerHeroes.FirstOrDefault(p => !p.IsDead);
+            if (aliveHero != null)
+            {
+                GetCurrentPlayerHero().IsActive = false;
+                aliveHero.IsActive = true;
+            }
+
+            await Task.FromResult(0);
         }
 
         /// <summary>
@@ -793,8 +847,8 @@ namespace Logic.Model.Player
         /// <param name="cards"></param>
         public async Task ThrowCard(List<CardBase> cards)
         {
-            //移除手牌中的对应牌
-            CardsInHand.RemoveAll(c => cards.Any(m => m.CardId == c.CardId));
+            ////移除手牌中的对应牌
+            //CardsInHand.RemoveAll(c => cards.Any(m => m.CardId == c.CardId));
             //将弃掉的牌装入弃牌堆
             _gameLevel.ThrowCardToStack(cards);
             Console.WriteLine($"{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】弃牌：{string.Join(",", cards)}");
@@ -1363,5 +1417,13 @@ namespace Logic.Model.Player
         }
 
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

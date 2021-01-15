@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Logic.Cards;
@@ -61,7 +62,7 @@ namespace Logic.Model.Cards.EquipmentCards
                                 CardOwner = target,
                                 DisplayMessage = "请选择弃掉目标一张马",
                                 EquipmentCards = PanelBase.ConvertToPanelCard(cards.ToList(), true),
-                                PlayersToShare = new List<Player.Player>() { PlayerContext.Player }
+                                PlayersToShare = new ObservableCollection<Player.Player>() { PlayerContext.Player }
                             },
                         };
                         var response = await PlayerContext.Player.ActionManager.OnRequestPickCardFromPanel(panelRequest);

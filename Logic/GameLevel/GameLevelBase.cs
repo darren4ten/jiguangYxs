@@ -16,6 +16,7 @@ using Logic.Model.Enums;
 using Logic.Model.Hero.Presizdent;
 using Logic.Model.Player;
 using Logic.Model.RequestResponse.Request;
+using Logic.Util.Extension;
 
 namespace Logic.GameLevel
 {
