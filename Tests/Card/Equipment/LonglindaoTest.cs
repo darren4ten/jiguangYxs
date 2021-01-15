@@ -93,7 +93,7 @@ namespace Tests.Card
             var shaResponse2 = await cardSha2.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext);
             Assert.AreEqual(0, player1.CardsInHand.Count);
             Assert.AreEqual(0, player2.CardsInHand.Count);
-            Assert.AreEqual(5, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player2.CurrentPlayerHero.CurrentLife);
         }
     }
 }

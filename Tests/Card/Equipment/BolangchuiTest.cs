@@ -70,14 +70,14 @@ namespace Tests.Card
             var response = await bolangchui.PlayCard(new CardRequestContext() { }, player1.RoundContext);
             Assert.AreEqual(1, player1.EquipmentSet.Count);
             Assert.AreEqual(4, player1.CardsInHand.Count);
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.CurrentLife);
             //攻击
             var shaResponse = await cardSha.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext);
 
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
             Assert.AreEqual(1, player1.CardsInHand.Count);
             Assert.AreEqual(1, player2.CardsInHand.Count);
-            Assert.AreEqual(5, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player2.CurrentPlayerHero.CurrentLife);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Logic.Model.Cards.BaseCards
             this.Description = "药";
             this.Name = "Yao";
             this.DisplayName = "药";
+            this.Image = "/Resources/card/card_yao.jpg";
         }
 
         /// <summary>
@@ -29,7 +30,7 @@ namespace Logic.Model.Cards.BaseCards
         /// <returns></returns>
         public override bool CanBePlayed()
         {
-            var curPhero = PlayerContext.Player.GetCurrentPlayerHero();
+            var curPhero = PlayerContext.Player.CurrentPlayerHero;
             if (PlayerContext.Player.IsInZhudongMode() && curPhero.CurrentLife < curPhero.GetAttackFactor().MaxLife)
             {
                 return true;
@@ -77,7 +78,7 @@ namespace Logic.Model.Cards.BaseCards
         protected async Task<CardResponseContext> ExecuteAction(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
             var target = cardRequestContext.SrcPlayer ?? PlayerContext.Player;
-            await target.GetCurrentPlayerHero().AddLife(new AddLifeRequest()
+            await target.CurrentPlayerHero.AddLife(new AddLifeRequest()
             {
                 CardRequestContext = cardRequestContext,
                 CardResponseContext = cardResponseContext,

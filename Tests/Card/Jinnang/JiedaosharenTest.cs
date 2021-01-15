@@ -68,19 +68,19 @@ namespace Tests.Card
             await player2.AddEquipment(new Panlonggun());
             Assert.AreEqual(3, player1.CardsInHand.Count);
             Assert.AreEqual(2, player2.CardsInHand.Count);
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.CurrentLife);
 
             var response = await cardToPlay.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2, player1 }), player1.RoundContext);
 
             Assert.AreEqual(2, player1.CardsInHand.Count);
-            Assert.AreEqual(4, player1.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(4, player1.CurrentPlayerHero.CurrentLife);
             Assert.AreEqual(1, player2.CardsInHand.Count);
             Assert.AreEqual(1, player2.EquipmentSet.Count);
 
             var response1 = await cardToPlay1.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2, player1 }), player1.RoundContext);
 
             Assert.AreEqual(2, player1.CardsInHand.Count);
-            Assert.AreEqual(4, player1.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(4, player1.CurrentPlayerHero.CurrentLife);
             Assert.AreEqual(1, player2.CardsInHand.Count);
             Assert.AreEqual(0, player2.EquipmentSet.Count);
         }

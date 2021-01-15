@@ -22,7 +22,7 @@ namespace Logic.Model.Cards.EquipmentCards
         }
         protected override async Task OnEquip()
         {
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance += BaseAttackFactor.ShaDistance - 1;
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance += BaseAttackFactor.ShaDistance - 1;
             //监听选择目标事件
             //触发条件：
             //  1. 选择目标的请求是杀
@@ -47,7 +47,7 @@ namespace Logic.Model.Cards.EquipmentCards
 
         protected override async Task OnUnEquip()
         {
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance -= BaseAttackFactor.ShaDistance - 1;
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance -= BaseAttackFactor.ShaDistance - 1;
             PlayerContext.GameLevel.GlobalEventBus.RemoveEventListener(EventTypeEnum.BeforeSelectTarget, eventId);
             await Task.FromResult(0);
         }

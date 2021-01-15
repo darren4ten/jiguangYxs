@@ -27,7 +27,7 @@ namespace Logic.Model.Cards.JinlangCards
         public override bool CanBePlayed()
         {
             //必须场上活人有血量不满时才能打出
-            return base.CanBePlayed() && PlayerContext.GameLevel.Players.Any(p => p.IsAlive() && p.GetCurrentPlayerHero().CurrentLife < p.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
+            return base.CanBePlayed() && PlayerContext.GameLevel.Players.Any(p => p.IsAlive && p.CurrentPlayerHero.CurrentLife < p.CurrentPlayerHero.BaseAttackFactor.MaxLife);
         }
 
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
@@ -75,7 +75,7 @@ namespace Logic.Model.Cards.JinlangCards
                     continue;
                 }
 
-                await currentPlayer.GetCurrentPlayerHero().AddLife(new AddLifeRequest()
+                await currentPlayer.CurrentPlayerHero.AddLife(new AddLifeRequest()
                 {
                     CardRequestContext = req,
                     CardResponseContext = cardResponseContext,

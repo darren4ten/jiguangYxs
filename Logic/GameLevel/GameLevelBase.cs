@@ -98,7 +98,7 @@ namespace Logic.GameLevel
         /// <returns></returns>
         public IEnumerable<Player> GetAlivePlayers()
         {
-            return Players.Where(p => p.IsAlive());
+            return Players.Where(p => p.IsAlive);
         }
 
         /// <summary>
@@ -172,8 +172,8 @@ namespace Logic.GameLevel
             //查看toPlayer是否装备防御马
             //获取探囊距离
             dist.TannangDistance =
-                dist.TannangDistance + target.GetCurrentPlayerHero().BaseAttackFactor.DefenseDistance;
-            dist.ShaDistance = dist.ShaDistanceWithouWeapon - src.GetCurrentPlayerHero().GetAttackFactor().ShaDistance;
+                dist.TannangDistance + target.CurrentPlayerHero.BaseAttackFactor.DefenseDistance;
+            dist.ShaDistance = dist.ShaDistanceWithouWeapon - src.CurrentPlayerHero.GetAttackFactor().ShaDistance;
             dist.ShaDistance = dist.ShaDistance <= 1 ? 1 : dist.ShaDistance;
             return dist;
         }
@@ -326,7 +326,7 @@ namespace Logic.GameLevel
             {
                 if (context.AdditionalContext is Player srcPlayer)
                 {
-                    if (srcPlayer.GetCurrentPlayerHero().CurrentLife <= 0)
+                    if (srcPlayer.CurrentPlayerHero.CurrentLife <= 0)
                     {
                         await this.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeDying, HostPlayerHero, context, roundContext, responseContext);
                     }
@@ -350,7 +350,7 @@ namespace Logic.GameLevel
                         MinCardCountToPlay = 1,
                         MaxCardCountToPlay = 1,
                         AttackType = AttackTypeEnum.Qiuyao,
-                        TargetPlayers = Players.Where(p => p.IsAlive()).ToList()
+                        TargetPlayers = Players.Where(p => p.IsAlive).ToList()
                     });
 
                     if (res.ResponseResult != ResponseResultEnum.Success)
@@ -358,13 +358,13 @@ namespace Logic.GameLevel
                         //没有人出药则死亡
                         await srcPlayer.MakeDie();
                         //如果玩家死亡，则判断游戏是否结束
-                        if (!srcPlayer.IsAlive())
+                        if (!srcPlayer.IsAlive)
                         {
                             //通知所有人该玩家死亡
                             await NotifyPlayerDeath(srcPlayer);
 
                             //检查该阵营是否都阵亡了，如果是，则通知该阵营游戏失败
-                            if (Players.Where(p => p.GroupId == srcPlayer.GroupId).All(p => !p.IsAlive()))
+                            if (Players.Where(p => p.GroupId == srcPlayer.GroupId).All(p => !p.IsAlive))
                             {
                                 foreach (var player in Players.Where(p => p.GroupId == srcPlayer.GroupId))
                                 {
@@ -468,7 +468,7 @@ namespace Logic.GameLevel
         /// <returns></returns>
         protected virtual async Task NotifyPlayerSuccess(Player player)
         {
-            Console.WriteLine($"***{player.PlayerId}【{player.GetCurrentPlayerHero().Hero.DisplayName}】玩家您游戏胜利。");
+            Console.WriteLine($"***{player.PlayerId}【{player.CurrentPlayerHero.Hero.DisplayName}】玩家您游戏胜利。");
             await Task.FromResult(0);
         }
 
@@ -480,7 +480,7 @@ namespace Logic.GameLevel
         protected virtual async Task NotifyPlayerFailure(Player player)
         {
             //通知玩家本人死亡
-            Console.WriteLine($"***{player.PlayerId}【{player.GetCurrentPlayerHero().Hero.DisplayName}】玩家您游戏失败。");
+            Console.WriteLine($"***{player.PlayerId}【{player.CurrentPlayerHero.Hero.DisplayName}】玩家您游戏失败。");
             await Task.FromResult(0);
         }
 
@@ -492,7 +492,7 @@ namespace Logic.GameLevel
         protected virtual async Task NotifyPlayerDeath(Player player)
         {
             //通知玩家本人死亡
-            Console.WriteLine($"***{player.PlayerId}【{player.GetCurrentPlayerHero().Hero.DisplayName}】玩家您已经死亡。");
+            Console.WriteLine($"***{player.PlayerId}【{player.CurrentPlayerHero.Hero.DisplayName}】玩家您已经死亡。");
             //通知在场所有的人player死亡
             await Task.FromResult(0);
         }
@@ -505,7 +505,7 @@ namespace Logic.GameLevel
         /// <returns></returns>
         protected virtual async Task NotifyPlayerGameEnd(Player player, bool isVictor)
         {
-            Console.WriteLine($"***{player.PlayerId}【{player.GetCurrentPlayerHero().Hero.DisplayName}】玩家您已经{(isVictor ? "胜利！" : "失败！")}");
+            Console.WriteLine($"***{player.PlayerId}【{player.CurrentPlayerHero.Hero.DisplayName}】玩家您已经{(isVictor ? "胜利！" : "失败！")}");
             await Task.FromResult(0);
         }
 

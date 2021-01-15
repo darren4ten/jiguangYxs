@@ -29,7 +29,7 @@ namespace Logic.Model.Cards.EquipmentCards
         protected override async Task OnEquip()
         {
             //增加攻击距离
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance +=
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance +=
                 BaseAttackFactor.ShaDistance - 1;
             await Task.FromResult(0);
             //监听杀失败事件，如果杀失败(Failed,不是Cancelled)，询问用户是否继续出杀
@@ -64,12 +64,12 @@ namespace Logic.Model.Cards.EquipmentCards
                            {
                                throw new Exception("必须出杀才能发动盘龙棍");
                            }
-                           Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】发动盘龙棍技能打出【{newSha}】");
+                           Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】发动盘龙棍技能打出【{newSha}】");
                            var shaRes = await newSha.PlayCard(CardRequestContext.GetBaseCardRequestContext(context.TargetPlayers), roundContext);
                        }
                        else
                        {
-                           Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】放弃发动盘龙棍技能】");
+                           Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】放弃发动盘龙棍技能】");
                        }
                    }
 
@@ -79,7 +79,7 @@ namespace Logic.Model.Cards.EquipmentCards
         protected override async Task OnUnEquip()
         {
             //扣除攻击距离
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance -=
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance -=
                 BaseAttackFactor.ShaDistance - 1;
             //注销监听事件
             PlayerContext.GameLevel.GlobalEventBus.RemoveEventListener(EventTypeEnum.AfterShaFailed, eventId);

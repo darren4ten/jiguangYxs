@@ -29,7 +29,7 @@ namespace Logic.Model.Cards.JinlangCards
                                                      AttackDynamicFactor.GetDefaultBaseAttackFactor();
             //默认SrcPlayer为当前出牌的人
             cardRequestContext.SrcPlayer = cardRequestContext.SrcPlayer ?? PlayerContext.Player;
-            Console.WriteLine($"[{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}的【{cardRequestContext.SrcPlayer.GetCurrentPlayerHero().Hero.DisplayName}】]{(cardRequestContext.TargetPlayers?.Any() == true ? "向" + string.Join(",", cardRequestContext.TargetPlayers.Select(p => p.PlayerName + p.PlayerId)) : "")}打出“{this.DisplayName}”");
+            Console.WriteLine($"[{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}的【{cardRequestContext.SrcPlayer.CurrentPlayerHero.Hero.DisplayName}】]{(cardRequestContext.TargetPlayers?.Any() == true ? "向" + string.Join(",", cardRequestContext.TargetPlayers.Select(p => p.PlayerName + p.PlayerId)) : "")}打出“{this.DisplayName}”");
 
             CardResponseContext responseContext = new CardResponseContext();
 
@@ -104,7 +104,7 @@ namespace Logic.Model.Cards.JinlangCards
                 MinCardCountToPlay = 1,
                 MaxCardCountToPlay = 1,
                 AttackType = request.AttackType,
-                TargetPlayers = PlayerContext.GameLevel.Players.Where(p => p.IsAlive()).ToList()
+                TargetPlayers = PlayerContext.GameLevel.Players.Where(p => p.IsAlive).ToList()
             });
         }
     }

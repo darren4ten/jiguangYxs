@@ -27,7 +27,7 @@ namespace Logic.Model.Mark
         public override void Init()
         {
             eventId = Guid.NewGuid();
-            PlayerContext.GameLevel.GlobalEventBus.ListenEvent(eventId, PlayerContext.Player.GetCurrentPlayerHero(), EventTypeEnum.BeforeEnterMyRound, (
+            PlayerContext.GameLevel.GlobalEventBus.ListenEvent(eventId, PlayerContext.Player.CurrentPlayerHero, EventTypeEnum.BeforeEnterMyRound, (
                 async (context, roundContext, responseContext) =>
                 {
                     context.AttackDynamicFactor = context.AttackDynamicFactor ??
@@ -69,7 +69,7 @@ namespace Logic.Model.Mark
                     {
                         Console.WriteLine($"【手捧雷】判定生效，判定牌为【{pandingResponse.Cards.FirstOrDefault()}】");
                         //判定生效，爆炸
-                        await PlayerContext.Player.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
+                        await PlayerContext.Player.CurrentPlayerHero.LoseLife(new LoseLifeRequest()
                         {
                             CardRequestContext = context,
                             CardResponseContext = responseContext,
@@ -105,7 +105,7 @@ namespace Logic.Model.Mark
                 break;
             }
             await PlayerContext.Player.MoveMark(nextPlayer, this);
-            Console.WriteLine($"手捧雷【{this.Cards.FirstOrDefault()}】转移到{nextPlayer.PlayerId}【{nextPlayer.GetCurrentPlayerHero().Hero.DisplayName}】");
+            Console.WriteLine($"手捧雷【{this.Cards.FirstOrDefault()}】转移到{nextPlayer.PlayerId}【{nextPlayer.CurrentPlayerHero.Hero.DisplayName}】");
         }
     }
 }

@@ -108,6 +108,7 @@ namespace Logic.Cards
             }
         }
 
+        public string FlowerKindString => GetFlowerKind();
         /// <summary>
         /// 花色
         /// </summary>
@@ -123,6 +124,7 @@ namespace Logic.Cards
         }
 
         private CardColorEnum? _Color = null;
+
         /// <summary>
         /// 颜色
         /// </summary>
@@ -143,7 +145,8 @@ namespace Logic.Cards
         /// 图像path
         /// </summary>
         private string _img;
-        public string Image {
+        public string Image
+        {
             get { return _img; }
             set
             {
@@ -171,16 +174,16 @@ namespace Logic.Cards
             var cardRequest = CardRequestContext.GetBaseCardRequestContext(null);
             cardRequest.AdditionalContext = request;
             await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeSelectTarget,
-                PlayerContext.Player.GetCurrentPlayerHero(), request.CardRequest,
+                PlayerContext.Player.CurrentPlayerHero, request.CardRequest,
                 PlayerContext.Player.RoundContext, new CardResponseContext());
             await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.SelectTarget,
-                PlayerContext.Player.GetCurrentPlayerHero(), request.CardRequest,
+                PlayerContext.Player.CurrentPlayerHero, request.CardRequest,
                 PlayerContext.Player.RoundContext, new CardResponseContext());
 
             var res = await PlayerContext.Player.ActionManager.OnRequestSelectTargets(request);
 
             await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterSelectTarget,
-                PlayerContext.Player.GetCurrentPlayerHero(), request.CardRequest,
+                PlayerContext.Player.CurrentPlayerHero, request.CardRequest,
                 PlayerContext.Player.RoundContext, new CardResponseContext());
             return res;
         }
@@ -255,7 +258,7 @@ namespace Logic.Cards
                                                      AttackDynamicFactor.GetDefaultBaseAttackFactor();
             //默认SrcPlayer为当前出牌的人
             cardRequestContext.SrcPlayer = cardRequestContext.SrcPlayer ?? PlayerContext.Player;
-            Console.WriteLine($"[{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}]的【{cardRequestContext.SrcPlayer.GetCurrentPlayerHero().Hero.DisplayName}】{(cardRequestContext.TargetPlayers?.Any() == true ? "向" + string.Join(",", cardRequestContext.TargetPlayers.Select(p => p.PlayerName + p.PlayerId)) : "")}打出“{this.ToString()}”");
+            Console.WriteLine($"[{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}]的【{cardRequestContext.SrcPlayer.CurrentPlayerHero.Hero.DisplayName}】{(cardRequestContext.TargetPlayers?.Any() == true ? "向" + string.Join(",", cardRequestContext.TargetPlayers.Select(p => p.PlayerName + p.PlayerId)) : "")}打出“{this.ToString()}”");
 
             CardResponseContext responseContext = new CardResponseContext();
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, cardRequestContext, responseContext, roundContext);
@@ -428,7 +431,7 @@ namespace Logic.Cards
             return false;
         }
 
-        public override string ToString()
+        private string GetFlowerKind()
         {
             var flower = "";
             switch (FlowerKind)
@@ -459,6 +462,12 @@ namespace Logic.Cards
                     };
                     break;
             }
+            return flower;
+        }
+
+        public override string ToString()
+        {
+            var flower = GetFlowerKind();
             return $"[{flower}{Number} {DisplayName}]";
         }
 

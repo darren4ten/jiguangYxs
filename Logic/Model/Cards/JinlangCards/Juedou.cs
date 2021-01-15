@@ -50,7 +50,7 @@ namespace Logic.Model.Cards.JinlangCards
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
             RoundContext roundContext)
         {
-            var phero = PlayerContext.Player.GetCurrentPlayerHero();
+            var phero = PlayerContext.Player.CurrentPlayerHero;
             cardRequestContext.RequestCard = new Sha();
             cardRequestContext.AttackType = AttackTypeEnum.Juedou;
             cardRequestContext.MaxCardCountToPlay += phero.BaseAttackFactor.ShaCountAvoidJuedou;
@@ -95,7 +95,7 @@ namespace Logic.Model.Cards.JinlangCards
             {
                 isSuccess = false;
                 //被决斗方有可能要求出多张杀
-                var targetHero = target.GetCurrentPlayerHero();
+                var targetHero = target.CurrentPlayerHero;
                 cardRequestContext.MaxCardCountToPlay = targetHero.BaseAttackFactor.ShaCountAvoidJuedou;
                 cardRequestContext.MinCardCountToPlay = targetHero.BaseAttackFactor.ShaCountAvoidJuedou;
                 resTarget = await PlayerContext.Player.ResponseCard(cardRequestContext, cardResponseContext, roundContext);
@@ -124,7 +124,7 @@ namespace Logic.Model.Cards.JinlangCards
                 var target = cardRequestContext.TargetPlayers.First();
                 await target.TriggerEvent(Enums.EventTypeEnum.BeforeJuedouSuccess,
                     cardRequestContext, actResponse, roundContext);
-                await target.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
+                await target.CurrentPlayerHero.LoseLife(new LoseLifeRequest()
                 {
                     CardRequestContext = cardRequestContext,
                     SrcRoundContext = roundContext,
@@ -144,7 +144,7 @@ namespace Logic.Model.Cards.JinlangCards
 
                 await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeJuedouFailed,
                     cardRequestContext, actResponse, roundContext);
-                await PlayerContext.Player.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
+                await PlayerContext.Player.CurrentPlayerHero.LoseLife(new LoseLifeRequest()
                 {
                     CardRequestContext = cardRequestContext,
                     SrcRoundContext = roundContext,

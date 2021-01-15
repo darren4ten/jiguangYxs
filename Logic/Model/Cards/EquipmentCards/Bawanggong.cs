@@ -32,7 +32,7 @@ namespace Logic.Model.Cards.EquipmentCards
         protected override async Task OnEquip()
         {
             //增加攻击距离
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance +=
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance +=
                 BaseAttackFactor.ShaDistance - 1;
             await Task.FromResult(0);
             //监听杀成功事件
@@ -71,7 +71,7 @@ namespace Logic.Model.Cards.EquipmentCards
                         var panelCards = panelRequest.Panel.EquipmentCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
                         panelCards?.ForEach(async p =>
                         {
-                            Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panelRequest.Panel.CardOwner.PlayerId}的【{panelRequest.Panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                            Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panelRequest.Panel.CardOwner.PlayerId}的【{panelRequest.Panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
                             await panelRequest.Panel.CardOwner.RemoveEquipment(p.Card, context, response, roundContext);
                             panelRequest.Panel.EquipmentCards.Remove(p);
                             PlayerContext.GameLevel.TempCardDesk.Add(p.Card);
@@ -83,7 +83,7 @@ namespace Logic.Model.Cards.EquipmentCards
         protected override async Task OnUnEquip()
         {
             //扣除攻击距离
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance -=
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance -=
                 BaseAttackFactor.ShaDistance - 1;
             await Task.FromResult(0);
             //注销监听事件

@@ -18,6 +18,7 @@ namespace Logic.Model.Cards.BaseCards
             this.Description = "闪";
             this.Name = "Shan";
             this.DisplayName = "闪";
+            this.Image = "/Resources/card/card_shan.jpg";
         }
 
         public static bool CanBePlayed(PlayerContext playerContext)

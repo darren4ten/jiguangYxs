@@ -67,8 +67,8 @@ namespace Tests.Card
             player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
             player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
 
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.BaseAttackFactor.MaxLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.BaseAttackFactor.MaxLife);
 
             var response = cardJuedou.PlayCard(new CardRequestContext()
             {
@@ -81,8 +81,8 @@ namespace Tests.Card
                     }
             }, player1.RoundContext).GetAwaiter().GetResult();
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(5, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(5, player2.CurrentPlayerHero.CurrentLife);
         }
 
         [Test]
@@ -94,10 +94,10 @@ namespace Tests.Card
             player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
             player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
 
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.BaseAttackFactor.MaxLife);
             Assert.AreEqual(1, player1.CardsInHand.Count);
             Assert.AreEqual(3, player2.CardsInHand.Count); 
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.BaseAttackFactor.MaxLife);
             //没有霸王的决斗有霸王的场景
             var response = cardJuedou.PlayCard(new CardRequestContext()
             {
@@ -107,10 +107,10 @@ namespace Tests.Card
                 }
             }, player1.RoundContext).GetAwaiter().GetResult();
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
-            Assert.AreEqual(4, player1.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(4, player1.CurrentPlayerHero.CurrentLife);
             Assert.AreEqual(0, player1.CardsInHand.Count);
             Assert.AreEqual(0, player2.CardsInHand.Count); 
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.CurrentLife);
         }
 
         [Test]
@@ -121,8 +121,8 @@ namespace Tests.Card
             player1.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
             player2.CardsInHand.Add(new Sha().AttachPlayerContext(new PlayerContext() { Player = player2, GameLevel = gameLevel1 }));
 
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.BaseAttackFactor.MaxLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.BaseAttackFactor.MaxLife);
 
             var response = cardJuedou.PlayCard(new CardRequestContext()
             {
@@ -135,8 +135,8 @@ namespace Tests.Card
                     }
             }, player1.RoundContext).GetAwaiter().GetResult();
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(5, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(5, player2.CurrentPlayerHero.CurrentLife);
         }
 
         [Test]
@@ -160,10 +160,10 @@ namespace Tests.Card
             await player1.AddCardInHand(new Sha());
             await player2.AddCardInHand(new Sha());
 
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.BaseAttackFactor.MaxLife);
             Assert.AreEqual(2, player1.CardsInHand.Count);
             Assert.AreEqual(1, player2.CardsInHand.Count);
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.BaseAttackFactor.MaxLife);
 
             var response = cardJuedou.PlayCard(new CardRequestContext()
             {
@@ -176,10 +176,10 @@ namespace Tests.Card
                 }
             }, player1.RoundContext).GetAwaiter().GetResult();
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.CurrentLife);
             Assert.AreEqual(0, player1.CardsInHand.Count);
             Assert.AreEqual(0, player2.CardsInHand.Count);
-            Assert.AreEqual(5, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player2.CurrentPlayerHero.CurrentLife);
         }
 
         [Test]
@@ -204,10 +204,10 @@ namespace Tests.Card
             await player2.AddCardInHand(new Sha());
             await player2.AddCardInHand(new Sha());
 
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.BaseAttackFactor.MaxLife);
             Assert.AreEqual(2, player1.CardsInHand.Count);
             Assert.AreEqual(2, player2.CardsInHand.Count);
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.BaseAttackFactor.MaxLife);
 
             var response = cardJuedou.PlayCard(new CardRequestContext()
             {
@@ -220,10 +220,10 @@ namespace Tests.Card
                 }
             }, player1.RoundContext).GetAwaiter().GetResult();
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
-            Assert.AreEqual(4, player1.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(4, player1.CurrentPlayerHero.CurrentLife);
             Assert.AreEqual(0, player1.CardsInHand.Count);
             Assert.AreEqual(0, player2.CardsInHand.Count);
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.CurrentLife);
         }
     }
 }

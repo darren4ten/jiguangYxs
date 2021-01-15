@@ -1,7 +1,7 @@
 ﻿<Application x:Class="JgYxs.UI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="Levels/Level_001_NoFriend2Enemies.xaml">
+             StartupUri="MainWindow.xaml">
     <Application.Resources>
          
     </Application.Resources>

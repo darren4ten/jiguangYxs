@@ -96,7 +96,7 @@ namespace Tests.Card
             Assert.AreEqual(2, player2.CardsInHand.Count);
             Assert.AreEqual(1, player1.EquipmentSet.Count);
             Assert.AreEqual(0, player2.EquipmentSet.Count);
-            Assert.AreEqual(3, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(3, player2.CurrentPlayerHero.CurrentLife);
         }
     }
 }

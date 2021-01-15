@@ -195,7 +195,7 @@ namespace Logic.Model.Player
                 p.AttachPlayerContext(playerContext);
             });
 
-            var curHero = GetCurrentPlayerHero();
+            var curHero = CurrentPlayerHero;
             curHero.SetupSkills();
         }
 
@@ -203,10 +203,8 @@ namespace Logic.Model.Player
         /// 是否死亡
         /// </summary>
         /// <returns></returns>
-        public bool IsAlive()
-        {
-            return _availablePlayerHeroes.Any(p => !p.IsDead);
-        }
+        public bool IsAlive => _availablePlayerHeroes.Any(p => !p.IsDead);
+
 
         /// <summary>
         /// 使当前英雄死亡,如果有其他或者的player则切换
@@ -214,12 +212,12 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task MakeDie()
         {
-            GetCurrentPlayerHero().IsDead = true;
+            CurrentPlayerHero.IsDead = true;
             //如果有或者的英雄，则切换
             var aliveHero = _availablePlayerHeroes.FirstOrDefault(p => !p.IsDead);
             if (aliveHero != null)
             {
-                GetCurrentPlayerHero().IsActive = false;
+                CurrentPlayerHero.IsActive = false;
                 aliveHero.IsActive = true;
             }
 
@@ -232,16 +230,13 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public int GetXianshou()
         {
-            return GetCurrentPlayerHero().GetXianshou() + ExtraXianshou;
+            return CurrentPlayerHero.GetXianshou + ExtraXianshou;
         }
 
         /// <summary>
         /// 当前用户英雄
         /// </summary>
-        public PlayerHero GetCurrentPlayerHero()
-        {
-            return _availablePlayerHeroes.First(p => p.IsActive);
-        }
+        public PlayerHero CurrentPlayerHero => _availablePlayerHeroes.First(p => p.IsActive);
 
         /// <summary>
         /// 主动出牌
@@ -398,7 +393,7 @@ namespace Logic.Model.Player
                 return responseContext;
             }
             var newRequestContext = GetCombindCardRequestContext(cardRequestContext,
-                GetCurrentPlayerHero().BaseAttackFactor, roundContext);
+                CurrentPlayerHero.BaseAttackFactor, roundContext);
             var res = await ActionManager.OnRequestResponseCard(newRequestContext);
             await TriggerEvent(Enums.EventTypeEnum.AfterBeidongPlayCard, cardRequestContext, res, roundContext);
             if (res.Cards?.Any() == true)
@@ -442,7 +437,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task<CardResponseContext> TriggerEvent(Enums.EventTypeEnum eventType, CardRequestContext cardRequestContext, CardResponseContext responseContext, RoundContext roundContext = null)
         {
-            await _gameLevel.GlobalEventBus.TriggerEvent(eventType, this.GetCurrentPlayerHero(), cardRequestContext, roundContext, responseContext);
+            await _gameLevel.GlobalEventBus.TriggerEvent(eventType, this.CurrentPlayerHero, cardRequestContext, roundContext, responseContext);
             return responseContext;
         }
 
@@ -456,25 +451,25 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public void ListenEvent(Guid eventId, Enums.EventTypeEnum eventType, EventBus.RoundEventHandler handler)
         {
-            _gameLevel.GlobalEventBus.ListenEvent(eventId, this.GetCurrentPlayerHero(), eventType, handler);
+            _gameLevel.GlobalEventBus.ListenEvent(eventId, this.CurrentPlayerHero, eventType, handler);
         }
 
         public async Task StartMyRound()
         {
             int waitTme = 10;
             Console.WriteLine($"");
-            Console.WriteLine($"------------------{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的回合开始------------------");
+            Console.WriteLine($"------------------{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】的回合开始------------------");
             await StartStep_EnterMyRound();
             await Task.Delay(waitTme);
             await StartStep_PickCard();
-            Console.WriteLine($"    {PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】【血量：{GetCurrentPlayerHero().CurrentLife},装备:({string.Join(",", EquipmentSet)}),手牌:({string.Join(",", CardsInHand)})，标记牌:({string.Join(",", Marks)})】");
+            Console.WriteLine($"    {PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】【血量：{CurrentPlayerHero.CurrentLife},装备:({string.Join(",", EquipmentSet)}),手牌:({string.Join(",", CardsInHand)})，标记牌:({string.Join(",", Marks)})】");
             await Task.Delay(waitTme);
             await StartStep_PlayCard();
             await Task.Delay(waitTme);
             await StartStep_ThrowCard();
             await Task.Delay(waitTme);
             await StartStep_ExitMyRound();
-            Console.WriteLine($"------------------{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的回合结束------------------");
+            Console.WriteLine($"------------------{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】的回合结束------------------");
         }
 
         /// <summary>
@@ -498,7 +493,7 @@ namespace Logic.Model.Player
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.EnterMyRound, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.EnterMyRound, request, response, RoundContext);
-            var combinedRequest = GetCombindCardRequestContext(request, GetCurrentPlayerHero().BaseAttackFactor, RoundContext);
+            var combinedRequest = GetCombindCardRequestContext(request, CurrentPlayerHero.BaseAttackFactor, RoundContext);
             if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipEnterMyRound)
             {
                 Console.WriteLine($"跳过进入我的回合阶段。");
@@ -517,11 +512,11 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_PickCard()
         {
-            if (!IsAlive())
+            if (!IsAlive)
             {
                 return;
             }
-            Console.WriteLine($"进入{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的摸牌阶段。");
+            Console.WriteLine($"进入{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】的摸牌阶段。");
             var request = new CardRequestContext();
             var response = new CardResponseContext();
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforePickCard, _gameLevel.HostPlayerHero,
@@ -531,7 +526,7 @@ namespace Logic.Model.Player
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.PickCard, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.PickCard, request, response, RoundContext);
-            var combinedRequest = GetCombindCardRequestContext(request, GetCurrentPlayerHero().BaseAttackFactor, RoundContext);
+            var combinedRequest = GetCombindCardRequestContext(request, CurrentPlayerHero.BaseAttackFactor, RoundContext);
             if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipPickCard)
             {
                 Console.WriteLine($"跳过摸牌。");
@@ -551,12 +546,12 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_PlayCard()
         {
-            if (!IsAlive())
+            if (!IsAlive)
             {
                 return;
             }
 
-            Console.WriteLine($"进入{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的出牌阶段。");
+            Console.WriteLine($"进入{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】的出牌阶段。");
             if (RoundContext.AttackDynamicFactor.SkipOption.ShouldSkipPlayCard)
             {
                 Console.WriteLine($"跳过出牌。");
@@ -571,7 +566,7 @@ namespace Logic.Model.Player
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.ZhudongPlayCard, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.ZhudongPlayCard, request, response, RoundContext);
-            var combinedRequest = GetCombindCardRequestContext(request, GetCurrentPlayerHero().BaseAttackFactor, RoundContext);
+            var combinedRequest = GetCombindCardRequestContext(request, CurrentPlayerHero.BaseAttackFactor, RoundContext);
             if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipPlayCard)
             {
                 Console.WriteLine($"跳过出牌。");
@@ -592,12 +587,12 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public async Task StartStep_ThrowCard()
         {
-            if (!IsAlive())
+            if (!IsAlive)
             {
                 return;
             }
 
-            Console.WriteLine($"进入{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】的弃牌阶段。");
+            Console.WriteLine($"进入{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】的弃牌阶段。");
             var request = new CardRequestContext();
             var response = new CardResponseContext();
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeThrowCard, _gameLevel.HostPlayerHero,
@@ -607,7 +602,7 @@ namespace Logic.Model.Player
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.ThrowCard, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.ThrowCard, request, response, RoundContext);
-            var combinedRequest = GetCombindCardRequestContext(request, GetCurrentPlayerHero().BaseAttackFactor, RoundContext);
+            var combinedRequest = GetCombindCardRequestContext(request, CurrentPlayerHero.BaseAttackFactor, RoundContext);
             if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipThrowCard)
             {
                 Console.WriteLine($"跳过弃牌。");
@@ -636,7 +631,7 @@ namespace Logic.Model.Player
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.EndRound, _gameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.EndRound, request, response, RoundContext);
-            var combinedRequest = GetCombindCardRequestContext(request, GetCurrentPlayerHero().BaseAttackFactor, RoundContext);
+            var combinedRequest = GetCombindCardRequestContext(request, CurrentPlayerHero.BaseAttackFactor, RoundContext);
             if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipExitMyRound)
             {
                 Console.WriteLine($"跳过结束出牌阶段。");
@@ -805,18 +800,21 @@ namespace Logic.Model.Player
         /// 获取所有的技能按钮
         /// </summary>
         /// <returns></returns>
-        public List<ISkillButton> GetAllSkillButtons()
+        public ObservableCollection<ISkillButton> SkillButtons
         {
-            var skillBtnInfos = new List<ISkillButton>();
-            var equipSkilBtns = EquipmentSet?.OfType<ISkillButton>();
-            if (equipSkilBtns != null)
+            get
             {
-                skillBtnInfos.AddRange(equipSkilBtns);
-            }
-            var skillBtns = GetCurrentPlayerHero().GetAllMainSkills().OfType<ISkillButton>();
+                var skillBtnInfos = new List<ISkillButton>();
+                var equipSkilBtns = EquipmentSet?.OfType<ISkillButton>();
+                if (equipSkilBtns != null)
+                {
+                    skillBtnInfos.AddRange(equipSkilBtns);
+                }
+                var skillBtns = CurrentPlayerHero.GetAllMainSkills().OfType<ISkillButton>();
 
-            skillBtnInfos.AddRange(skillBtns);
-            return skillBtnInfos;
+                skillBtnInfos.AddRange(skillBtns);
+                return skillBtnInfos.ToObservableCollection();
+            }
         }
 
         /// <summary>
@@ -826,7 +824,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public bool IsSameGroup(Player targetPlayer)
         {
-            //return GetCurrentPlayerHero().Hero.HeroGroup == targetPlayer.GetCurrentPlayerHero().Hero.HeroGroup;
+            //return GetCurrentPlayerHero.Hero.HeroGroup == targetPlayer.GetCurrentPlayerHero.Hero.HeroGroup;
             return GroupId == targetPlayer.GroupId;
         }
 
@@ -837,7 +835,7 @@ namespace Logic.Model.Player
         public async Task PickCard(int count)
         {
             var cards = _gameLevel.PickNextCardsFromStack(count).ToList();
-            Console.WriteLine($"{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】摸牌：{string.Join(",", cards)}");
+            Console.WriteLine($"{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】摸牌：{string.Join(",", cards)}");
             await AddCardsInHand(cards);
         }
 
@@ -851,7 +849,7 @@ namespace Logic.Model.Player
             //CardsInHand.RemoveAll(c => cards.Any(m => m.CardId == c.CardId));
             //将弃掉的牌装入弃牌堆
             _gameLevel.ThrowCardToStack(cards);
-            Console.WriteLine($"{PlayerId}【{GetCurrentPlayerHero().Hero.DisplayName}】弃牌：{string.Join(",", cards)}");
+            Console.WriteLine($"{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】弃牌：{string.Join(",", cards)}");
             await Task.FromResult("");
         }
 
@@ -995,7 +993,7 @@ namespace Logic.Model.Player
                 else
                 {
                     //如果不包括死亡的且当前是死亡的，则继续查找
-                    if (next.GetCurrentPlayerHero().IsDead)
+                    if (next.CurrentPlayerHero.IsDead)
                     {
                         next = next.NextPlayer;
                         continue;
@@ -1234,7 +1232,7 @@ namespace Logic.Model.Player
         private async Task<bool> IsAvailableForPlayer_Zhiyu(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
         {
             //血量不能为满
-            if (targetPlayer.GetCurrentPlayerHero().CurrentLife < targetPlayer.GetCurrentPlayerHero().GetAttackFactor().MaxLife)
+            if (targetPlayer.CurrentPlayerHero.CurrentLife < targetPlayer.CurrentPlayerHero.GetAttackFactor().MaxLife)
             {
                 return await IsAvailableForPlayer_NoLimit(targetPlayer, card, attackType);
             }
@@ -1251,7 +1249,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         private async Task<bool> IsAvailableForPlayer_Liaoshang(Player targetPlayer, CardBase card, AttackTypeEnum attackType)
         {
-            if (targetPlayer.GetCurrentPlayerHero().CurrentLife < targetPlayer.GetCurrentPlayerHero().GetAttackFactor().MaxLife)
+            if (targetPlayer.CurrentPlayerHero.CurrentLife < targetPlayer.CurrentPlayerHero.GetAttackFactor().MaxLife)
             {
                 return await IsAvailableForPlayer_NoLimit(targetPlayer, card, attackType);
             }
@@ -1373,7 +1371,7 @@ namespace Logic.Model.Player
         {
             //获取两个player之间的距离，检查是否在攻击范围内
             var dist = _gameLevel.GetPlayersDistance(this, targetPlayer);
-            if (dist.ShaDistance > RoundContext.AttackDynamicFactor.ShaDistance + GetCurrentPlayerHero().GetAttackFactor().ShaDistance)
+            if (dist.ShaDistance > RoundContext.AttackDynamicFactor.ShaDistance + CurrentPlayerHero.GetAttackFactor().ShaDistance)
             {
                 //不在攻击范围
                 return false;

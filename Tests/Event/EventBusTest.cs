@@ -43,7 +43,7 @@ namespace Tests.Event
 
             var t = Task.Run(async () =>
               {
-                  await eventBus.TriggerEvent(EventTypeEnum.AfterShaSuccess, player1.GetCurrentPlayerHero(), new CardRequestContext(),
+                  await eventBus.TriggerEvent(EventTypeEnum.AfterShaSuccess, player1.CurrentPlayerHero, new CardRequestContext(),
                       new RoundContext(), null);
               });
             Task.WaitAll(t);

@@ -27,7 +27,7 @@ namespace Logic.Model.Cards.EquipmentCards
         protected override async Task OnEquip()
         {
             //增加攻击距离
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance +=
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance +=
                 BaseAttackFactor.ShaDistance - 1;
             //监听BeforeSha事件，
             this.eventId = Guid.NewGuid();
@@ -49,7 +49,7 @@ namespace Logic.Model.Cards.EquipmentCards
         protected override async Task OnUnEquip()
         {
             //扣除攻击距离
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance -=
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance -=
                 BaseAttackFactor.ShaDistance - 1;
             //注销监听事件
             PlayerContext.GameLevel.GlobalEventBus.RemoveEventListener(EventTypeEnum.AfterShaFailed, eventId);

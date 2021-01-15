@@ -81,7 +81,7 @@ namespace Tests.Card
                 Assert.AreEqual(ResponseResultEnum.Success, juedouResponse.ResponseResult);
                 Assert.AreEqual(0, player1.CardsInHand.Count);
                 Assert.AreEqual(0, player2.CardsInHand.Count);
-                Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
+                Assert.AreEqual(6, player2.CurrentPlayerHero.CurrentLife);
             }
             catch (Exception e)
             {

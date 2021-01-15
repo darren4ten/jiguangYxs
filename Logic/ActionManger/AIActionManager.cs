@@ -156,7 +156,7 @@ namespace Logic.ActionManger
                 var huadiweilaoMark = markCards.FirstOrDefault(p => nameof(p.Mark) == nameof(HuadiweilaoMark));
                 if (huadiweilaoMark != null)
                 {
-                    //Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{request.Panel.CardOwner.PlayerId}的【{request.Panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{huadiweilaoMark.Card.DisplayName}");
+                    //Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero.Hero.DisplayName}】从{request.Panel.CardOwner.PlayerId}的【{request.Panel.CardOwner.GetCurrentPlayerHero.Hero.DisplayName}】抽取了{huadiweilaoMark.Card.DisplayName}");
                     //request.Panel.CardOwner.Marks.Remove(huadiweilaoMark.Mark);
                     huadiweilaoMark.SelectedBy = PlayerContext.Player;
                     response.Cards.Add(huadiweilaoMark.Card);
@@ -269,7 +269,7 @@ namespace Logic.ActionManger
                 if (!shouldContinueLoop)
                 {
                     shouldContinueLoop = await PlayCard<Fudichouxin>(
-                        PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideFuidichouxin()));
+                        PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideFuidichouxin()));
                 }
                 #endregion
 
@@ -277,7 +277,7 @@ namespace Logic.ActionManger
                 if (!shouldContinueLoop)
                 {
                     shouldContinueLoop = await PlayCard<Jiedaosharen>(
-                        PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideJiedaosharen()));
+                        PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideJiedaosharen()));
                 }
 
                 #endregion
@@ -286,7 +286,7 @@ namespace Logic.ActionManger
                 if (!shouldContinueLoop)
                 {
                     shouldContinueLoop = await PlayCard<Tannangquwu>(
-                        PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideTannangquwu()));
+                        PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideTannangquwu()));
                 }
                 #endregion
 
@@ -294,42 +294,42 @@ namespace Logic.ActionManger
                 if (!shouldContinueLoop)
                 {
                     shouldContinueLoop = await PlayCard<Wuzhongshengyou>(
-                        PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideWuzhongshengyou()));
+                        PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideWuzhongshengyou()));
                 }
 
                 //是否有药？
                 if (!shouldContinueLoop)
                 {
                     shouldContinueLoop = await PlayCard<Yao>(
-                        PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideYao()));
+                        PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideYao()));
                 }
 
                 //是否要画地为牢？
                 if (!shouldContinueLoop)
                 {
                     shouldContinueLoop = await PlayCard<Huadiweilao>(
-                        PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideHudadiweilao()));
+                        PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideHudadiweilao()));
                 }
 
                 //是否万箭齐发？
                 if (!shouldContinueLoop)
                 {
                     shouldContinueLoop = await PlayCard<Wanjianqifa>(
-                        PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideWanjianqifa()));
+                        PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideWanjianqifa()));
                 }
 
                 //是否烽火狼烟？
                 if (!shouldContinueLoop)
                 {
                     shouldContinueLoop = await PlayCard<Fenghuolangyan>(
-                        PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideFenghuolangyan()));
+                        PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideFenghuolangyan()));
                 }
 
                 //是否决斗？
                 if (!shouldContinueLoop)
                 {
                     shouldContinueLoop = await PlayCard<Juedou>(
-                        PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideJuedou()));
+                        PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideJuedou()));
                 }
 
                 //是否休养生息？
@@ -337,11 +337,11 @@ namespace Logic.ActionManger
                 {
                     //如果血量不满的队友的数量>血量不满的敌人，则打出
                     var alivePlayers = PlayerContext.GameLevel.GetAlivePlayers();
-                    if (alivePlayers.Count(a => a.IsSameGroup(PlayerContext.Player) && a.GetCurrentPlayerHero().CurrentLife < a.GetCurrentPlayerHero().GetAttackFactor().MaxLife) >
-                        alivePlayers.Count(a => !a.IsSameGroup(PlayerContext.Player) && a.GetCurrentPlayerHero().CurrentLife < a.GetCurrentPlayerHero().GetAttackFactor().MaxLife))
+                    if (alivePlayers.Count(a => a.IsSameGroup(PlayerContext.Player) && a.CurrentPlayerHero.CurrentLife < a.CurrentPlayerHero.GetAttackFactor().MaxLife) >
+                        alivePlayers.Count(a => !a.IsSameGroup(PlayerContext.Player) && a.CurrentPlayerHero.CurrentLife < a.CurrentPlayerHero.GetAttackFactor().MaxLife))
                     {
                         shouldContinueLoop = await PlayCard<Xiuyangshengxi>(
-                            PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideXiuyangshengxi()));
+                            PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideXiuyangshengxi()));
                     }
                 }
 
@@ -361,7 +361,7 @@ namespace Logic.ActionManger
                 if (!shouldContinueLoop)
                 {
                     shouldContinueLoop = await PlayCard<Sha>(
-                        PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideSha()));
+                        PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideSha()));
                 }
 
                 //是否要触发技能（毒计、傲剑、侠胆）？
@@ -449,17 +449,17 @@ namespace Logic.ActionManger
         {
             //弃牌阶段，按照价值、优先级升序取弃牌数张牌弃掉
             var cards = PlayerContext.Player.CardsInHand.OrderBy(c => GetCardAiValue(c).Value);
-            var attackFactor = PlayerContext.Player.MergeAttackDynamicFactor(PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor,
+            var attackFactor = PlayerContext.Player.MergeAttackDynamicFactor(PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor,
                   PlayerContext.Player.RoundContext.AttackDynamicFactor);
-            var throwCount = cards.Count() - Math.Max(attackFactor.MaxCardCountInHand, PlayerContext.Player.GetCurrentPlayerHero().CurrentLife);
+            var throwCount = cards.Count() - Math.Max(attackFactor.MaxCardCountInHand, PlayerContext.Player.CurrentPlayerHero.CurrentLife);
             if (throwCount > 0)
             {
-                Console.WriteLine($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】需要弃{throwCount}张牌。");
+                Console.WriteLine($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】需要弃{throwCount}张牌。");
                 var cardsToThrow = cards.Take(throwCount).ToList();
 
                 //将该牌置入TempCardDesk
                 await PlayerContext.Player.RemoveCardsInHand(cardsToThrow, null, null, null);
-                Console.WriteLine($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】弃掉了{string.Join(",", cardsToThrow)}。");
+                Console.WriteLine($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】弃掉了{string.Join(",", cardsToThrow)}。");
             }
             await Task.FromResult(0);
         }
@@ -711,7 +711,7 @@ namespace Logic.ActionManger
         {
             SelectedTargetsResponse response = new SelectedTargetsResponse();
             //选择的目标：血量最低、手牌最少的友方
-            var targets = players.Where(p => p.IsSameGroup(PlayerContext.Player) && p.GetCurrentPlayerHero().CurrentLife < p.GetCurrentPlayerHero().GetAttackFactor().MaxLife).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife).ThenBy(p => p.CardsInHand.Count);
+            var targets = players.Where(p => p.IsSameGroup(PlayerContext.Player) && p.CurrentPlayerHero.CurrentLife < p.CurrentPlayerHero.GetAttackFactor().MaxLife).OrderBy(p => p.CurrentPlayerHero.CurrentLife).ThenBy(p => p.CardsInHand.Count);
             foreach (var target in targets)
             {
                 if (response.Targets.Count >= request.MaxTargetCount)
@@ -737,7 +737,7 @@ namespace Logic.ActionManger
         {
             SelectedTargetsResponse response = new SelectedTargetsResponse();
             //选择的目标：血量最低、手牌最少的友方
-            var targets = players.Where(p => p.IsSameGroup(PlayerContext.Player) && p.GetCurrentPlayerHero().CurrentLife < p.GetCurrentPlayerHero().GetAttackFactor().MaxLife).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife).ThenBy(p => p.CardsInHand.Count);
+            var targets = players.Where(p => p.IsSameGroup(PlayerContext.Player) && p.CurrentPlayerHero.CurrentLife < p.CurrentPlayerHero.GetAttackFactor().MaxLife).OrderBy(p => p.CurrentPlayerHero.CurrentLife).ThenBy(p => p.CardsInHand.Count);
             foreach (var target in targets)
             {
                 if (response.Targets.Count >= request.MaxTargetCount)
@@ -763,7 +763,7 @@ namespace Logic.ActionManger
         {
             SelectedTargetsResponse response = new SelectedTargetsResponse();
             //选择的目标：选择手牌/血量比最高的一个敌方。5牌/4血-3牌/2血
-            var targets = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.CardsInHand.Count / p.GetCurrentPlayerHero().CurrentLife).ThenBy(p => p.CardsInHand.Count);
+            var targets = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.CardsInHand.Count / p.CurrentPlayerHero.CurrentLife).ThenBy(p => p.CardsInHand.Count);
             foreach (var target in targets)
             {
                 if (response.Targets.Count >= request.MaxTargetCount)
@@ -789,7 +789,7 @@ namespace Logic.ActionManger
         {
             SelectedTargetsResponse response = new SelectedTargetsResponse();
             //选择杀的目标：血量最低的，手牌最少的
-            var targets = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife).ThenBy(p => p.CardsInHand.Count);
+            var targets = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.CurrentPlayerHero.CurrentLife).ThenBy(p => p.CardsInHand.Count);
             foreach (var target in targets)
             {
                 if (response.Targets.Count >= request.MaxTargetCount)
@@ -817,7 +817,7 @@ namespace Logic.ActionManger
         {
             SelectedTargetsResponse response = new SelectedTargetsResponse();
             //选择杀的目标：血量最低的，手牌最少的
-            var targets = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife).ThenBy(p => p.CardsInHand.Count);
+            var targets = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.CurrentPlayerHero.CurrentLife).ThenBy(p => p.CardsInHand.Count);
             foreach (var target in targets)
             {
                 if (response.Targets.Count >= request.MaxTargetCount)
@@ -881,7 +881,7 @@ namespace Logic.ActionManger
                     enemies.Add(player);
                 }
             }
-            enemies = enemies.OrderBy(p => p.GetCurrentPlayerHero().CurrentLife).ToList();
+            enemies = enemies.OrderBy(p => p.CurrentPlayerHero.CurrentLife).ToList();
             if (enemies.Count() >= 2)
             {
                 response.Targets.Add(enemies.First());
@@ -925,7 +925,7 @@ namespace Logic.ActionManger
         {
             SelectedTargetsResponse response = new SelectedTargetsResponse();
             //选择杀的目标：血量最低的，手牌最少的
-            var targets = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife).ThenBy(p => p.CardsInHand.Count);
+            var targets = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.CurrentPlayerHero.CurrentLife).ThenBy(p => p.CardsInHand.Count);
             foreach (var target in targets)
             {
                 if (response.Targets.Count >= request.MaxTargetCount)
@@ -977,7 +977,7 @@ namespace Logic.ActionManger
                 if (firstEnemy.CardsInHand == null || firstEnemy.CardsInHand.Count <= 0)
                 {
                     response.Targets.Add(enemies.First());
-                    response.Targets.Add(playersWithWeapons.Where(p => p.IsSameGroup(PlayerContext.Player)).OrderByDescending(p => p.GetCurrentPlayerHero().CurrentLife).First());
+                    response.Targets.Add(playersWithWeapons.Where(p => p.IsSameGroup(PlayerContext.Player)).OrderByDescending(p => p.CurrentPlayerHero.CurrentLife).First());
                     return response;
                 }
             }
@@ -994,7 +994,7 @@ namespace Logic.ActionManger
                 });
                 friends = friends.OrderBy(p => p.CardsInHand.Count).ToList();
                 var friend = friends.OrderByDescending(p => p.CardsInHand.Count(c => c is Sha)).FirstOrDefault();
-                var enemy = enemies.FirstOrDefault(p => p.GetCurrentPlayerHero().CurrentLife <= 1);
+                var enemy = enemies.FirstOrDefault(p => p.CurrentPlayerHero.CurrentLife <= 1);
                 if (friend != null && enemy != null)
                 {
                     response.Targets.Add(enemy);
@@ -1040,7 +1040,7 @@ namespace Logic.ActionManger
             }
 
             //  2. 友方没有负面标记牌或者不在范围内，则选择敌方血量最低的，手牌最少的（必须有手牌或者装备牌或者标记牌）
-            var enemies = players.Where(p => !p.IsSameGroup(PlayerContext.Player) && (p.CardsInHand?.Any() == true || p.EquipmentSet?.Any() == true)).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife);
+            var enemies = players.Where(p => !p.IsSameGroup(PlayerContext.Player) && (p.CardsInHand?.Any() == true || p.EquipmentSet?.Any() == true)).OrderBy(p => p.CurrentPlayerHero.CurrentLife);
             foreach (var target in enemies)
             {
                 if (response.Targets.Count >= request.MaxTargetCount)
@@ -1091,7 +1091,7 @@ namespace Logic.ActionManger
             }
 
             //  2. 友方没有负面标记牌或者不在范围内，则选择敌方血量最低的，手牌最少的（必须有手牌或者装备牌或者标记牌）
-            var enemies = players.Where(p => !p.IsSameGroup(PlayerContext.Player) && (p.CardsInHand?.Any() == true || p.EquipmentSet?.Any() == true)).OrderBy(p => p.GetCurrentPlayerHero().CurrentLife);
+            var enemies = players.Where(p => !p.IsSameGroup(PlayerContext.Player) && (p.CardsInHand?.Any() == true || p.EquipmentSet?.Any() == true)).OrderBy(p => p.CurrentPlayerHero.CurrentLife);
             foreach (var target in enemies)
             {
                 if (response.Targets.Count >= request.MaxTargetCount)
@@ -1514,7 +1514,7 @@ namespace Logic.ActionManger
             #region 处理能够增强杀的技能
 
             //目前只有三板斧需要增强
-            var enhanceSkills = PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IEnhanceSha).OrderByDescending(s => (s as IEnhanceSha).EnhancePriority());
+            var enhanceSkills = PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IEnhanceSha).OrderByDescending(s => (s as IEnhanceSha).EnhancePriority());
             foreach (var enhanceSkill in enhanceSkills)
             {
                 var request = new CardRequestContext();
@@ -1545,7 +1545,7 @@ namespace Logic.ActionManger
         {
             var shouldContinue = false;
 
-            var skills = PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled());
+            var skills = PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled());
             foreach (var enhanceSkill in skills)
             {
                 var request = new CardRequestContext();
@@ -1619,7 +1619,7 @@ namespace Logic.ActionManger
                 {
                     return shouldEquip;
                 }
-                var shaSkills = PlayerContext.Player.GetAllSkillButtons().Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideSha());
+                var shaSkills = PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IAbility ability && ability.CanProvideSha());
                 shouldEquip = shaSkills.Any();
             }
             return shouldEquip;
@@ -1709,7 +1709,7 @@ namespace Logic.ActionManger
             }
             //如果是队友，血量低于3则卸牌，否则不触发，其他情况都触发
 
-            if (target != null && target.IsSameGroup(cardRequestContext.SrcPlayer) && target.GetCurrentPlayerHero().CurrentLife <= 3)
+            if (target != null && target.IsSameGroup(cardRequestContext.SrcPlayer) && target.CurrentPlayerHero.CurrentLife <= 3)
             {
                 return false;
             }
@@ -1736,7 +1736,7 @@ namespace Logic.ActionManger
             }
             //如果是队友，返回false
             //如果是敌人，则返回true
-            if (target.IsSameGroup(cardRequestContext.SrcPlayer) && PlayerContext.Player.GetCurrentPlayerHero().CurrentLife > 3)
+            if (target.IsSameGroup(cardRequestContext.SrcPlayer) && PlayerContext.Player.CurrentPlayerHero.CurrentLife > 3)
             {
                 return false;
             }
@@ -1794,7 +1794,7 @@ namespace Logic.ActionManger
             //如果是敌人，如果血量低于3，则掉血，否则卸牌
             if (target.IsSameGroup(cardRequestContext.SrcPlayer))
             {
-                if (target.GetCurrentPlayerHero().CurrentLife <= 3)
+                if (target.CurrentPlayerHero.CurrentLife <= 3)
                 {
                     return true;
                 }
@@ -1802,7 +1802,7 @@ namespace Logic.ActionManger
             }
             else
             {
-                if (target.GetCurrentPlayerHero().CurrentLife <= 3)
+                if (target.CurrentPlayerHero.CurrentLife <= 3)
                 {
                     return false;
                 }
@@ -1853,7 +1853,7 @@ namespace Logic.ActionManger
             var equipment = panel.EquipmentCards.FirstOrDefault(p => p.Card is T);
             if (equipment != null)
             {
-                //Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{equipment.Card.DisplayName}");
+                //Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero.Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero.Hero.DisplayName}】抽取了{equipment.Card.DisplayName}");
                 //await panel.CardOwner.RemoveEquipment(equipment.Card, null, null, null);
                 equipment.SelectedBy = PlayerContext.Player;
                 responseContext.Cards.Add(equipment.Card);
@@ -1900,7 +1900,7 @@ namespace Logic.ActionManger
                 if (cardRequestContext.AttackType == AttackTypeEnum.Fenghuolangyan ||
                     cardRequestContext.AttackType == AttackTypeEnum.Wanjianqifa)
                 {
-                    if (cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player) && cardRequestContext.SrcPlayer.GetCurrentPlayerHero().CurrentLife < 3)
+                    if (cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player) && cardRequestContext.SrcPlayer.CurrentPlayerHero.CurrentLife < 3)
                     {
                         return await GetResponseCardByCardType_Any(cardRequestContext);
                     }
@@ -1931,14 +1931,14 @@ namespace Logic.ActionManger
                 }
                 else if (cardRequestContext.AttackType == AttackTypeEnum.Xiuyangshengxi)
                 {
-                    if (!cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player) && cardRequestContext.SrcPlayer.GetCurrentPlayerHero().CurrentLife < 3)
+                    if (!cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player) && cardRequestContext.SrcPlayer.CurrentPlayerHero.CurrentLife < 3)
                     {
                         return await GetResponseCardByCardType_Any(cardRequestContext);
                     }
                 }
                 else if (cardRequestContext.AttackType == AttackTypeEnum.Juedou)
                 {
-                    if ((cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player) && cardRequestContext.SrcPlayer.GetCurrentPlayerHero().CurrentLife < 3) || cardRequestContext.SrcPlayer == PlayerContext.Player)
+                    if ((cardRequestContext.SrcPlayer.IsSameGroup(PlayerContext.Player) && cardRequestContext.SrcPlayer.CurrentPlayerHero.CurrentLife < 3) || cardRequestContext.SrcPlayer == PlayerContext.Player)
                     {
                         return await GetResponseCardByCardType_Any(cardRequestContext);
                     }
@@ -1976,7 +1976,7 @@ namespace Logic.ActionManger
             //什么情况不出杀？
             //没有杀或者目标是队友且队友的血量低于3
             var target = cardRequestContext.TargetPlayers.First();
-            if (target.IsSameGroup(PlayerContext.Player) && target.GetCurrentPlayerHero().CurrentLife <= 3)
+            if (target.IsSameGroup(PlayerContext.Player) && target.CurrentPlayerHero.CurrentLife <= 3)
             {
                 return new CardResponseContext()
                 {
@@ -2058,7 +2058,7 @@ namespace Logic.ActionManger
             }
             else
             {
-                var skillBtns = PlayerContext.Player.GetAllSkillButtons();
+                var skillBtns = PlayerContext.Player.SkillButtons;
 
                 //如果不够，看有没有技能能提供
                 //todo:暂时是技能能够提供所需卡牌就触发

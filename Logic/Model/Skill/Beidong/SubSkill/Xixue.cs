@@ -29,7 +29,7 @@ namespace Logic.Model.Skill.SubSkill
                     {
                         if (ShouldTrigger())
                         {
-                            var triggered = await PlayerHero.PlayerContext.Player.GetCurrentPlayerHero().AddLife(new AddLifeRequest()
+                            var triggered = await PlayerHero.PlayerContext.Player.CurrentPlayerHero.AddLife(new AddLifeRequest()
                             {
                                 CardResponseContext = responseContext,
                                 CardRequestContext = reqContext,

@@ -29,7 +29,7 @@ namespace Logic.Model.Cards.EquipmentCards
         protected override async Task OnEquip()
         {
             //增加攻击距离
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance +=
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance +=
                 BaseAttackFactor.ShaDistance - 1;
             await Task.FromResult(0);
             //监听杀失败事件，如果杀失败(Failed,不是Cancelled)，询问用户是否弃掉两张牌强制命中
@@ -57,7 +57,7 @@ namespace Logic.Model.Cards.EquipmentCards
                        }, responseContext, roundContext);
                        if (res.ResponseResult == ResponseResultEnum.Success || (res.Cards != null && res.Cards.Count == 2))
                        {
-                           Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】弃掉两张牌{String.Join(",", res.Cards?.Select(p => p.ToString()) ?? new List<string>())}发动博浪锤技能强制命中【{target.PlayerId}{target.GetCurrentPlayerHero().Hero.DisplayName}】");
+                           Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】弃掉两张牌{String.Join(",", res.Cards?.Select(p => p.ToString()) ?? new List<string>())}发动博浪锤技能强制命中【{target.PlayerId}{target.CurrentPlayerHero.Hero.DisplayName}】");
                            //弃掉对应的牌
                            res.Cards?.ForEach(async c =>
                            {
@@ -72,7 +72,7 @@ namespace Logic.Model.Cards.EquipmentCards
                                }
                            });
                            //强制命中
-                           await target.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
+                           await target.CurrentPlayerHero.LoseLife(new LoseLifeRequest()
                            {
                                RequestId = context.RequestId,
                                CardRequestContext = context,
@@ -88,7 +88,7 @@ namespace Logic.Model.Cards.EquipmentCards
         protected override async Task OnUnEquip()
         {
             //扣除攻击距离
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance -=
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance -=
                 BaseAttackFactor.ShaDistance - 1;
             //注销监听事件
             PlayerContext.GameLevel.GlobalEventBus.RemoveEventListener(EventTypeEnum.AfterShaFailed, eventId);

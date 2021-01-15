@@ -104,16 +104,16 @@ namespace Tests.Card
             Assert.AreEqual(1, _player1.CardsInHand.Count);
             Assert.AreEqual(2, _player2.CardsInHand.Count);
             Assert.AreEqual(1, _player3.CardsInHand.Count);
-            Assert.AreEqual(2, _player2.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(6, _player3.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(2, _player2.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(6, _player3.CurrentPlayerHero.CurrentLife);
 
             var response1 = await cardToPlay1.PlayCard(new CardRequestContext(), _player1.RoundContext);
 
             Assert.AreEqual(0, _player1.CardsInHand.Count);
             Assert.AreEqual(1, _player2.CardsInHand.Count);
             Assert.AreEqual(1, _player3.CardsInHand.Count);
-            Assert.AreEqual(2, _player2.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(5, _player3.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(2, _player2.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(5, _player3.CurrentPlayerHero.CurrentLife);
         }
 
         [Test]
@@ -150,16 +150,16 @@ namespace Tests.Card
             Assert.AreEqual(1, _player1.CardsInHand.Count);
             Assert.AreEqual(2, _player2.CardsInHand.Count);
             Assert.AreEqual(1, _player3.CardsInHand.Count);
-            Assert.AreEqual(2, _player2.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(6, _player3.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(2, _player2.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(6, _player3.CurrentPlayerHero.CurrentLife);
 
             var response1 = await cardToPlay1.PlayCard(new CardRequestContext(), _player1.RoundContext);
 
             Assert.AreEqual(0, _player1.CardsInHand.Count);
             Assert.AreEqual(1, _player2.CardsInHand.Count);
             Assert.AreEqual(1, _player3.CardsInHand.Count);
-            Assert.AreEqual(2, _player2.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(5, _player3.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(2, _player2.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(5, _player3.CurrentPlayerHero.CurrentLife);
         }
 
 

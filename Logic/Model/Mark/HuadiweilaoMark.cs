@@ -31,7 +31,7 @@ namespace Logic.Model.Mark
         public override void Init()
         {
             eventId = Guid.NewGuid();
-            PlayerContext.GameLevel.GlobalEventBus.ListenEvent(eventId, PlayerContext.Player.GetCurrentPlayerHero(), EventTypeEnum.BeforeEnterMyRound, (
+            PlayerContext.GameLevel.GlobalEventBus.ListenEvent(eventId, PlayerContext.Player.CurrentPlayerHero, EventTypeEnum.BeforeEnterMyRound, (
                 async (context, roundContext, responseContext) =>
                 {
                     //检查是否有无懈可击

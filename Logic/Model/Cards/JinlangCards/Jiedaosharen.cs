@@ -28,7 +28,7 @@ namespace Logic.Model.Cards.JinlangCards
             //能出杀的条件：
             //1. 被动出牌
             //2. 主动出牌，且场上有英雄装备武器（不保证是真的能借，如诸葛亮不能被黑色牌所借）
-            return (PlayerContext.Player.IsInZhudongMode() && PlayerContext.GameLevel.Players.Any(p => p.IsAlive() && p.EquipmentSet.Any(e => e is IWeapon))) || PlayerContext.Player.IsInBeidongMode();
+            return (PlayerContext.Player.IsInZhudongMode() && PlayerContext.GameLevel.Players.Any(p => p.IsAlive && p.EquipmentSet.Any(e => e is IWeapon))) || PlayerContext.Player.IsInBeidongMode();
         }
 
         public SelectedTargetsRequest GetSelectTargetRequest()

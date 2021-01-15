@@ -106,7 +106,7 @@ namespace Tests.Card
             Assert.AreEqual(ResponseResultEnum.Success, shaResponse.ResponseResult);
             Assert.AreEqual(1, player1.CardsInHand.Count);
             Assert.AreEqual(1, player2.CardsInHand.Count);
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.CurrentLife);
         }
     }
 }

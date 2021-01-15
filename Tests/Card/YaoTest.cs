@@ -59,13 +59,13 @@ namespace Tests.Card
 
             Assert.AreEqual(60, qianghua1.TriggerRate);
             Assert.AreEqual(80, shatan1.TriggerRate);
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().BaseAttackFactor.MaxLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.BaseAttackFactor.MaxLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.BaseAttackFactor.MaxLife);
 
             var response = cardSha.PlayCard(CardRequestContext.GetBaseCardRequestContext(new List<Player>() { player2 }), player1.RoundContext).GetAwaiter().GetResult();
             Console.WriteLine($"Player1的手牌数：" + player1.CardsInHand.Count);
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(5, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(5, player2.CurrentPlayerHero.CurrentLife);
 
             var yao = new Yao().AttachPlayerContext(new PlayerContext()
             {
@@ -75,7 +75,7 @@ namespace Tests.Card
             yao.PlayCard(new CardRequestContext()
             {
             }, player2.RoundContext).GetAwaiter().GetResult();
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.CurrentLife);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Logic.Model.Cards.EquipmentCards
 
         protected override async Task OnEquip()
         {
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance +=
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance +=
                 BaseAttackFactor.ShaDistance - 1;
 
             await Task.FromResult(0);
@@ -37,7 +37,7 @@ namespace Logic.Model.Cards.EquipmentCards
 
         protected override async Task OnUnEquip()
         {
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance -=
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance -=
                 BaseAttackFactor.ShaDistance - 1;
             await Task.FromResult(0);
         }
@@ -84,7 +84,7 @@ namespace Logic.Model.Cards.EquipmentCards
                             }.AttachPlayerContext(PlayerContext)
                             ){CardChangeType = CardChangeTypeEnum.Combined}.AttachPlayerContext(PlayerContext)
                         };
-                        Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】打出两张牌{String.Join(",", res.Cards?.Select(p => p.ToString()) ?? new List<string>())}当做杀来用。");
+                        Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】打出两张牌{String.Join(",", res.Cards?.Select(p => p.ToString()) ?? new List<string>())}当做杀来用。");
                     }
                     else
                     {

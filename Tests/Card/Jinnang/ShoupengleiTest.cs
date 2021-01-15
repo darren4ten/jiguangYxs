@@ -75,8 +75,8 @@ namespace Tests.Card
             Assert.AreEqual(2, player2.CardsInHand.Count);
 
             var response = await cardToPlay.PlayCard(new CardRequestContext(), player1.RoundContext);
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.CurrentLife);
 
             var triggerTimes = 0;
             gameLevel1.GlobalEventBus.ListenEvent(Guid.NewGuid(), gameLevel1.HostPlayerHero, EventTypeEnum.AfterPanding, (
@@ -126,8 +126,8 @@ namespace Tests.Card
                 }));
             await player1.StartStep_EnterMyRound();
             await player2.StartStep_EnterMyRound();
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(3, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(3, player2.CurrentPlayerHero.CurrentLife);
         }
 
         [Test]
@@ -143,8 +143,8 @@ namespace Tests.Card
             Assert.AreEqual(2, player2.CardsInHand.Count);
 
             var response = await cardToPlay.PlayCard(new CardRequestContext(), player1.RoundContext);
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.CurrentLife);
 
             gameLevel1.GlobalEventBus.ListenEvent(Guid.NewGuid(), gameLevel1.HostPlayerHero, EventTypeEnum.AfterPanding, (
                 async (context, roundContext, responseContext) =>
@@ -165,7 +165,7 @@ namespace Tests.Card
                 }));
             await player1.StartStep_EnterMyRound();
             await player2.StartStep_EnterMyRound();
-            Assert.AreEqual(5, player1.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(5, player1.CurrentPlayerHero.CurrentLife);
         }
     }
 }

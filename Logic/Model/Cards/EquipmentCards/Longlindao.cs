@@ -30,7 +30,7 @@ namespace Logic.Model.Cards.EquipmentCards
 
         protected override async Task OnEquip()
         {
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance += BaseAttackFactor.ShaDistance - 1;
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance += BaseAttackFactor.ShaDistance - 1;
             //监听杀成功事件，如果杀成功，可以选择弃掉对方的两张牌（任意）
             eventId = Guid.NewGuid();
             PlayerContext.Player.ListenEvent(eventId, Enums.EventTypeEnum.BeforeShaSuccess, (
@@ -73,7 +73,7 @@ namespace Logic.Model.Cards.EquipmentCards
                             var panelCards = panelRequest.Panel.EquipmentCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
                             panelCards?.ForEach(async p =>
                             {
-                                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panelRequest.Panel.CardOwner.PlayerId}的【{panelRequest.Panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panelRequest.Panel.CardOwner.PlayerId}的【{panelRequest.Panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
                                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);
 
                                 if (target.EquipmentSet.Any(e => e == p.Card))
@@ -88,7 +88,7 @@ namespace Logic.Model.Cards.EquipmentCards
                             panelCards = panelRequest.Panel.MarkCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
                             panelCards?.ForEach(async p =>
                             {
-                                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panelRequest.Panel.CardOwner.PlayerId}的【{panelRequest.Panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panelRequest.Panel.CardOwner.PlayerId}的【{panelRequest.Panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
                                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);
 
                                 if (p.Mark != null)
@@ -103,7 +103,7 @@ namespace Logic.Model.Cards.EquipmentCards
                             panelCards = panelRequest.Panel.InHandCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
                             panelCards?.ForEach(async p =>
                             {
-                                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panelRequest.Panel.CardOwner.PlayerId}的【{panelRequest.Panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panelRequest.Panel.CardOwner.PlayerId}的【{panelRequest.Panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
                                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);
 
                                 //是标记
@@ -120,7 +120,7 @@ namespace Logic.Model.Cards.EquipmentCards
 
         protected override async Task OnUnEquip()
         {
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance -= BaseAttackFactor.ShaDistance - 1;
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance -= BaseAttackFactor.ShaDistance - 1;
             PlayerContext.GameLevel.GlobalEventBus.RemoveEventListener(EventTypeEnum.BeforeShaSuccess, eventId);
             await Task.FromResult(0);
         }

@@ -83,7 +83,7 @@ namespace Logic.Model.Cards.JinlangCards
             var panelCards = panel.MarkCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
             panelCards?.ForEach(async p =>
             {
-                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
                 await panel.CardOwner.RemoveMark(p.Mark);
                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);
             });
@@ -91,7 +91,7 @@ namespace Logic.Model.Cards.JinlangCards
             panelCards = panel.EquipmentCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
             panelCards?.ForEach(async p =>
             {
-                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
                 await panel.CardOwner.RemoveEquipment(p.Card, request, response, roundContext);
                 panel.EquipmentCards.Remove(p);
                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);
@@ -100,7 +100,7 @@ namespace Logic.Model.Cards.JinlangCards
             panelCards = panel.InHandCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
             panelCards?.ForEach(async p =>
             {
-                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.GetCurrentPlayerHero().Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
                 await panel.CardOwner.RemoveCardsInHand(new List<CardBase>() { p.Card }, request, response, roundContext);
                 //将牌置于弃牌堆
                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);

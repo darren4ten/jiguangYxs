@@ -3,23 +3,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             DataContext="card"
              mc:Ignorable="d" Width="80" Height="110">
     <Grid>
         <Button Click="ButtonBase_OnClick" >
             <Grid>
-                <Image Source="pack://application:,,,/Resources/card/card_sha.jpg" Width="78" Height="108" Margin="-2"  Stretch="Fill"/>
+                <Image Source="{Binding Image}" Width="78" Height="108" Margin="-2"  Stretch="Fill"/>
                 <Label x:Name="LblNumber"
                        Width="28"
                        Height="28"
                        HorizontalAlignment="Left"
-                       Content="{Binding card.Number}"
-                       Foreground="{Binding card.Color}"
+                       Content="{Binding Number}"
+                       Foreground="{Binding Color}"
                        FontSize="16px" Margin="-4,-3,0,79" />
 
                 <Label  Width="28"
                         Height="28"
-                        x:Name="LblFlower" Content="{Binding card.FlowerKind}" Foreground="{Binding Color}" FontSize="16px" Margin="0,12,46,64"  FontWeight="Bold"/>
+                        x:Name="LblFlower" Content="{Binding FlowerKindString}" Foreground="{Binding Color}" FontSize="16px" Margin="0,12,46,64"  FontWeight="Bold">
+                    <Label.Style>
+                        <Style TargetType="Label">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Color}" Value="Logic.Model.Enums.CardColorEnum.Red">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Color}" Value="Logic.Model.Enums.CardColorEnum.Black">
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
             </Grid>
         </Button>
     </Grid>

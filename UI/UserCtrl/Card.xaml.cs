@@ -10,11 +10,8 @@ namespace JgYxs.UI.UserCtrl
     public partial class Card : UserControl
     {
         private bool IsCardPopup = false;
-        //public Card(CardBase card)
-        //{
-        //    InitializeComponent();
-        //    this.DataContext = card;
-        //}
+
+        public CardBase CurCard { get; set; }
         public CardBase GetCard()
         {
             return (CardBase)DataContext;
@@ -22,6 +19,7 @@ namespace JgYxs.UI.UserCtrl
 
         public Card()
         {
+            CurCard = (CardBase)DataContext;
             InitializeComponent();
         }
 

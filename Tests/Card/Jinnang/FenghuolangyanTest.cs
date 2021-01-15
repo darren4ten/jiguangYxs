@@ -69,13 +69,13 @@ namespace Tests.Card
             player3.CardsInHand.Add(new Shan().AttachPlayerContext(new PlayerContext() { Player = player3, GameLevel = gameLevel1 }));
             player3.CardsInHand.Add(new Shoupenglei().AttachPlayerContext(new PlayerContext() { Player = player3, GameLevel = gameLevel1 }));
 
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(6, player3.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(6, player3.CurrentPlayerHero.CurrentLife);
 
             var response = await cardToPlay.PlayCard(new CardRequestContext(), player1.RoundContext);
 
-            Assert.AreEqual(6, player2.GetCurrentPlayerHero().CurrentLife);
-            Assert.AreEqual(5, player3.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(6, player2.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(5, player3.CurrentPlayerHero.CurrentLife);
             Assert.AreEqual(1, player1.CardsInHand.Count);
             Assert.AreEqual(1, player2.CardsInHand.Count);
             Assert.AreEqual(2, player3.CardsInHand.Count);

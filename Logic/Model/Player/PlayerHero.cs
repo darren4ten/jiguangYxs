@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Logic.ActionManger;
+using Logic.Annotations;
 using Logic.GameLevel;
 using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Enums;
@@ -13,32 +17,57 @@ using Logic.Model.RequestResponse;
 using Logic.Model.RequestResponse.Request;
 using Logic.Model.Skill;
 using Logic.Util;
+using Logic.Util.Extension;
 
 namespace Logic.Model.Player
 {
     /// <summary>
     /// 玩家英雄
     /// </summary>
-    public class PlayerHero : IAbility
+    public class PlayerHero : IAbility, INotifyPropertyChanged
     {
+        #region 属性
         public int Id { get; set; }
 
         /// <summary>
         /// 当前血量
         /// </summary>
-        public int CurrentLife { get; private set; }
+        private int _CurrentLife;
 
-        private int ExtraXianShou { get; set; }
+        public int CurrentLife
+        {
+            get
+            {
+                return _CurrentLife;
+            }
+            private set
+            {
+                _CurrentLife = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _ExtraXianShou;
+        private int ExtraXianShou
+        {
+            get
+            {
+                return _ExtraXianShou;
+            }
+            set
+            {
+                _ExtraXianShou = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         /// <summary>
         /// 获取英雄的先手值
         /// </summary>
         /// <returns></returns>
-        public int GetXianshou()
-        {
-            return Hero.Xianshou + ExtraXianShou;
-        }
+        public int GetXianshou => Hero.Xianshou + ExtraXianShou;
+
 
 
         ///// <summary>
@@ -49,17 +78,53 @@ namespace Logic.Model.Player
         /// <summary>
         /// 是否死亡
         /// </summary>
-        public bool IsDead { get; set; }
+        private bool _IsDead;
+        public bool IsDead
+        {
+            get
+            {
+                return _IsDead;
+            }
+            set
+            {
+                _IsDead = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 是否是活跃状态
         /// </summary>
-        public bool IsActive { get; set; }
+        private bool _IsActive;
+        public bool IsActive
+        {
+            get
+            {
+                return _IsActive;
+            }
+            set
+            {
+                _IsActive = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 基础攻击属性
         /// </summary>
-        public AttackDynamicFactor BaseAttackFactor { get; set; }
+        private AttackDynamicFactor _BaseAttackFactor;
+        public AttackDynamicFactor BaseAttackFactor
+        {
+            get
+            {
+                return _BaseAttackFactor;
+            }
+            set
+            {
+                _BaseAttackFactor = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 具体的英雄
@@ -76,23 +141,24 @@ namespace Logic.Model.Player
         /// <summary>
         /// 额外的主技能
         /// </summary>
-        public List<SkillBase> ExtraMainSkillSet { get; }
+        public ObservableCollection<SkillBase> ExtraMainSkillSet { get; }
 
         /// <summary>
         /// 额外的副技能
         /// </summary>
-        public List<SkillBase> ExtraSubSkillSet { get; }
+        public ObservableCollection<SkillBase> ExtraSubSkillSet { get; }
 
+        #endregion
 
-        public PlayerHero(int star, HeroBase hero, List<SkillBase> extraMainSkillSet, List<SkillBase> extraSubSkillSet)
+        public PlayerHero(int star, HeroBase hero, IEnumerable<SkillBase> extraMainSkillSet, IEnumerable<SkillBase> extraSubSkillSet)
         {
             Star = star <= 1 ? 1 : (star >= 5 ? 5 : star);
             Hero = hero;
             BaseAttackFactor = Hero.GetBaseAttackFactor();
             CurrentLife = BaseAttackFactor.MaxLife;
             //加载技能，初始化事件监听
-            ExtraMainSkillSet = extraMainSkillSet;
-            ExtraSubSkillSet = extraSubSkillSet;
+            ExtraMainSkillSet = extraMainSkillSet == null ? new ObservableCollection<SkillBase>() : new ObservableCollection<SkillBase>(extraMainSkillSet); ;
+            ExtraSubSkillSet = extraSubSkillSet == null ? new ObservableCollection<SkillBase>() : new ObservableCollection<SkillBase>(extraSubSkillSet);
 
             //初始化攻击因子
             InitAttackFactor(star, hero);
@@ -119,31 +185,31 @@ namespace Logic.Model.Player
         /// 获取所有主技能
         /// </summary>
         /// <returns></returns>
-        public List<SkillBase> GetAllMainSkills()
+        public ObservableCollection<SkillBase> GetAllMainSkills()
         {
             var skills = new List<SkillBase>();
             skills.AddRange(Hero.MainSkillSet);
             if (ExtraMainSkillSet != null)
             {
-                return skills.Union(ExtraMainSkillSet, new GenericCompare<SkillBase>(x => x.Name)).ToList();
+                return skills.Union(ExtraMainSkillSet, new GenericCompare<SkillBase>(x => x.Name)).ToObservableCollection();
             }
-            return skills;
+            return skills.ToObservableCollection();
         }
 
         /// <summary>
         /// 获取所有副技能
         /// </summary>
         /// <returns></returns>
-        public List<SkillBase> GetAllSubSkills()
+        public ObservableCollection<SkillBase> GetAllSubSkills()
         {
             var skills = new List<SkillBase>();
             skills.AddRange(Hero.SubSkillSet);
             if (ExtraSubSkillSet != null)
             {
-                return skills.Union(ExtraSubSkillSet, new GenericCompare<SkillBase>(x => x.Name)).ToList();
+                return skills.Union(ExtraSubSkillSet, new GenericCompare<SkillBase>(x => x.Name)).ToObservableCollection();
             }
 
-            return skills;
+            return skills.ToObservableCollection();
         }
 
         /// <summary>
@@ -308,16 +374,16 @@ namespace Logic.Model.Player
             CurrentLife = BaseAttackFactor.MaxLife;
         }
 
-        protected void LoadSkills(List<SkillBase> skillSet)
+        protected void LoadSkills(IEnumerable<SkillBase> skillSet)
         {
             if (skillSet == null || !skillSet.Any())
             {
                 return;
             }
-            skillSet.ForEach(s =>
+            foreach (var skillBase in skillSet)
             {
-                s.LoadSkill(this);
-            });
+                skillBase.LoadSkill(this);
+            }
         }
 
         #endregion
@@ -394,5 +460,12 @@ namespace Logic.Model.Player
 
         #endregion
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

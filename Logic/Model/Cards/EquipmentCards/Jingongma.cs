@@ -19,15 +19,15 @@ namespace Logic.Model.Cards.EquipmentCards
 
         protected override async Task OnEquip()
         {
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.TannangDistance += BaseAttackFactor.TannangDistance;
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance += BaseAttackFactor.ShaDistance;
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.TannangDistance += BaseAttackFactor.TannangDistance;
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance += BaseAttackFactor.ShaDistance;
             await Task.FromResult(0);
         }
 
         protected override async Task OnUnEquip()
         {
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.TannangDistance -= BaseAttackFactor.TannangDistance;
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance -= BaseAttackFactor.ShaDistance;
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.TannangDistance -= BaseAttackFactor.TannangDistance;
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance -= BaseAttackFactor.ShaDistance;
             await Task.FromResult(0);
         }
     }

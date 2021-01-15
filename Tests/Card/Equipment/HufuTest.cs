@@ -89,13 +89,13 @@ namespace Tests.Card
             });
             Assert.AreEqual(4, _player1.CardsInHand.Count);
             Assert.AreEqual(3, _player2.CardsInHand.Count);
-            Assert.AreEqual(6, _player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(6, _player2.CurrentPlayerHero.CurrentLife);
 
             await _player1.StartStep_PlayCard();
 
             Assert.AreEqual(0, _player1.CardsInHand.Count);
             Assert.AreEqual(1, _player2.CardsInHand.Count);
-            Assert.AreEqual(4, _player2.GetCurrentPlayerHero().CurrentLife);
+            Assert.AreEqual(4, _player2.CurrentPlayerHero.CurrentLife);
         }
     }
 }

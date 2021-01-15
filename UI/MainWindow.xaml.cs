@@ -5,7 +5,11 @@ using System.Windows;
 using System.Windows.Controls;
 using JgYxs.UI.Model;
 using Logic.Cards;
+using Logic.GameLevel;
+using Logic.GameLevel.Levels;
 using Logic.Model.Cards.BaseCards;
+using Logic.Model.Player;
+using UI.Levels;
 
 namespace JgYxs.UI
 {
@@ -20,93 +24,22 @@ namespace JgYxs.UI
             Init();
         }
 
-        private void Init()
+        public void Init()
         {
-            var uiAction = new UIState()
+            GameDataContext gameDataContext = new GameDataContext() { TestStr="ATestString"};
+            gameDataContext.GameLevel = new GameLevel1();
+            this.Dispatcher.BeginInvoke(new Action(async () =>
             {
-                Tip = "OK to add card, cancel to remove card",
-                BtnAction1 = new BtnAction()
+                await gameDataContext.GameLevel.Start((() =>
                 {
-                    BtnText = "OK",
-                    IsVisible = Visibility.Visible,
-                    BtnRoutedEventHandler = (obj, e) =>
-                    {
-                        if (obj is Button button)
-                        {
-                            var dataContext = button.DataContext;
-                            if (dataContext is UIState)
-                            {
-                                var uiState = (UIState)dataContext;
-                                Task.Run(() =>
-                                {
-
-                                });
-                                uiState.PlayerHero.CardsInHand.Add(new Sha()
-                                {
-                                    Number = new Random().Next(1, 9)
-                                });
-                            }
-                        }
-                        //this.PlayerHero.CardsInHand.Add(new Sha()
-                        //{
-                        //    Number = new Random().Next(1, 9)
-                        //});
-                        //MessageBox.Show("Click btn1");
-                    }
-                },
-                BtnAction2 = new BtnAction()
-                {
-                    BtnText = "Cancel",
-                    IsVisible = Visibility.Visible,
-                    BtnRoutedEventHandler = (obj, e) =>
-                    {
-                        if (obj is Button button)
-                        {
-                            var dataContext = button.DataContext;
-                            if (dataContext is UIState)
-                            {
-                                var uiState = (UIState)dataContext;
-                                var t = Task.Run(() =>
-                                  {
-                                      var index = uiState.PlayerHero.CardsInHand.Count - 1;
-                                      if (index > 0)
-                                      {
-                                          Application.Current.Dispatcher.BeginInvoke((Action)delegate // <--- HERE
-                                          {
-                                              uiState.PlayerHero.CardsInHand.RemoveAt(index);
-                                          });
-                                      }
-                                  });
-                                Task.WaitAll(t);
-                            }
-                        }
-                    }
-                },
-                PlayerHero = new PlayerHero
-                {
-                    MaxLife = 5,
-                    CurrentLife = 4,
-                    Cards = new List<CardBase>()
-                    {
-                        new Sha()
-                        {
-                            Number=2,
-                        }
-                    },
-                    CardsInHand = new System.Collections.ObjectModel.ObservableCollection<CardBase>()
-                    {
-                    new Sha()
-                    {
-                    Number=2,
-                 },
-                    new Shan()
-                    {
-                        Number=9,
-                    }
-            },
-                },
-            };
-            //PlayerPanel.DataContext = uiAction;
+                    gameDataContext.CurrentPlayer = gameDataContext.GameLevel.CurrentPlayer;
+                    gameDataContext.Player2 = gameDataContext.CurrentPlayer.GetNextPlayer(false);
+                    gameDataContext.Player3 = gameDataContext.Player2.GetNextPlayer(false);
+                    var level1 = new Level_001_NoFriend2Enemies(gameDataContext);
+                    this.Hide();
+                    level1.Show();
+                }));
+            }));
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Logic.Model.Cards.BaseCards
             this.Description = "杀";
             this.Name = "Sha";
             this.DisplayName = "杀";
+            this.Image = "/Resources/card/card_sha.jpg";
         }
 
         /// <summary>
@@ -31,7 +32,7 @@ namespace Logic.Model.Cards.BaseCards
         {
             //1.主动出杀,检查出杀的次数
             if (playerContext.Player.IsInZhudongMode()
-                && (playerContext.Player.RoundContext.AttackDynamicFactor.MaxShaTimes + playerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.MaxShaTimes) > playerContext.Player.RoundContext.ShaedTimes)
+                && (playerContext.Player.RoundContext.AttackDynamicFactor.MaxShaTimes + playerContext.Player.CurrentPlayerHero.BaseAttackFactor.MaxShaTimes) > playerContext.Player.RoundContext.ShaedTimes)
             {
                 return true;
             }
@@ -102,7 +103,7 @@ namespace Logic.Model.Cards.BaseCards
 
         protected override async Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
-            var phero = PlayerContext.Player.GetCurrentPlayerHero();
+            var phero = PlayerContext.Player.CurrentPlayerHero;
             cardRequestContext.MaxCardCountToPlay += phero.BaseAttackFactor.ShanCountAvoidSha - 1;//出牌数应该是基本加成数加上英雄实际数量-1
             cardRequestContext.MinCardCountToPlay += phero.BaseAttackFactor.ShanCountAvoidSha - 1;
             cardRequestContext.AttackDynamicFactor = cardRequestContext.AttackDynamicFactor ??
@@ -156,7 +157,7 @@ namespace Logic.Model.Cards.BaseCards
                     return actResponse;
                 }
                 var player = cardRequestContext.TargetPlayers.First();
-                await player.GetCurrentPlayerHero().LoseLife(new LoseLifeRequest()
+                await player.CurrentPlayerHero.LoseLife(new LoseLifeRequest()
                 {
                     CardRequestContext = cardRequestContext,
                     SrcRoundContext = roundContext,

@@ -43,7 +43,7 @@ namespace Logic.Model.Cards.EquipmentCards.Defense
                         var shouldTrigger = await PlayerContext.Player.ActionManager.OnRequestTriggerSkill(SkillTypeEnum.Yuruyi, context);
                         if (shouldTrigger)
                         {
-                            Console.WriteLine($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.GetCurrentPlayerHero().Hero.DisplayName}】发动玉如意判定。");
+                            Console.WriteLine($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】发动玉如意判定。");
                             var pandingRes = await PlayerContext.GameLevel.Panding(context, (c) => c.Color == CardColorEnum.Red);
                             if (pandingRes.ResponseResult == ResponseResultEnum.Success)
                             {

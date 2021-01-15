@@ -19,15 +19,15 @@ namespace Logic.Model.Cards.EquipmentCards
         }
         protected override async Task OnEquip()
         {
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance += BaseAttackFactor.ShaDistance - 1;
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.MaxShaTimes += BaseAttackFactor.MaxShaTimes;
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance += BaseAttackFactor.ShaDistance - 1;
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.MaxShaTimes += BaseAttackFactor.MaxShaTimes;
             await Task.FromResult(0);
         }
 
         protected override async Task OnUnEquip()
         {
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.ShaDistance -= BaseAttackFactor.ShaDistance - 1;
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.MaxShaTimes -= BaseAttackFactor.MaxShaTimes;
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance -= BaseAttackFactor.ShaDistance - 1;
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.MaxShaTimes -= BaseAttackFactor.MaxShaTimes;
             await Task.FromResult(0);
         }
     }

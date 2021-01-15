@@ -45,7 +45,7 @@ namespace Logic.Model.Cards.JinlangCards
         protected async Task<CardResponseContext> ExecuteAction(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext, RoundContext roundContext)
         {
             var currentPlayer = PlayerContext.Player;
-            var cards = PlayerContext.GameLevel.PickNextCardsFromStack(PlayerContext.GameLevel.Players.Count(p => p.IsAlive())).ToList();
+            var cards = PlayerContext.GameLevel.PickNextCardsFromStack(PlayerContext.GameLevel.Players.Count(p => p.IsAlive)).ToList();
             Console.WriteLine($"五谷丰登可选牌有：【{string.Join("】，", cards)}】。");
             var panel = new PanelBase
             {

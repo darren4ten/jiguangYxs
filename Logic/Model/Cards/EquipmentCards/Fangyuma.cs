@@ -17,14 +17,14 @@ namespace Logic.Model.Cards.EquipmentCards
 
         protected override async Task OnEquip()
         {
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.DefenseDistance +=
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.DefenseDistance +=
                 BaseAttackFactor.DefenseDistance;
             await Task.FromResult(0);
         }
 
         protected override async Task OnUnEquip()
         {
-            PlayerContext.Player.GetCurrentPlayerHero().BaseAttackFactor.DefenseDistance -=
+            PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.DefenseDistance -=
                 BaseAttackFactor.DefenseDistance;
             await Task.FromResult(0);
         }
