@@ -15,7 +15,21 @@
         <Ellipse Name="FriendMark" HorizontalAlignment="Left" Height="26" Stroke="#803837" VerticalAlignment="Top" Width="26" Fill="#803837" Margin="-2,-2,0,0"></Ellipse>
         <Label Name="LblFriendMark" Content="敌"  Height="32" 
                FontSize="14px" FontWeight="Bold" FontStyle="Oblique"  Margin="-2,-4,94,142"  Foreground="#fff"/>
-        <ListView Name="LvEquipment" Width="100" Height="64" Margin="8,76,8,30" Background="Transparent" />
+        <ListView Name="LvEquipment" Width="100" DataContext="{Binding EquipmentSet}" Height="64" Margin="8,76,8,30" Background="Transparent">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Vertical" IsItemsHost="True"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel DataContext="{Binding }">
+                        <!--<Button Content="{Binding DisplayName}" Foreground="Red"></Button>-->
+                        <Label Content="{Binding DisplayName}" FontSize="14" Foreground="Red"></Label>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListView>
         <Image Name="ImgSkillBar" VerticalAlignment="Bottom" Height="22"  Width="116" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
         <Image Name="ImgCardNumber" 
                HorizontalAlignment="Left"  Height="32"  Width="24" Margin="-2,138,0,0" 

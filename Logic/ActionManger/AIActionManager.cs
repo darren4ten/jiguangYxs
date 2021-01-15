@@ -763,7 +763,7 @@ namespace Logic.ActionManger
         {
             SelectedTargetsResponse response = new SelectedTargetsResponse();
             //选择的目标：选择手牌/血量比最高的一个敌方。5牌/4血-3牌/2血
-            var targets = players.Where(p => !p.IsSameGroup(PlayerContext.Player)).OrderBy(p => p.CardsInHand.Count / p.CurrentPlayerHero.CurrentLife).ThenBy(p => p.CardsInHand.Count);
+            var targets = players.Where(p => !p.IsSameGroup(PlayerContext.Player) && p.CurrentPlayerHero.CurrentLife > 0).OrderBy(p => p.CardsInHand.Count / p.CurrentPlayerHero.CurrentLife).ThenBy(p => p.CardsInHand.Count);
             foreach (var target in targets)
             {
                 if (response.Targets.Count >= request.MaxTargetCount)

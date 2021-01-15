@@ -13,12 +13,13 @@
                        Height="28"
                        HorizontalAlignment="Left"
                        Content="{Binding Number}"
-                       Foreground="{Binding Color}"
-                       FontSize="16px" Margin="-4,-3,0,79" />
+                       Foreground="Black"
+                       FontSize="16px" Margin="-4,-3,0,79">
+                </Label>
 
                 <Label  Width="28"
                         Height="28"
-                        x:Name="LblFlower" Content="{Binding FlowerKindString}" Foreground="{Binding Color}" FontSize="16px" Margin="0,12,46,64"  FontWeight="Bold">
+                        x:Name="LblFlower" Content="{Binding FlowerKindString}"  FontSize="16px" Margin="0,12,46,64"  FontWeight="Bold">
                     <Label.Style>
                         <Style TargetType="Label">
                             <Style.Triggers>
