@@ -7,6 +7,5 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <!--<UserCtrl:CurrentPlayerPanel x:Name="CurrentPlayerPanel" HorizontalAlignment="Left" Height="188" Margin="10,230,0,0" VerticalAlignment="Top" Width="767"/>-->
     </Grid>
 </Window>

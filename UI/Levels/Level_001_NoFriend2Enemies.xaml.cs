@@ -44,6 +44,7 @@ namespace UI.Levels
             this.GameDataContext = game;
             Names = new List<string>() { "Zhangsan", "Lisi" };
             TestName = "Lucy";
+        
             InitializeComponent();
         }
 

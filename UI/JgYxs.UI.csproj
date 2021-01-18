@@ -14,6 +14,7 @@
     <None Remove="Resources\card\card_sha.jpg" />
     <None Remove="Resources\card\card_shan.jpg" />
     <None Remove="Resources\card\card_yao.jpg" />
+    <None Remove="Resources\card\equipment\card_bawanggong.jpg" />
     <None Remove="Resources\card\equipment\card_bolangchui.jpg" />
     <None Remove="Resources\card\equipment\card_fangyuma.jpg" />
     <None Remove="Resources\card\equipment\card_hufu.jpg" />
@@ -48,6 +49,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\bg\dragon.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\equipment\card_bawanggong.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\card\equipment\card_bolangchui.jpg">

@@ -115,7 +115,7 @@ namespace Logic.Model.Player
         /// <summary>
         /// 玩家当前的装备牌
         /// </summary>
-        public List<CardBase> EquipmentSet { get; private set; }
+        public ObservableCollection<CardBase> EquipmentSet { get; private set; }
 
         #endregion
 
@@ -178,7 +178,7 @@ namespace Logic.Model.Player
             }
             CardsInHand = new ObservableCollection<CardBase>();
             Marks = new List<Mark.MarkBase>();
-            EquipmentSet = new List<CardBase>();
+            EquipmentSet = new ObservableCollection<CardBase>();
             PlayerUiState = new PlayerUIState(this);
         }
 

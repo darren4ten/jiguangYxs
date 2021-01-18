@@ -9,8 +9,12 @@
              Height="800"
              d:DesignHeight="180" d:DesignWidth="800">
     <Grid>
-        <userCtrl1:Hero DataContext="{Binding CurrentPlayer}" HorizontalAlignment="Left"  Height="170"  VerticalAlignment="Center" Width="116" Margin="3,0,0,0"></userCtrl1:Hero>
-        <Button Content="{Binding Path=BtnAction1.BtnText,Mode=TwoWay}"  
+        <userCtrl1:Hero 
+            DataContext="{Binding CurrentPlayer}" 
+            HorizontalAlignment="Left"  
+            Height="170" 
+            VerticalAlignment="Center" Width="116" Margin="3,0,0,0"></userCtrl1:Hero>
+        <!--<Button Content="{Binding Path=BtnAction1.BtnText,Mode=TwoWay}"  
                 Visibility="{Binding BtnAction1.IsVisible}"  VerticalAlignment="Top"
                 Height="24"
                 Click="Btn1Click"
@@ -19,8 +23,8 @@
                 Click="Btn2Click"
                 Height="24"
                 HorizontalAlignment="Left" Visibility="{Binding BtnAction2.IsVisible}" 
-                Margin="579,10,0,0" VerticalAlignment="Top" Width="75"/>
-        <ListBox Margin="125,50,116,5" ItemsSource="{Binding  CurrentPlayer.CardsInHand}" >
+                Margin="579,10,0,0" VerticalAlignment="Top" Width="75"/>-->
+        <ListBox Margin="125,50,116,5" ItemsSource="{Binding  CurrentPlayer.CardsInHand}"  Background="Transparent">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" IsItemsHost="True"/>
@@ -34,8 +38,8 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Label Content="{Binding Tip}" HorizontalAlignment="Left" Margin="125,0,0,0" VerticalAlignment="Top" Width="339"/>
-        <ListBox Width="100" Margin="699,50,1,5" Background="Transparent" >
+        <!--<Label Content="{Binding Tip}" HorizontalAlignment="Left" Margin="125,0,0,0" VerticalAlignment="Top" Width="339"/>-->
+        <ListBox Width="100" Margin="699,50,1,5" Background="Transparent" ItemsSource="{Binding CurrentPlayer.SkillButtons}">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" IsItemsHost="True"/>
@@ -43,12 +47,11 @@
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel DataContext="{Binding Player.SkillButtons}">
-                        <!--<userCtrl1:Card DataContext="{Binding }" />-->
+                    <StackPanel DataContext="{Binding }">
+                        <Button Content="{Binding Text}" Foreground="DarkRed" ></Button>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Label Content="{Binding TestStr}"></Label>
     </Grid>
 </UserControl>

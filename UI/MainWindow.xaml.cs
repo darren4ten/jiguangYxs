@@ -26,7 +26,12 @@ namespace JgYxs.UI
 
         public void Init()
         {
-            GameDataContext gameDataContext = new GameDataContext() { TestStr="ATestString"};
+
+            //var testWindow = new TestWindow();
+            //testWindow.Show();
+            //Close();
+            //return;
+            GameDataContext gameDataContext = new GameDataContext() { TestStr = "ATestString" };
             gameDataContext.GameLevel = new GameLevel1();
             this.Dispatcher.BeginInvoke(new Action(async () =>
             {

@@ -15,17 +15,33 @@
         <Ellipse Name="FriendMark" HorizontalAlignment="Left" Height="26" Stroke="#803837" VerticalAlignment="Top" Width="26" Fill="#803837" Margin="-2,-2,0,0"></Ellipse>
         <Label Name="LblFriendMark" Content="敌"  Height="32" 
                FontSize="14px" FontWeight="Bold" FontStyle="Oblique"  Margin="-2,-4,94,142"  Foreground="#fff"/>
-        <ListView Name="LvEquipment" Width="100" DataContext="{Binding EquipmentSet}" Height="64" Margin="8,76,8,30" Background="Transparent">
+        <ListView Name="LvEquipment" Width="90"
+                  Height="84"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+                  ScrollViewer.VerticalScrollBarVisibility="Hidden" 
+                  Cursor="Arrow"
+                  BorderThickness="0"
+                  ItemsSource="{Binding EquipmentSet}"  Margin="8,76,8,30" 
+                  Background="#01FFFFFF"
+                  >
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Vertical" IsItemsHost="True"/>
+                    <WrapPanel Orientation="Vertical" IsItemsHost="True" />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel DataContext="{Binding }">
-                        <!--<Button Content="{Binding DisplayName}" Foreground="Red"></Button>-->
-                        <Label Content="{Binding DisplayName}" FontSize="14" Foreground="Red"></Label>
+                        <RichTextBox Block.LineHeight="6" Width="100" IsEnabled="False" BorderThickness="0">
+                            <FlowDocument>
+                                <Paragraph>
+                                    <Run Text="{Binding FlowerKindString,Mode=OneTime}" Foreground="#FF0F0F0F"/>
+                                    <Run Text="{Binding Number}" Foreground="red"/>
+                                    <Run Text="{Binding DisplayName}" Foreground="Blue"/>
+                                    <Run Text="{Binding BaseAttackFactor.ShaDistance}" Foreground="Blue"/>
+                                </Paragraph>
+                            </FlowDocument>
+                        </RichTextBox>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
