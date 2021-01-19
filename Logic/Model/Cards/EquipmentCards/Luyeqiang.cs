@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.Enums;
 using Logic.GameLevel;
+using Logic.Log;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.Interface;
 using Logic.Model.Cards.MutedCards;
@@ -86,6 +87,18 @@ namespace Logic.Model.Cards.EquipmentCards
                             ){CardChangeType = CardChangeTypeEnum.Combined}.AttachPlayerContext(PlayerContext)
                         };
                         Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】打出两张牌{String.Join(",", res.Cards?.Select(p => p.ToString()) ?? new List<string>())}当做杀来用。");
+
+                        PlayerContext.GameLevel.LogManager.LogAction(
+                                   new RichTextParagraph(
+                                   new RichTextWrapper($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                   new RichTextWrapper("打出两张牌"),
+                                   new RichTextWrapper(String.Join(",", res.Cards?.Select(p => p.ToString()) ?? new List<string>()), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                   new RichTextWrapper("当做“"),
+                                   new RichTextWrapper("杀", RichTextWrapper.GetColor(ColorEnum.Red)),
+                                   new RichTextWrapper("”来用"),
+                                   new RichTextWrapper("。")
+                                ));
+
                     }
                     else
                     {

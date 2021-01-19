@@ -6,6 +6,7 @@ using Logic.Cards;
 using Logic.Enums;
 using Logic.GameLevel;
 using Logic.GameLevel.Panel;
+using Logic.Log;
 using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
@@ -48,6 +49,13 @@ namespace Logic.Model.Cards.JinlangCards
             var currentPlayer = PlayerContext.Player;
             var cards = PlayerContext.GameLevel.PickNextCardsFromStack(PlayerContext.GameLevel.Players.Count(p => p.IsAlive)).ToList();
             Console.WriteLine($"五谷丰登可选牌有：【{string.Join("】，", cards)}】。");
+            PlayerContext.GameLevel.LogManager.LogAction(
+                                    new RichTextParagraph(
+                                    new RichTextWrapper("五谷丰登可选牌有"),
+                                    new RichTextWrapper(string.Join("】，", cards), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                    new RichTextWrapper("。")
+                                 ));
+
             var panel = new PanelBase
             {
                 DisplayMessage = "请选择一张要抽取的牌",

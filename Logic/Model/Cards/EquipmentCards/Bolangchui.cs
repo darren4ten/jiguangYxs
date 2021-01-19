@@ -6,6 +6,7 @@ using Logic.Cards;
 using Logic.Enums;
 using Logic.GameLevel;
 using Logic.GameLevel.Panel;
+using Logic.Log;
 using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
@@ -59,6 +60,18 @@ namespace Logic.Model.Cards.EquipmentCards
                        if (res.ResponseResult == ResponseResultEnum.Success || (res.Cards != null && res.Cards.Count == 2))
                        {
                            Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】弃掉两张牌{String.Join(",", res.Cards?.Select(p => p.ToString()) ?? new List<string>())}发动博浪锤技能强制命中【{target.PlayerId}{target.CurrentPlayerHero.Hero.DisplayName}】");
+                           PlayerContext.GameLevel.LogManager.LogAction(
+                                  new RichTextParagraph(
+                                   new RichTextWrapper($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                                   new RichTextWrapper("弃掉两张牌"),
+                                   new RichTextWrapper(String.Join(",", res.Cards?.Select(p => p.ToString()) ?? new List<string>()), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                   new RichTextWrapper("发动博浪锤"),
+                                   new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                   new RichTextWrapper("技能强制命中"),
+                                   new RichTextWrapper($"{target.PlayerId}【{target.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue))
+                               ));
+
+
                            //弃掉对应的牌
                            res.Cards?.ForEach(async c =>
                            {

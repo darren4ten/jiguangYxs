@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.Enums;
 using Logic.GameLevel;
+using Logic.Log;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
@@ -66,6 +67,16 @@ namespace Logic.Model.Cards.EquipmentCards
                                throw new Exception("必须出杀才能发动盘龙棍");
                            }
                            Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】发动盘龙棍技能打出【{newSha}】");
+                           PlayerContext.GameLevel.LogManager.LogAction(
+                                  new RichTextParagraph(
+                                  new RichTextWrapper($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                  new RichTextWrapper("发动"),
+                                  new RichTextWrapper("盘龙棍"),
+                                  new RichTextWrapper("技能打出"),
+                                  new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                  new RichTextWrapper("。")
+                               ));
+
                            var shaRes = await newSha.PlayCard(CardRequestContext.GetBaseCardRequestContext(context.TargetPlayers), roundContext);
                        }
                        else

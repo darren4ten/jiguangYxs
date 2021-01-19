@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\bg\bg_history_body.png" />
+    <None Remove="Resources\bg\bg_history_header.png" />
     <None Remove="Resources\bg\cardHistoryBg.png" />
     <None Remove="Resources\bg\dragon.jpg" />
     <None Remove="Resources\card\card_sha.jpg" />
@@ -45,6 +47,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Resources\bg\bg_history_body.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\bg\bg_history_header.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\bg\cardHistoryBg.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

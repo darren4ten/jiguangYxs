@@ -10,21 +10,33 @@
     <Grid>
         <!--<Image Source="pack://application:,,,/Resources/bg/bg_history_body.png" Stretch="Fill"></Image>-->
         <StackPanel>
-            <Label Content="战斗信息" FontSize="12" HorizontalAlignment="Center" Height="32"  Width="200"  Margin="0,0,0,0 ">
+            <Label Content="  战斗信息"  VerticalAlignment="Center" FontSize="12" HorizontalAlignment="Center" Height="32"  Width="200"  Margin="0,0,0,0 ">
                 <Label.Background>
                     <ImageBrush ImageSource="/Resources/bg/bg_history_header.png" Opacity="0.6" Stretch="Fill"/>
                 </Label.Background>
+
             </Label>
-            <RichTextBox x:Name="RtxtHistory" Height="504" Width="196" IsReadOnly="True">
-                <FlowDocument>
-                    <Paragraph>
-                        <Run Text="RichTextBox" />
-                    </Paragraph>
-                </FlowDocument>
+            <!--<RichTextBox x:Name="RtxtHistory" Height="504" Width="196" IsReadOnly="True" >
                 <RichTextBox.Background>
                     <ImageBrush ImageSource="/Resources/bg/bg_history_body.png" Opacity="0.6" Stretch="Fill"/>
                 </RichTextBox.Background>
-            </RichTextBox>
+            </RichTextBox>-->
+            <local:BindableRichTextBox x:Name="BRtxt" 
+                                          IsReadOnly="True"
+                                          VerticalScrollBarVisibility="Visible" 
+                                          Height="504" Width="196"
+                                          RenderSize="400,534"
+                                          Document="{Binding HistoryDoc}"
+            >
+                <local:BindableRichTextBox.Background>
+                    <ImageBrush ImageSource="/Resources/bg/bg_history_body.png" Opacity="0.6" Stretch="Fill"/>
+                </local:BindableRichTextBox.Background>
+                <RichTextBox.Resources>
+                    <Style TargetType="{x:Type Paragraph}">
+                        <Setter Property="Margin" Value="0"/>
+                    </Style>
+                </RichTextBox.Resources>
+            </local:BindableRichTextBox>
         </StackPanel>
     </Grid>
 </UserControl>

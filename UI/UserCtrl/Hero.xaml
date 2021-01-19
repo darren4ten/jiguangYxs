@@ -50,7 +50,20 @@
                                             </Style>
                                         </Run.Style>
                                     </Run>
-                                    <Run Text="{Binding Number}" Foreground="red"/>
+                                    <Run Text="{Binding Number}" Foreground="red">
+                                        <Run.Style>
+                                            <Style TargetType="Run">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Color}" Value="{x:Static enums:CardColorEnum.Red}">
+                                                        <Setter Property="Foreground" Value="Red"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Color}" Value="{x:Static enums:CardColorEnum.Black}">
+                                                        <Setter Property="Foreground" Value="Black"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Run.Style>
+                                    </Run>
                                     <Run Text="{Binding DisplayName}" Foreground="Blue"/>
                                     <Run Text="{Binding BaseAttackFactor.ShaDistance}" Foreground="Blue"/>
                                 </Paragraph>

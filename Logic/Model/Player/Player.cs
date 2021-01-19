@@ -10,6 +10,7 @@ using Logic.Annotations;
 using Logic.Cards;
 using Logic.Event;
 using Logic.GameLevel;
+using Logic.Log;
 using Logic.Model.Cards;
 using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Cards.Interface;
@@ -458,6 +459,13 @@ namespace Logic.Model.Player
         {
             int waitTme = 10;
             Console.WriteLine($"");
+            _gameLevel.LogManager.LogAction(new RichTextParagraph(
+                new RichTextWrapper("---", RichTextWrapper.GetColor(ColorEnum.Black)),
+                new RichTextWrapper(PlayerId.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                new RichTextWrapper($"【{CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                new RichTextWrapper("的回合开始", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                new RichTextWrapper("---", RichTextWrapper.GetColor(ColorEnum.Black))
+                ));
             Console.WriteLine($"------------------{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】的回合开始------------------");
             await StartStep_EnterMyRound();
             await Task.Delay(waitTme);
@@ -470,6 +478,13 @@ namespace Logic.Model.Player
             await Task.Delay(waitTme);
             await StartStep_ExitMyRound();
             Console.WriteLine($"------------------{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】的回合结束------------------");
+            _gameLevel.LogManager.LogAction(new RichTextParagraph(
+                      new RichTextWrapper("---", RichTextWrapper.GetColor(ColorEnum.Black)),
+                      new RichTextWrapper(PlayerId.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                      new RichTextWrapper($"【{CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                      new RichTextWrapper("的回合结束", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                      new RichTextWrapper("---", RichTextWrapper.GetColor(ColorEnum.Black))
+                      ));
         }
 
         /// <summary>
@@ -497,6 +512,12 @@ namespace Logic.Model.Player
             if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipEnterMyRound)
             {
                 Console.WriteLine($"跳过进入我的回合阶段。");
+                _gameLevel.LogManager.LogAction(new RichTextParagraph(
+                new RichTextWrapper("跳过", RichTextWrapper.GetColor(ColorEnum.Red)),
+                new RichTextWrapper(PlayerId.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                new RichTextWrapper($"【{CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                new RichTextWrapper("的回合阶段", RichTextWrapper.GetColor(ColorEnum.Black))
+                ));
                 return;
             }
 
@@ -517,6 +538,14 @@ namespace Logic.Model.Player
                 return;
             }
             Console.WriteLine($"进入{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】的摸牌阶段。");
+            _gameLevel.LogManager.LogAction(new RichTextParagraph(
+                new RichTextWrapper(PlayerId.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                new RichTextWrapper($"【{CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                new RichTextWrapper("开始", RichTextWrapper.GetColor(ColorEnum.Black)),
+                new RichTextWrapper("摸牌", RichTextWrapper.GetColor(ColorEnum.Red)),
+                new RichTextWrapper("。")
+                ));
+
             var request = new CardRequestContext();
             var response = new CardResponseContext();
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforePickCard, _gameLevel.HostPlayerHero,
@@ -530,6 +559,13 @@ namespace Logic.Model.Player
             if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipPickCard)
             {
                 Console.WriteLine($"跳过摸牌。");
+                _gameLevel.LogManager.LogAction(new RichTextParagraph(
+                new RichTextWrapper(PlayerId.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                new RichTextWrapper($"【{CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                new RichTextWrapper("跳过", RichTextWrapper.GetColor(ColorEnum.Black)),
+                new RichTextWrapper("摸牌", RichTextWrapper.GetColor(ColorEnum.Red)),
+                new RichTextWrapper("。")
+                ));
                 return;
             }
 
@@ -552,8 +588,22 @@ namespace Logic.Model.Player
             }
 
             Console.WriteLine($"进入{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】的出牌阶段。");
+            _gameLevel.LogManager.LogAction(new RichTextParagraph(
+                 new RichTextWrapper(PlayerId.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                 new RichTextWrapper($"【{CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                 new RichTextWrapper("开始", RichTextWrapper.GetColor(ColorEnum.Black)),
+                 new RichTextWrapper("出牌", RichTextWrapper.GetColor(ColorEnum.Red)),
+                 new RichTextWrapper("。")
+                 ));
             if (RoundContext.AttackDynamicFactor.SkipOption.ShouldSkipPlayCard)
             {
+                _gameLevel.LogManager.LogAction(new RichTextParagraph(
+                 new RichTextWrapper(PlayerId.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                 new RichTextWrapper($"【{CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                 new RichTextWrapper("跳过", RichTextWrapper.GetColor(ColorEnum.Black)),
+                 new RichTextWrapper("出牌", RichTextWrapper.GetColor(ColorEnum.Red)),
+                 new RichTextWrapper("。")
+                 ));
                 Console.WriteLine($"跳过出牌。");
                 return;
             }
@@ -569,6 +619,13 @@ namespace Logic.Model.Player
             var combinedRequest = GetCombindCardRequestContext(request, CurrentPlayerHero.BaseAttackFactor, RoundContext);
             if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipPlayCard)
             {
+                _gameLevel.LogManager.LogAction(new RichTextParagraph(
+                   new RichTextWrapper(PlayerId.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                   new RichTextWrapper($"【{CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                   new RichTextWrapper("跳过", RichTextWrapper.GetColor(ColorEnum.Black)),
+                   new RichTextWrapper("出牌", RichTextWrapper.GetColor(ColorEnum.Red)),
+                   new RichTextWrapper("。")
+                   ));
                 Console.WriteLine($"跳过出牌。");
                 return;
             }
@@ -593,6 +650,13 @@ namespace Logic.Model.Player
             }
 
             Console.WriteLine($"进入{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】的弃牌阶段。");
+            _gameLevel.LogManager.LogAction(new RichTextParagraph(
+                   new RichTextWrapper(PlayerId.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                   new RichTextWrapper($"【{CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                   new RichTextWrapper("开始", RichTextWrapper.GetColor(ColorEnum.Black)),
+                   new RichTextWrapper("弃牌", RichTextWrapper.GetColor(ColorEnum.Red)),
+                   new RichTextWrapper("。")
+                   ));
             var request = new CardRequestContext();
             var response = new CardResponseContext();
             await _gameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.BeforeThrowCard, _gameLevel.HostPlayerHero,
@@ -605,6 +669,13 @@ namespace Logic.Model.Player
             var combinedRequest = GetCombindCardRequestContext(request, CurrentPlayerHero.BaseAttackFactor, RoundContext);
             if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipThrowCard)
             {
+                _gameLevel.LogManager.LogAction(new RichTextParagraph(
+                   new RichTextWrapper(PlayerId.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                   new RichTextWrapper($"【{CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                   new RichTextWrapper("跳过", RichTextWrapper.GetColor(ColorEnum.Black)),
+                   new RichTextWrapper("弃牌", RichTextWrapper.GetColor(ColorEnum.Red)),
+                   new RichTextWrapper("。")
+                   ));
                 Console.WriteLine($"跳过弃牌。");
                 return;
             }
@@ -634,6 +705,13 @@ namespace Logic.Model.Player
             var combinedRequest = GetCombindCardRequestContext(request, CurrentPlayerHero.BaseAttackFactor, RoundContext);
             if (combinedRequest.AttackDynamicFactor.SkipOption.ShouldSkipExitMyRound)
             {
+                _gameLevel.LogManager.LogAction(new RichTextParagraph(
+                     new RichTextWrapper(PlayerId.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                     new RichTextWrapper($"【{CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                     new RichTextWrapper("跳过", RichTextWrapper.GetColor(ColorEnum.Black)),
+                     new RichTextWrapper("结束出牌", RichTextWrapper.GetColor(ColorEnum.Red)),
+                     new RichTextWrapper("。")
+                     ));
                 Console.WriteLine($"跳过结束出牌阶段。");
                 return;
             }
@@ -1060,6 +1138,12 @@ namespace Logic.Model.Player
 
             return newCardRequestContext;
         }
+
+        public override string ToString()
+        {
+            return $"{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】";
+        }
+
 
         #region 私有方法
         /// <summary>

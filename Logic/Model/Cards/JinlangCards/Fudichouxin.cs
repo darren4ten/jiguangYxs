@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.GameLevel;
 using Logic.GameLevel.Panel;
+using Logic.Log;
 using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
@@ -85,6 +86,16 @@ namespace Logic.Model.Cards.JinlangCards
             panelCards?.ForEach(async p =>
             {
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                PlayerContext.GameLevel.LogManager.LogAction(
+                                 new RichTextParagraph(
+                                 new RichTextWrapper(PlayerContext.Player.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                 new RichTextWrapper("从"),
+                                 new RichTextWrapper(panel.CardOwner.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                 new RichTextWrapper("抽取了标记"),
+                                 new RichTextWrapper(p.Card.ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                 new RichTextWrapper("。")
+                              ));
+
                 await panel.CardOwner.RemoveMark(p.Mark);
                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);
             });
@@ -93,6 +104,16 @@ namespace Logic.Model.Cards.JinlangCards
             panelCards?.ForEach(async p =>
             {
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                PlayerContext.GameLevel.LogManager.LogAction(
+                                 new RichTextParagraph(
+                                 new RichTextWrapper(PlayerContext.Player.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                 new RichTextWrapper("从"),
+                                 new RichTextWrapper(panel.CardOwner.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                 new RichTextWrapper("抽取了装备"),
+                                 new RichTextWrapper(p.Card.ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                 new RichTextWrapper("。")
+                              )); 
+                
                 await panel.CardOwner.RemoveEquipment(p.Card, request, response, roundContext);
                 panel.EquipmentCards.Remove(p);
                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);
@@ -102,6 +123,16 @@ namespace Logic.Model.Cards.JinlangCards
             panelCards?.ForEach(async p =>
             {
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+                PlayerContext.GameLevel.LogManager.LogAction(
+                                  new RichTextParagraph(
+                                  new RichTextWrapper(PlayerContext.Player.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                  new RichTextWrapper("从"),
+                                  new RichTextWrapper(panel.CardOwner.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                  new RichTextWrapper("抽取了手牌"),
+                                  new RichTextWrapper(p.Card.ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                  new RichTextWrapper("。")
+                               )); 
+                
                 await panel.CardOwner.RemoveCardsInHand(new List<CardBase>() { p.Card }, request, response, roundContext);
                 //将牌置于弃牌堆
                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);

@@ -8,6 +8,7 @@ using Logic.GameLevel;
 using Logic.Model.Cards.Interface;
 using Logic.Model.Interface;
 using Logic.Model.Enums;
+using Logic.Log;
 
 namespace Logic.Model.Cards.EquipmentCards
 {
@@ -30,7 +31,15 @@ namespace Logic.Model.Cards.EquipmentCards
         {
             //默认SrcPlayer为当前出牌的人
             cardRequestContext.SrcPlayer = cardRequestContext.SrcPlayer ?? PlayerContext.Player;
+
             Console.WriteLine($"[{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}]的【{cardRequestContext.SrcPlayer.CurrentPlayerHero.Hero.DisplayName}】装备了【{ToString()}】");
+            PlayerContext.GameLevel.LogManager.LogAction(
+                                  new RichTextParagraph(
+                                  new RichTextWrapper($"{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}【{cardRequestContext.SrcPlayer.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                  new RichTextWrapper("装备了"),
+                                  new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                  new RichTextWrapper("。")
+                               ));
 
             CardResponseContext responseContext = new CardResponseContext();
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, cardRequestContext, responseContext, roundContext);

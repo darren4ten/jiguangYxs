@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Logic.Cards;
 using Logic.Enums;
+using Logic.Log;
 using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Cards.EquipmentCards.Defense;
 using Logic.Util.Extension;
@@ -21,9 +24,12 @@ namespace JgYxs.UI
     /// <summary>
     /// Interaction logic for TestWindow.xaml
     /// </summary>
-    public partial class TestWindow : Window
+    public partial class TestWindow : Window, ILogUpdate
     {
         public ObservableCollection<CardBase> EquipmentSet { get; set; } = new ObservableCollection<CardBase>();
+        public Paragraph CurP { get; set; }
+
+        public FlowDocument FlowDocument { get; set; }
         public TestWindow()
         {
             this.DataContext = EquipmentSet;
@@ -33,14 +39,116 @@ namespace JgYxs.UI
 
         protected override void OnInitialized(EventArgs e)
         {
-            EquipmentSet.AddRange( new List<CardBase>(){
+            EquipmentSet.AddRange(new List<CardBase>(){
                 new Langyabang() { Number = 1, FlowerKind = FlowerKindEnum.Hongtao },
                 new Yuruyi() { Number = 8, FlowerKind = FlowerKindEnum.Fangkuai },
                 new Jingongma() { Number = 13, FlowerKind = FlowerKindEnum.Meihua },
                 new Fangyuma() { Number = 10, FlowerKind = FlowerKindEnum.Heitao }
             });
             LvEquipment.ItemsSource = EquipmentSet;
+            TestParagraph();
             base.OnInitialized(e);
+        }
+
+        private void TestParagraph()
+        {
+
+            FlowDocument = GetDocument();
+            BRtxt.Document = FlowDocument;
+            FlowDocLogMananger mananger = new FlowDocLogMananger(this);
+            //mananger.LogAction(new RichText() { });
+            this.Dispatcher.BeginInvoke(new Action(async () =>
+            {
+                //Paragraph p = new Paragraph();
+                //var nameRun = new Run("Test....");
+                //nameRun.Foreground = new SolidColorBrush(Colors.Red);
+                //nameRun.FontWeight = FontWeights.Bold;
+                //p.Inlines.Add(nameRun);
+                //FlowDocument.Blocks.Add(p);
+                //UpdateDocument(new List<RichTextWrapper>(){
+                //    new RichTextWrapper()
+                //    {
+                //        Color = new byte[3]{234,67,53},
+                //        Content="TestRichText afa",
+                //        IsBold = true,
+                //        FontSize=24
+                //    }
+                //});
+                mananger.LogAction(new RichTextParagraph(new RichTextWrapper("TestRichText afa", new byte[3] { 234, 67, 53 })));
+            }));
+        }
+
+        private void UpdateDocument(List<RichTextWrapper> records)
+        {
+            foreach (var richText in records)
+            {
+                Paragraph p = new Paragraph();
+                var nameRun = new Run(richText.Content);
+                nameRun.Foreground = new SolidColorBrush(Color.FromRgb(richText.Color[0], richText.Color[1], richText.Color[2]));
+                nameRun.FontWeight = richText.IsBold ? FontWeights.Bold : FontWeights.Normal;
+                nameRun.FontSize = richText.FontSize <= 0 ? 14 : richText.FontSize;
+                p.Inlines.Add(nameRun);
+                FlowDocument.Blocks.Add(p);
+            }
+        }
+
+        public FlowDocument GetDocument()
+        {
+            FlowDocument doc = new FlowDocument();
+
+            Paragraph p = new Paragraph();
+            var nameRun = new Run("陈大雷");
+            nameRun.Foreground = new SolidColorBrush(Colors.Red);
+            nameRun.FontWeight = FontWeights.Bold;
+            p.Inlines.Add(nameRun);
+
+            var actionRun = new Run("说");
+            actionRun.Foreground = new SolidColorBrush(Colors.Black);
+            actionRun.FontWeight = FontWeights.Normal;
+            p.Inlines.Add(actionRun);
+
+            var contentRun = new Run("今天是个好天气");
+            contentRun.Foreground = new SolidColorBrush(Colors.Green);
+
+            contentRun.FontWeight = FontWeights.Normal;
+            p.Inlines.Add(contentRun);
+
+            doc.Blocks.Add(p);
+
+            Paragraph p1 = new Paragraph();
+            var nameRun1 = new Run("顺溜");
+            nameRun1.Foreground = new SolidColorBrush(Colors.Red);
+            nameRun1.FontWeight = FontWeights.Bold;
+            p1.Inlines.Add(nameRun1);
+
+            var actionRun1 = new Run("说");
+            actionRun1.Foreground = new SolidColorBrush(Colors.Black);
+            actionRun1.FontWeight = FontWeights.Normal;
+            p1.Inlines.Add(actionRun1);
+
+            var contentRun1 = new Run("我不能同意更多了！");
+            contentRun1.Foreground = new SolidColorBrush(Colors.Green);
+
+            contentRun1.FontWeight = FontWeights.Normal;
+            p1.Inlines.Add(contentRun1);
+
+            doc.Blocks.Add(p1);
+
+            return doc;
+        }
+
+        public void LogUpdate(RichTextParagraph richPara)
+        {
+            Paragraph p = new Paragraph();
+            foreach (var richTextWrapper in richPara.Wrappers)
+            {
+                var nameRun = new Run(richTextWrapper.Content);
+                nameRun.Foreground = new SolidColorBrush(Color.FromRgb(richTextWrapper.Color[0], richTextWrapper.Color[1], richTextWrapper.Color[2]));
+                nameRun.FontWeight = richTextWrapper.IsBold ? FontWeights.Bold : FontWeights.Normal;
+                nameRun.FontSize = richTextWrapper.FontSize <= 0 ? 14 : richTextWrapper.FontSize;
+                p.Inlines.Add(nameRun);
+            }
+            FlowDocument.Blocks.Add(p);
         }
     }
 }

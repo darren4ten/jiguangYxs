@@ -53,6 +53,7 @@ namespace UI.Levels
             CurPlayerPanel.DataContext = GameDataContext;
             Player2.DataContext = GameDataContext.Player2;
             Player3.DataContext = GameDataContext.Player3;
+            GameDataContext.GameLevel.LogManager.AttachRecevier(HistoryPanel);
             base.OnInitialized(e);
         }
     }

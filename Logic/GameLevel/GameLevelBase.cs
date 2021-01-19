@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Logic.ActionManger;
 using Logic.Event;
+using Logic.Log;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Cards.JinlangCards;
@@ -22,10 +23,17 @@ namespace Logic.GameLevel
 {
     public abstract class GameLevelBase
     {
+        public GameLevelBase()
+        {
+            LogManager = new FlowDocLogMananger();
+        }
+
         /// <summary>
         /// 当前关卡全局事件管理器
         /// </summary>
         public readonly EventBus GlobalEventBus = EventBus.GetInstance();
+
+        public readonly LogMangerBase LogManager;
 
         public int LevelId { get; set; }
 
@@ -289,10 +297,11 @@ namespace Logic.GameLevel
         {
             OnLoad(currentPlayer, aditionalPlayers);
             InitCardsForPlayers(currentPlayer, aditionalPlayers);
-            Console.WriteLine("Game Started!");
             var curPlayer = GetXianshouPlayer();
             await OnAfterLoaded();
             action?.Invoke();
+            Console.WriteLine("Game Started!");
+            LogManager.LogAction(new RichTextParagraph(new RichTextWrapper("游戏开始！", RichTextWrapper.GetColor(ColorEnum.Blue))));
             while (!IsGameOver)
             {
                 await curPlayer.StartMyRound();
@@ -301,6 +310,7 @@ namespace Logic.GameLevel
 
             IsGameOver = true;
             Console.WriteLine("Game End!");
+            End();
         }
 
         public virtual void End()
@@ -312,6 +322,7 @@ namespace Logic.GameLevel
             this.UsedCardStack = null;
             //Play animation
             Console.WriteLine("Game over!");
+            LogManager.LogAction(new RichTextParagraph(new RichTextWrapper("游戏结束！", RichTextWrapper.GetColor(ColorEnum.Blue))));
         }
 
         /// <summary>
@@ -469,6 +480,13 @@ namespace Logic.GameLevel
         protected virtual async Task NotifyPlayerSuccess(Player player)
         {
             Console.WriteLine($"***{player.PlayerId}【{player.CurrentPlayerHero.Hero.DisplayName}】玩家您游戏胜利。");
+            LogManager.LogAction(new RichTextParagraph(
+                new RichTextWrapper("***"),
+                new RichTextWrapper($"{player.PlayerId}【{player.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                new RichTextWrapper("玩家游戏", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                new RichTextWrapper("胜利", RichTextWrapper.GetColor(ColorEnum.Red)),
+                new RichTextWrapper("!", RichTextWrapper.GetColor(ColorEnum.Black))
+                ));
             await Task.FromResult(0);
         }
 
@@ -481,6 +499,13 @@ namespace Logic.GameLevel
         {
             //通知玩家本人死亡
             Console.WriteLine($"***{player.PlayerId}【{player.CurrentPlayerHero.Hero.DisplayName}】玩家您游戏失败。");
+            LogManager.LogAction(new RichTextParagraph(
+                  new RichTextWrapper("***"),
+                  new RichTextWrapper($"{player.PlayerId}【{player.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                  new RichTextWrapper("玩家游戏", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                  new RichTextWrapper("失败", RichTextWrapper.GetColor(ColorEnum.Red)),
+                new RichTextWrapper("!", RichTextWrapper.GetColor(ColorEnum.Black))
+                  ));
             await Task.FromResult(0);
         }
 
@@ -493,6 +518,13 @@ namespace Logic.GameLevel
         {
             //通知玩家本人死亡
             Console.WriteLine($"***{player.PlayerId}【{player.CurrentPlayerHero.Hero.DisplayName}】玩家您已经死亡。");
+            LogManager.LogAction(new RichTextParagraph(
+                 new RichTextWrapper("***"),
+                 new RichTextWrapper($"{player.PlayerId}【{player.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                 new RichTextWrapper("玩家您已经", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                 new RichTextWrapper("死亡", RichTextWrapper.GetColor(ColorEnum.Red)),
+               new RichTextWrapper("!", RichTextWrapper.GetColor(ColorEnum.Black))
+                 ));
             //通知在场所有的人player死亡
             await Task.FromResult(0);
         }
@@ -506,6 +538,13 @@ namespace Logic.GameLevel
         protected virtual async Task NotifyPlayerGameEnd(Player player, bool isVictor)
         {
             Console.WriteLine($"***{player.PlayerId}【{player.CurrentPlayerHero.Hero.DisplayName}】玩家您已经{(isVictor ? "胜利！" : "失败！")}");
+            LogManager.LogAction(new RichTextParagraph(
+                  new RichTextWrapper("***"),
+                  new RichTextWrapper($"{player.PlayerId}【{player.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                  new RichTextWrapper("玩家您已经", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                  new RichTextWrapper((isVictor ? "胜利" : "失败"), RichTextWrapper.GetColor(ColorEnum.Red)),
+                new RichTextWrapper("!", RichTextWrapper.GetColor(ColorEnum.Black))
+                  ));
             await Task.FromResult(0);
         }
 

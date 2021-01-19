@@ -14,6 +14,7 @@ using Logic.Model.Cards.MutedCards;
 using Logic.Model.Player;
 using Logic.Model.RequestResponse.Request;
 using Logic.Model.RequestResponse.Response;
+using Logic.Log;
 
 namespace Logic.Cards
 {
@@ -259,6 +260,15 @@ namespace Logic.Cards
             //默认SrcPlayer为当前出牌的人
             cardRequestContext.SrcPlayer = cardRequestContext.SrcPlayer ?? PlayerContext.Player;
             Console.WriteLine($"[{cardRequestContext.SrcPlayer.PlayerName}{cardRequestContext.SrcPlayer.PlayerId}]的【{cardRequestContext.SrcPlayer.CurrentPlayerHero.Hero.DisplayName}】{(cardRequestContext.TargetPlayers?.Any() == true ? "向" + string.Join(",", cardRequestContext.TargetPlayers.Select(p => p.PlayerName + p.PlayerId)) : "")}打出“{this.ToString()}”");
+            PlayerContext.GameLevel.LogManager.LogAction(
+                new RichTextParagraph(
+                 new RichTextWrapper($"{cardRequestContext.SrcPlayer.PlayerId}【{cardRequestContext.SrcPlayer.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                 new RichTextWrapper((cardRequestContext.TargetPlayers?.Any() == true ? "向" + string.Join(",", cardRequestContext.TargetPlayers.Select(p => p)) : "")),
+                 new RichTextWrapper("打出"),
+                 new RichTextWrapper("“"),
+                 new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                 new RichTextWrapper("”")
+                 ));
 
             CardResponseContext responseContext = new CardResponseContext();
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.BeforeZhudongPlayCard, cardRequestContext, responseContext, roundContext);

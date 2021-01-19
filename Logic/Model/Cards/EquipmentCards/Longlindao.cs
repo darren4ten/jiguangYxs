@@ -7,6 +7,7 @@ using Logic.Cards;
 using Logic.Enums;
 using Logic.GameLevel;
 using Logic.GameLevel.Panel;
+using Logic.Log;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.Interface;
 using Logic.Model.Enums;
@@ -75,6 +76,17 @@ namespace Logic.Model.Cards.EquipmentCards
                             panelCards?.ForEach(async p =>
                             {
                                 Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panelRequest.Panel.CardOwner.PlayerId}的【{panelRequest.Panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+
+                                PlayerContext.GameLevel.LogManager.LogAction(
+                                 new RichTextParagraph(
+                                 new RichTextWrapper($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                 new RichTextWrapper("从"),
+                                 new RichTextWrapper($"{panelRequest.Panel.CardOwner.PlayerId}【{panelRequest.Panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                 new RichTextWrapper("抽取了"),
+                                 new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                 new RichTextWrapper("。")
+                              ));
+
                                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);
 
                                 if (target.EquipmentSet.Any(e => e == p.Card))
@@ -90,6 +102,17 @@ namespace Logic.Model.Cards.EquipmentCards
                             panelCards?.ForEach(async p =>
                             {
                                 Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panelRequest.Panel.CardOwner.PlayerId}的【{panelRequest.Panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
+
+                                PlayerContext.GameLevel.LogManager.LogAction(
+                                 new RichTextParagraph(
+                                 new RichTextWrapper($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                 new RichTextWrapper("从"),
+                                 new RichTextWrapper($"{panelRequest.Panel.CardOwner.PlayerId}【{panelRequest.Panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                 new RichTextWrapper("抽取了"),
+                                 new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                 new RichTextWrapper("。")
+                              ));
+
                                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);
 
                                 if (p.Mark != null)

@@ -5,8 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JgYxs.UI"
         xmlns:enums="clr-namespace:Logic.Model.Enums;assembly=Logic"
+        xmlns:userCtrl="clr-namespace:JgYxs.UI.UserCtrl"
         mc:Ignorable="d"
         Title="TestWindow" Height="450" Width="800">
+    <!--<Window.Resources>
+        <Style x:Key="StyleRtt" TargetType="{x:Type userCtrl:BindableRichTextBox}" >
+           <Setter Property="Height" Value="400"></Setter>
+        </Style>
+    </Window.Resources>-->
     <Grid>
         <ListView Name="LvEquipment" Width="90"
                   Height="84"
@@ -49,5 +55,18 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListView>
+
+        <userCtrl:BindableRichTextBox x:Name="BRtxt" 
+                                      IsEnabled="True"
+                                      VerticalScrollBarVisibility="Visible" 
+                                      Margin="482,138,115,144" 
+                                      RenderSize="400,534"
+                                      >
+            <RichTextBox.Resources>
+                <Style TargetType="{x:Type Paragraph}">
+                    <Setter Property="Margin" Value="0"/>
+                </Style>
+            </RichTextBox.Resources>
+        </userCtrl:BindableRichTextBox>
     </Grid>
 </Window>
