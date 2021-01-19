@@ -8,15 +8,22 @@
              Width="200" Height="530"
              d:DesignHeight="530" d:DesignWidth="200">
     <Grid>
-        <Image Source="pack://application:,,,/Resources/bg/cardHistoryBg.png" Stretch="Fill"></Image>
+        <!--<Image Source="pack://application:,,,/Resources/bg/bg_history_body.png" Stretch="Fill"></Image>-->
         <StackPanel>
-            <Label Content="战斗信息" FontSize="12" HorizontalAlignment="Center" Height="22"  Width="200" Background="Transparent" />
-            <RichTextBox Margin="0,0,0,15" Name="RtxtHistory" Height="504"  Background="Transparent" IsReadOnly="True">
+            <Label Content="战斗信息" FontSize="12" HorizontalAlignment="Center" Height="32"  Width="200"  Margin="0,0,0,0 ">
+                <Label.Background>
+                    <ImageBrush ImageSource="/Resources/bg/bg_history_header.png" Opacity="0.6" Stretch="Fill"/>
+                </Label.Background>
+            </Label>
+            <RichTextBox x:Name="RtxtHistory" Height="504" Width="196" IsReadOnly="True">
                 <FlowDocument>
                     <Paragraph>
                         <Run Text="RichTextBox" />
                     </Paragraph>
                 </FlowDocument>
+                <RichTextBox.Background>
+                    <ImageBrush ImageSource="/Resources/bg/bg_history_body.png" Opacity="0.6" Stretch="Fill"/>
+                </RichTextBox.Background>
             </RichTextBox>
         </StackPanel>
     </Grid>
