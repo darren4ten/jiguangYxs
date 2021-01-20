@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Logic.GameLevel;
+using Logic.Log;
 using Logic.Model.Enums;
 using Logic.Model.Skill.Beidong.SubSkill;
 using Logic.Model.Skill.Interface;
@@ -32,6 +33,13 @@ namespace Logic.Model.Skill.SubSkill
                             reqContext.AttackDynamicFactor =
                                 reqContext.AttackDynamicFactor ?? AttackDynamicFactor.GetDefaultBaseAttackFactor();
                             reqContext.AttackDynamicFactor.Damage.ShaDamage++;
+                            PlayerHero.PlayerContext.GameLevel.LogManager.LogAction(
+                               new RichTextParagraph(
+                               new RichTextWrapper(PlayerHero.PlayerContext.Player.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                               new RichTextWrapper("触发"),
+                               new RichTextWrapper("强化", RichTextWrapper.GetColor(ColorEnum.Red)),
+                               new RichTextWrapper("。")
+                            ));
                             Console.WriteLine("触发强化");
                         }
 

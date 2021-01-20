@@ -8,6 +8,7 @@ using Logic.GameLevel;
 using Logic.Model.Skill.Beidong.SubSkill;
 using Logic.Model.Skill.Interface;
 using Logic.Model.Skill.Zhudong;
+using Logic.Log;
 
 namespace Logic.Model.Skill.SubSkill
 {
@@ -31,7 +32,14 @@ namespace Logic.Model.Skill.SubSkill
                      Console.WriteLine("check杀贪");
                      if (ShouldTrigger())
                      {
-                         PlayerHero.PlayerContext.Player.PickCard(1);
+                         PlayerHero.PlayerContext.GameLevel.LogManager.LogAction(
+                              new RichTextParagraph(
+                              new RichTextWrapper(PlayerHero.PlayerContext.Player.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                              new RichTextWrapper("触发"),
+                              new RichTextWrapper("杀贪", RichTextWrapper.GetColor(ColorEnum.Red)),
+                              new RichTextWrapper("。")
+                           ));
+                         await PlayerHero.PlayerContext.Player.PickCard(1);
                          Console.WriteLine("触发杀贪");
                      }
                      await Task.FromResult(0);

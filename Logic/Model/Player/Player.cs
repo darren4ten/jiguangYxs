@@ -401,6 +401,14 @@ namespace Logic.Model.Player
             {
                 string actionName = cardRequestContext.AttackType == AttackTypeEnum.SelectCard ? "选择了" : "出牌";
                 Console.WriteLine($"[{PlayerName}{PlayerId}]{actionName}{string.Join(",", res.Cards.Select(p => p.ToString()))}");
+                _gameLevel.LogManager.LogAction(
+                                 new RichTextParagraph(
+                                 new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                 new RichTextWrapper(actionName, RichTextWrapper.GetColor(ColorEnum.Red)),
+                                 new RichTextWrapper(string.Join(",", res.Cards.Select(p => p.ToString())), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                 new RichTextWrapper("。")
+                              ));
+
                 //将牌置于临时牌堆
                 res.Cards.ForEach(async c =>
                 {
@@ -914,6 +922,13 @@ namespace Logic.Model.Player
         {
             var cards = _gameLevel.PickNextCardsFromStack(count).ToList();
             Console.WriteLine($"{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】摸牌：{string.Join(",", cards)}");
+            _gameLevel.LogManager.LogAction(
+                                 new RichTextParagraph(
+                                 new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                 new RichTextWrapper("摸牌", RichTextWrapper.GetColor(ColorEnum.Red)),
+                                 new RichTextWrapper(string.Join(",", cards.Select(p => p.ToString())), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                 new RichTextWrapper("。")
+                              ));
             await AddCardsInHand(cards);
         }
 
@@ -928,6 +943,13 @@ namespace Logic.Model.Player
             //将弃掉的牌装入弃牌堆
             _gameLevel.ThrowCardToStack(cards);
             Console.WriteLine($"{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】弃牌：{string.Join(",", cards)}");
+            _gameLevel.LogManager.LogAction(
+                                new RichTextParagraph(
+                                new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                new RichTextWrapper("弃牌", RichTextWrapper.GetColor(ColorEnum.Red)),
+                                new RichTextWrapper(string.Join(",", cards.Select(p => p.ToString())), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                new RichTextWrapper("。")
+                             ));
             await Task.FromResult("");
         }
 

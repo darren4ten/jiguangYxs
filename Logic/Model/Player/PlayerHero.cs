@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Logic.ActionManger;
 using Logic.Annotations;
 using Logic.GameLevel;
+using Logic.Log;
 using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Enums;
 using Logic.Model.Hero;
@@ -293,6 +294,15 @@ namespace Logic.Model.Player
             CurrentLife -= actDamage;
 
             Console.WriteLine($"{PlayerContext.Player.PlayerName + PlayerContext.Player.PlayerId}的【{Hero.DisplayName}】被“{request.DamageType.GetDescription()}”掉血{actDamage}.");
+            PlayerContext.GameLevel.LogManager.LogAction(
+                                   new RichTextParagraph(
+                                   new RichTextWrapper(PlayerContext.Player.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                   new RichTextWrapper("被“"),
+                                   new RichTextWrapper(request.DamageType.GetDescription(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                   new RichTextWrapper("”掉血"),
+                                   new RichTextWrapper(actDamage.ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                   new RichTextWrapper("。")
+                                ));
             await PlayerContext.Player.TriggerEvent(EventTypeEnum.AfterLoseLife, request.CardRequestContext,
                 request.CardResponseContext, request.SrcRoundContext);
             await PlayerContext.GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterLoseLife, PlayerContext.GameLevel.HostPlayerHero, request.CardRequestContext, request.SrcRoundContext,
@@ -359,11 +369,25 @@ namespace Logic.Model.Player
             {
 
                 Console.WriteLine($"{PlayerContext.Player.PlayerName + PlayerContext.Player.PlayerId}的【{Hero.DisplayName}】回复{maxLife - CurrentLife}点血量.");
+                PlayerContext.GameLevel.LogManager.LogAction(
+                                     new RichTextParagraph(
+                                     new RichTextWrapper(PlayerContext.Player.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                     new RichTextWrapper("回复"),
+                                     new RichTextWrapper((maxLife - CurrentLife).ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                     new RichTextWrapper("点血量。")
+                                  ));
                 this.CurrentLife = maxLife;
             }
             else
             {
                 Console.WriteLine($"{PlayerContext.Player.PlayerName + PlayerContext.Player.PlayerId}的【{Hero.DisplayName}】回复{deltaLife}点血量.");
+                PlayerContext.GameLevel.LogManager.LogAction(
+                                   new RichTextParagraph(
+                                   new RichTextWrapper(PlayerContext.Player.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                   new RichTextWrapper("回复"),
+                                   new RichTextWrapper(deltaLife.ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                   new RichTextWrapper("点血量。")
+                                ));
                 this.CurrentLife += deltaLife;
             }
         }

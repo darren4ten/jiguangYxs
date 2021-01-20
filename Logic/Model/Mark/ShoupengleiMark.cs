@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Logic.Enums;
 using Logic.GameLevel;
+using Logic.Log;
 using Logic.Model.Cards.JinlangCards;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
@@ -54,6 +55,12 @@ namespace Logic.Model.Mark
                     {
                         responseContext.ResponseResult = Enums.ResponseResultEnum.Cancelled;
                         responseContext.Message = "请求被取消，停止判定";
+                        PlayerContext.GameLevel.LogManager.LogAction(
+                             new RichTextParagraph(
+                             new RichTextWrapper("画地为牢判定"),
+                             new RichTextWrapper("被取消", RichTextWrapper.GetColor(ColorEnum.Red)),
+                             new RichTextWrapper("。")
+                          ));
                         return;
                     }
                     else if (pandingResponse.ResponseResult == Enums.ResponseResultEnum.Failed)
@@ -61,6 +68,14 @@ namespace Logic.Model.Mark
                         responseContext.ResponseResult = Enums.ResponseResultEnum.Success;
                         responseContext.Message = $"手捧雷判定不生效。";
                         Console.WriteLine($"【手捧雷】判定不生效，判定牌为【{pandingResponse.Cards.FirstOrDefault()}】");
+                        PlayerContext.GameLevel.LogManager.LogAction(
+                            new RichTextParagraph(
+                            new RichTextWrapper("手捧雷判定"),
+                            new RichTextWrapper("不生效", RichTextWrapper.GetColor(ColorEnum.Red)),
+                            new RichTextWrapper("，判定牌为"),
+                            new RichTextWrapper(pandingResponse.Cards.FirstOrDefault()?.ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                            new RichTextWrapper("。")
+                         ));
                         //转移标记
                         await MoveMark();
                         return;
@@ -69,6 +84,14 @@ namespace Logic.Model.Mark
                     {
                         Console.WriteLine($"【手捧雷】判定生效，判定牌为【{pandingResponse.Cards.FirstOrDefault()}】");
                         //判定生效，爆炸
+                        PlayerContext.GameLevel.LogManager.LogAction(
+                             new RichTextParagraph(
+                             new RichTextWrapper("手捧雷判定"),
+                             new RichTextWrapper("生效", RichTextWrapper.GetColor(ColorEnum.Red)),
+                             new RichTextWrapper("，判定牌为"),
+                             new RichTextWrapper(pandingResponse.Cards.FirstOrDefault()?.ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                             new RichTextWrapper("。")
+                          ));
                         await PlayerContext.Player.CurrentPlayerHero.LoseLife(new LoseLifeRequest()
                         {
                             CardRequestContext = context,
@@ -106,6 +129,14 @@ namespace Logic.Model.Mark
             }
             await PlayerContext.Player.MoveMark(nextPlayer, this);
             Console.WriteLine($"手捧雷【{this.Cards.FirstOrDefault()}】转移到{nextPlayer.PlayerId}【{nextPlayer.CurrentPlayerHero.Hero.DisplayName}】");
+            PlayerContext.GameLevel.LogManager.LogAction(
+                                 new RichTextParagraph(
+                                 new RichTextWrapper("手捧雷"),
+                                 new RichTextWrapper(this.Cards.FirstOrDefault()?.ToString() , RichTextWrapper.GetColor(ColorEnum.Red)),
+                                 new RichTextWrapper("转移到"),
+                                 new RichTextWrapper(nextPlayer.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                 new RichTextWrapper("。")
+                              ));
         }
     }
 }

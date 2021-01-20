@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Logic.Log;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
 using Logic.Model.Skill.Beidong.SubSkill;
@@ -37,7 +38,17 @@ namespace Logic.Model.Skill.SubSkill
                                 RequestId = Guid.NewGuid(),
                                 RecoverType = RecoverTypeEnum.Xixue
                             });
-                            if (triggered) Console.WriteLine($"【{PlayerHero.Hero.DisplayName}】触发吸血");
+                            if (triggered)
+                            {
+                                Console.WriteLine($"【{PlayerHero.Hero.DisplayName}】触发吸血");
+                                PlayerHero.PlayerContext.GameLevel.LogManager.LogAction(
+                                  new RichTextParagraph(
+                                  new RichTextWrapper(PlayerHero.PlayerContext.Player.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                                  new RichTextWrapper("触发"),
+                                  new RichTextWrapper("吸血", RichTextWrapper.GetColor(ColorEnum.Red)),
+                                  new RichTextWrapper("。")
+                               ));
+                            };
                         }
                     }));
             return Task.FromResult("");
