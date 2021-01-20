@@ -7,6 +7,16 @@
              mc:Ignorable="d" 
              Width="200" Height="530"
              d:DesignHeight="530" d:DesignWidth="200">
+    <UserControl.Resources>
+        <Style x:Key="FocusNoBorder" TargetType="RichTextBox">
+            <Style.Triggers>
+                <Trigger Property="IsVisible" Value="True">
+                    <Setter Property = "BorderThickness" Value="0"/>
+                    <Setter Property = "BorderBrush" Value="Purple"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <!--<Image Source="pack://application:,,,/Resources/bg/bg_history_body.png" Stretch="Fill"></Image>-->
         <StackPanel>
@@ -23,6 +33,7 @@
             </RichTextBox>-->
             <local:BindableRichTextBox x:Name="BRtxt" 
                                           IsReadOnly="True"
+                                          Style="{StaticResource FocusNoBorder}"
                                           VerticalScrollBarVisibility="Visible" 
                                           Height="504" Width="196"
                                           RenderSize="400,534"

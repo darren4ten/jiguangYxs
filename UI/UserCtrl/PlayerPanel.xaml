@@ -24,7 +24,10 @@
                 Height="24"
                 HorizontalAlignment="Left" Visibility="{Binding BtnAction2.IsVisible}" 
                 Margin="579,10,0,0" VerticalAlignment="Top" Width="75"/>-->
-        <ListBox Margin="125,50,116,5" ItemsSource="{Binding  CurrentPlayer.CardsInHand}"  Background="Transparent">
+        <ListBox Margin="125,50,116,5"
+                 ItemsSource="{Binding  CurrentPlayer.CardsInHand}"
+                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                 Background="Transparent">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Padding" Value="0"/>

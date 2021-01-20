@@ -50,7 +50,7 @@ namespace Logic.GameLevel
         /// </summary>
         public Guid VictorGroupId { get; set; }
 
-        protected Queue<CardBase> UnUsedCardStack { get; set; }
+        public Queue<CardBase> UnUsedCardStack { get; set; }
         protected Queue<CardBase> UsedCardStack { get; set; }
 
         public List<Player> Players { get; private set; }
