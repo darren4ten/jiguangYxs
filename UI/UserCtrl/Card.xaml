@@ -5,17 +5,29 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:enums="clr-namespace:Logic.Model.Enums;assembly=Logic"
              mc:Ignorable="d" Width="80" Height="110">
-    <Grid>
-        <Button Click="ButtonBase_OnClick" >
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Border}" x:Key="cardBorder">
+            <Setter Property="BorderThickness" Value="0"></Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid  Background="Transparent">
+        <Button Click="ButtonBase_OnClick" 
+                        BorderThickness="0"
+                Background="Transparent"
+                >
             <Grid>
                 <Image Source="{Binding Image}" Width="78" Height="108" Margin="-2"  Stretch="Fill"/>
                 <Label x:Name="LblNumber"
-                       Width="28"
-                       Height="28"
-                       HorizontalAlignment="Left"
+                       Width="24"
+                       Height="24"
+                       BorderBrush="Red"
                        Content="{Binding Number}"
+                       HorizontalAlignment="Left"
+                       HorizontalContentAlignment="Center"
                        Foreground="Black"
-                       FontSize="16px" Margin="-4,-3,0,79">
+                       FontWeight="DemiBold"
+                       Padding="0,Auto,0,0"
+                       FontSize="16px" Margin="-1,-3,0,74">
                 </Label>
 
                 <Label  Width="28"
