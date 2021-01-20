@@ -18,11 +18,22 @@ using Logic.Model.Hero.Presizdent;
 using Logic.Model.Player;
 using Logic.Model.RequestResponse.Request;
 using Logic.Util.Extension;
+using System.ComponentModel;
+using Logic.Annotations;
+using System.Runtime.CompilerServices;
 
 namespace Logic.GameLevel
 {
-    public abstract class GameLevelBase
+    public abstract class GameLevelBase: INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         public GameLevelBase()
         {
             LogManager = new FlowDocLogMananger();
@@ -52,6 +63,12 @@ namespace Logic.GameLevel
 
         public Queue<CardBase> UnUsedCardStack { get; set; }
         protected Queue<CardBase> UsedCardStack { get; set; }
+
+        /// <summary>
+        /// 牌堆中剩余卡牌数
+        /// </summary>
+        public int RemainCardCount => UnUsedCardStack.Count;
+
 
         public List<Player> Players { get; private set; }
 
@@ -91,6 +108,7 @@ namespace Logic.GameLevel
             }
             this.UnUsedCardStack = new Queue<CardBase>(unUsedCardList);
             this.UsedCardStack = new Queue<CardBase>();
+            OnPropertyChanged("RemainCardCount");
         }
 
         protected virtual void LoadPlayers(Player currentPlayer, List<Player> aditionalPlayers)
@@ -125,6 +143,7 @@ namespace Logic.GameLevel
             {
                 yield return UnUsedCardStack.Dequeue();
             }
+            OnPropertyChanged("RemainCardCount");
         }
 
         /// <summary>
@@ -353,8 +372,8 @@ namespace Logic.GameLevel
             {
                 if (context.AdditionalContext is Player srcPlayer)
                 {
-                    //死前求药:todo:yao.PlayeCard()
-                    var res = await GroupRequestWithConfirm(new CardRequestContext()
+                //死前求药:todo:yao.PlayeCard()
+                var res = await GroupRequestWithConfirm(new CardRequestContext()
                     {
                         RequestCard = new Yao(),
                         SrcPlayer = srcPlayer,
@@ -366,16 +385,16 @@ namespace Logic.GameLevel
 
                     if (res.ResponseResult != ResponseResultEnum.Success)
                     {
-                        //没有人出药则死亡
-                        await srcPlayer.MakeDie();
-                        //如果玩家死亡，则判断游戏是否结束
-                        if (!srcPlayer.IsAlive)
+                    //没有人出药则死亡
+                    await srcPlayer.MakeDie();
+                    //如果玩家死亡，则判断游戏是否结束
+                    if (!srcPlayer.IsAlive)
                         {
-                            //通知所有人该玩家死亡
-                            await NotifyPlayerDeath(srcPlayer);
+                        //通知所有人该玩家死亡
+                        await NotifyPlayerDeath(srcPlayer);
 
-                            //检查该阵营是否都阵亡了，如果是，则通知该阵营游戏失败
-                            if (Players.Where(p => p.GroupId == srcPlayer.GroupId).All(p => !p.IsAlive))
+                        //检查该阵营是否都阵亡了，如果是，则通知该阵营游戏失败
+                        if (Players.Where(p => p.GroupId == srcPlayer.GroupId).All(p => !p.IsAlive))
                             {
                                 foreach (var player in Players.Where(p => p.GroupId == srcPlayer.GroupId))
                                 {
@@ -383,8 +402,8 @@ namespace Logic.GameLevel
                                 }
                             }
 
-                            //检查当前是否只剩下一个阵营，如果是，则游戏结束，该阵营玩家胜利
-                            if (GetAlivePlayers().Select(p => p.GroupId).Distinct().Count() == 1)
+                        //检查当前是否只剩下一个阵营，如果是，则游戏结束，该阵营玩家胜利
+                        if (GetAlivePlayers().Select(p => p.GroupId).Distinct().Count() == 1)
                             {
                                 var first = GetAlivePlayers().First();
                                 foreach (var player in Players.Where(p => p.GroupId == first.GroupId))
@@ -554,8 +573,9 @@ namespace Logic.GameLevel
             {
                 //先清除掉上下文
                 cardBase.AttachPlayerContext(null);
-                UnUsedCardStack.Enqueue(cardBase);
+                UsedCardStack.Enqueue(cardBase);
             }
+            OnPropertyChanged("RemainCardCount");
         }
     }
 }

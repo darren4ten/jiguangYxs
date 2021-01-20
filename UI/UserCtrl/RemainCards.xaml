@@ -24,7 +24,7 @@
             <FlowDocument>
                 <Paragraph>
                     <Run>剩余</Run>
-                    <Run Text="{Binding Count,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Foreground="Green"></Run>
+                    <Run Text="{Binding RemainCardCount,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Foreground="Green"></Run>
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>

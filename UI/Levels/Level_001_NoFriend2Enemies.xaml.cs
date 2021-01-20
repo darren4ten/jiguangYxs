@@ -54,7 +54,7 @@ namespace UI.Levels
             Player2.DataContext = GameDataContext.Player2;
             Player3.DataContext = GameDataContext.Player3;
             GameDataContext.GameLevel.LogManager.AttachRecevier(HistoryPanel);
-            RemainCards.DataContext = GameDataContext.GameLevel.UnUsedCardStack;
+            RemainCards.DataContext = GameDataContext.GameLevel;
             base.OnInitialized(e);
         }
     }

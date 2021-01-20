@@ -977,7 +977,7 @@ namespace Logic.ActionManger
                 if (firstEnemy.CardsInHand == null || firstEnemy.CardsInHand.Count <= 0)
                 {
                     response.Targets.Add(enemies.First());
-                    response.Targets.Add(playersWithWeapons.Where(p => p.IsSameGroup(PlayerContext.Player)).OrderByDescending(p => p.CurrentPlayerHero.CurrentLife).First());
+                    response.Targets.Add(players.Where(p => p.IsSameGroup(PlayerContext.Player)).OrderByDescending(p => p.CurrentPlayerHero.CurrentLife).First());
                     return response;
                 }
             }
