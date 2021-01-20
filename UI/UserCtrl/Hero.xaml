@@ -8,14 +8,54 @@
              Height="170"
              Width="116"
              d:DesignHeight="170" d:DesignWidth="116">
+    <UserControl.Resources>
+        <Style TargetType="Label" x:Key="LblFriendMark">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSameGroupWithCurrentPlayer}" Value="False">
+                    <Setter Property="Foreground" Value="Red"/>
+                    <Setter Property="Content" Value="敌"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSameGroupWithCurrentPlayer}" Value="True">
+                    <Setter Property="Foreground" Value="Green"/>
+                    <Setter Property="Content" Value="友"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrentPlayer}" Value="True">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrentPlayer}" Value="False">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Ellipse" x:Key="FriendMark">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSameGroupWithCurrentPlayer}" Value="False">
+                    <Setter Property="Fill" Value="Red"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSameGroupWithCurrentPlayer}" Value="True">
+                    <Setter Property="Fill" Value="Green"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrentPlayer}" Value="True">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrentPlayer}" Value="False">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Image Name="ImgBackgroundHero" HorizontalAlignment="Left" Height="170"  Width="116" Source="pack://application:,,,/Resources/hero/zhuyuanzhang.jpg" Stretch="Fill"/>
         <TextBlock Name="LblHeroDisplayName" 
                   Text="{Binding CurrentPlayerHero.Hero.DisplayName}"
                    TextAlignment="Center" FontSize="14" FontWeight="Bold" Height="100" MaxHeight="300" TextWrapping="Wrap" Margin="1,30,97,40"></TextBlock>
-        <Ellipse Name="FriendMark" HorizontalAlignment="Left" Height="26" Stroke="#803837" VerticalAlignment="Top" Width="26" Fill="#803837" Margin="-2,-2,0,0"></Ellipse>
-        <Label Name="LblFriendMark" Content="敌"  Height="32" 
-               FontSize="14px" FontWeight="Bold" FontStyle="Oblique"  Margin="-2,-4,94,142"  Foreground="#fff"/>
+        <Ellipse Name="FriendMark" 
+                 Style="{StaticResource FriendMark}"
+                 HorizontalAlignment="Left" Height="26" Stroke="#803837" VerticalAlignment="Top" Width="26" Fill="#803837" Margin="-2,-2,0,0"></Ellipse>
+        <Label Name="LblFriendMark"   Height="32" 
+               Style="{StaticResource LblFriendMark}"
+               FontSize="14px" FontWeight="Bold" FontStyle="Oblique"  Margin="-2,-4,94,142"  Foreground="#fff">
+        </Label>
         <ListView Name="LvEquipment" Width="90"
                   Height="84"
                   ScrollViewer.HorizontalScrollBarVisibility="Hidden" 

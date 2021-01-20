@@ -915,6 +915,16 @@ namespace Logic.Model.Player
         }
 
         /// <summary>
+        /// 是否和当前玩家相同阵营
+        /// </summary>
+        public bool IsSameGroupWithCurrentPlayer => GroupId == _gameLevel.CurrentPlayer.GroupId;
+
+        /// <summary>
+        /// 是否是当前玩家
+        /// </summary>
+        public bool IsCurrentPlayer => this == _gameLevel.CurrentPlayer;
+
+        /// <summary>
         /// 摸牌
         /// </summary>
         /// <param name="count"></param>
