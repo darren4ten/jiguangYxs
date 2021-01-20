@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="JgYxs.UI.UserCtrl.TempCardDesk"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:JgYxs.UI.UserCtrl"
+             mc:Ignorable="d" 
+             Width="500" Height="180"
+             d:DesignHeight="180" d:DesignWidth="500">
+    <Grid>
+        <ListBox 
+                 ItemsSource="{Binding  Cards}"
+                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                 BorderThickness="0"
+                 Background="Transparent">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Padding" Value="0"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" IsItemsHost="True"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel DataContext="{Binding }">
+                        <local:Card DataContext="{Binding }" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

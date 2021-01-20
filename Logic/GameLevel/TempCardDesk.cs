@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Logic.Cards;
-
+using System.Collections.ObjectModel;
 namespace Logic.GameLevel
 {
     /// <summary>
@@ -14,11 +14,11 @@ namespace Logic.GameLevel
         /// <summary>
         /// 所有的卡牌，如果有变形牌，则保存为变牌
         /// </summary>
-        public List<CardBase> Cards { get; private set; } = new List<CardBase>();
+        public ObservableCollection<CardBase> Cards { get; private set; } = new ObservableCollection<CardBase>();
 
         public void Clear()
         {
-            Cards = new List<CardBase>();
+            Cards.Clear();
         }
 
         public void Add(CardBase card)
@@ -34,7 +34,7 @@ namespace Logic.GameLevel
         /// 将牌置于临时牌堆，此举会清理牌堆的关联对象
         /// </summary>
         /// <param name="cards"></param>
-        public void Add(List<CardBase> cards)
+        public void Add(IEnumerable<CardBase> cards)
         {
             foreach (var p in cards)
             {

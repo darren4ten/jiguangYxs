@@ -55,6 +55,7 @@ namespace UI.Levels
             Player3.DataContext = GameDataContext.Player3;
             GameDataContext.GameLevel.LogManager.AttachRecevier(HistoryPanel);
             RemainCards.DataContext = GameDataContext.GameLevel;
+            TempCardDesk.DataContext = GameDataContext.GameLevel.TempCardDesk;
             base.OnInitialized(e);
         }
     }

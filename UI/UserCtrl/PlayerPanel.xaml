@@ -47,7 +47,7 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <!--<Label Content="{Binding Tip}" HorizontalAlignment="Left" Margin="125,0,0,0" VerticalAlignment="Top" Width="339"/>-->
-        <ListBox Width="100" Margin="699,50,1,5" Background="Transparent" ItemsSource="{Binding CurrentPlayer.SkillButtons}">
+        <ListBox Width="100" Margin="699,50,1,5" Background="Transparent" ItemsSource="{Binding CurrentPlayer.SkillButtonInfoList}">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" IsItemsHost="True"/>
@@ -56,7 +56,20 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel DataContext="{Binding }">
-                        <Button Content="{Binding Text}" Foreground="DarkRed" ></Button>
+                        <Button Content="{Binding Text}" Foreground="DarkRed" IsEnabled="{Binding IsEnabled}">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsEnabled}" Value="True">
+                                            <Setter Property="Foreground" Value="Red"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                                            <Setter Property="Foreground" Value="Black"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

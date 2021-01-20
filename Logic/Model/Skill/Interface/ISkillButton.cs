@@ -33,6 +33,8 @@ namespace Logic.Model.Skill.Interface
         /// </summary>
         public string Text { get; set; }
 
+        public bool IsEnabled { get; set; }
+
         public string Description { get; set; }
 
         public EventBus.RoundEventHandler OnClick { get; set; }

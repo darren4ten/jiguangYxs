@@ -236,7 +236,7 @@ namespace Logic.GameLevel
         /// 将牌置于弃牌堆
         /// </summary>
         /// <param name="cards"></param>
-        public virtual void ThrowCardToStack(List<CardBase> cards)
+        public virtual void ThrowCardToStack(IEnumerable<CardBase> cards)
         {
             foreach (var card in cards)
             {

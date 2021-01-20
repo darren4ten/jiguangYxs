@@ -65,6 +65,14 @@ namespace Logic.Model.Enums
         /// <summary>
         /// 三板斧
         /// </summary>
-        SanBanfu
+        SanBanfu,
+        /// <summary>
+        /// 武穆
+        /// </summary>
+        Wumu,
+        /// <summary>
+        /// 傲剑
+        /// </summary>
+        Aojian
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Logic.ActionManger;
 using Logic.Model.Skill;
 using Logic.Model.Skill.SubSkill;
+using Logic.Model.Hero.Officer;
 
 namespace Logic.GameLevel.Levels
 {
@@ -21,7 +22,7 @@ namespace Logic.GameLevel.Levels
 
         public override async Task Start(Action action = null)
         {
-            var star5Xiangyu = new PlayerHero(5, new Xiangyu(), null,
+            var star5Xiangyu = new PlayerHero(5, new Chengyaojin(), null,
                 new List<SkillBase>()
                 {
                     new Qianghua(5, 30),

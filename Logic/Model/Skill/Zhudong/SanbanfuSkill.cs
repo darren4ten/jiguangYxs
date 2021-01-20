@@ -20,6 +20,11 @@ namespace Logic.Model.Skill.Zhudong
             DisplayName = "三板斧";
         }
 
+        public override SkillTypeEnum SkillType()
+        {
+            return SkillTypeEnum.SanBanfu;
+        }
+
         public bool IsEnabled()
         {
             //如果可以出杀且技能触发次数<1才能enable
@@ -57,6 +62,7 @@ namespace Logic.Model.Skill.Zhudong
                 Text = "三板斧",
                 Description = "",
                 SkillType = SkillType(),
+                IsEnabled = IsEnabled(),
                 OnClick = async (context, roundContext, responseContext) =>
                 {
                     //触发时，提示选择一个攻击目标

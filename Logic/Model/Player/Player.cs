@@ -883,6 +883,11 @@ namespace Logic.Model.Player
         }
 
         /// <summary>
+        /// 获取所有技能按钮信息
+        /// </summary>
+        public ObservableCollection<SkillButtonInfo> SkillButtonInfoList => SkillButtons.Select(s => s.GetButtonInfo()).ToObservableCollection();
+
+        /// <summary>
         /// 获取所有的技能按钮
         /// </summary>
         /// <returns></returns>

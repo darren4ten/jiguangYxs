@@ -26,6 +26,10 @@ namespace Logic.Model.Skill.Zhudong
             return Sha.CanBePlayed(PlayerHero.PlayerContext);
         }
 
+        public override SkillTypeEnum SkillType()
+        {
+            return SkillTypeEnum.Aojian;
+        }
         public SkillButtonInfo GetButtonInfo()
         {
             return new SkillButtonInfo()

@@ -19,6 +19,11 @@ namespace Logic.Model.Skill.Zhudong
             DisplayName = "武穆";
         }
 
+        public override SkillTypeEnum SkillType()
+        {
+            return SkillTypeEnum.Wumu;
+        }
+
         /// <summary>
         /// 能出杀或者出闪的时候出牌
         /// </summary>
