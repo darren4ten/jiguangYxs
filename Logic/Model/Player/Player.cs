@@ -1492,7 +1492,7 @@ namespace Logic.Model.Player
         {
             //获取两个player之间的距离，检查是否在攻击范围内
             var dist = _gameLevel.GetPlayersDistance(this, targetPlayer);
-            if (dist.ShaDistance > RoundContext.AttackDynamicFactor.ShaDistance + CurrentPlayerHero.GetAttackFactor().ShaDistance)
+            if (dist.ShaDistance > (RoundContext?.AttackDynamicFactor.ShaDistance ?? 0) + CurrentPlayerHero.GetAttackFactor().ShaDistance)
             {
                 //不在攻击范围
                 return false;

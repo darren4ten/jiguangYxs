@@ -24,7 +24,7 @@ using System.Runtime.CompilerServices;
 
 namespace Logic.GameLevel
 {
-    public abstract class GameLevelBase: INotifyPropertyChanged
+    public abstract class GameLevelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -206,6 +206,27 @@ namespace Logic.GameLevel
         }
 
         /// <summary>
+        /// 获取所有可达的敌人
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="card"></param>
+        /// <param name="attackType"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Player>> GetAvaliableEnermies(Player player, CardBase card, AttackTypeEnum attackType)
+        {
+            var players = new List<Player>();
+            foreach (var enemy in GetAlivePlayers().Where(p => !p.IsSameGroup(player)))
+            {
+                if (await enemy.IsAvailableForPlayer(player, card, attackType))
+                {
+                    players.Add(enemy);
+                }
+            }
+
+            return players;
+        }
+
+        /// <summary>
         /// 设置Player间的关联关系
         /// </summary>
         protected void SetupPlayers()
@@ -372,8 +393,8 @@ namespace Logic.GameLevel
             {
                 if (context.AdditionalContext is Player srcPlayer)
                 {
-                //死前求药:todo:yao.PlayeCard()
-                var res = await GroupRequestWithConfirm(new CardRequestContext()
+                    //死前求药:todo:yao.PlayeCard()
+                    var res = await GroupRequestWithConfirm(new CardRequestContext()
                     {
                         RequestCard = new Yao(),
                         SrcPlayer = srcPlayer,
@@ -385,16 +406,16 @@ namespace Logic.GameLevel
 
                     if (res.ResponseResult != ResponseResultEnum.Success)
                     {
-                    //没有人出药则死亡
-                    await srcPlayer.MakeDie();
-                    //如果玩家死亡，则判断游戏是否结束
-                    if (!srcPlayer.IsAlive)
+                        //没有人出药则死亡
+                        await srcPlayer.MakeDie();
+                        //如果玩家死亡，则判断游戏是否结束
+                        if (!srcPlayer.IsAlive)
                         {
-                        //通知所有人该玩家死亡
-                        await NotifyPlayerDeath(srcPlayer);
+                            //通知所有人该玩家死亡
+                            await NotifyPlayerDeath(srcPlayer);
 
-                        //检查该阵营是否都阵亡了，如果是，则通知该阵营游戏失败
-                        if (Players.Where(p => p.GroupId == srcPlayer.GroupId).All(p => !p.IsAlive))
+                            //检查该阵营是否都阵亡了，如果是，则通知该阵营游戏失败
+                            if (Players.Where(p => p.GroupId == srcPlayer.GroupId).All(p => !p.IsAlive))
                             {
                                 foreach (var player in Players.Where(p => p.GroupId == srcPlayer.GroupId))
                                 {
@@ -402,8 +423,8 @@ namespace Logic.GameLevel
                                 }
                             }
 
-                        //检查当前是否只剩下一个阵营，如果是，则游戏结束，该阵营玩家胜利
-                        if (GetAlivePlayers().Select(p => p.GroupId).Distinct().Count() == 1)
+                            //检查当前是否只剩下一个阵营，如果是，则游戏结束，该阵营玩家胜利
+                            if (GetAlivePlayers().Select(p => p.GroupId).Distinct().Count() == 1)
                             {
                                 var first = GetAlivePlayers().First();
                                 foreach (var player in Players.Where(p => p.GroupId == first.GroupId))

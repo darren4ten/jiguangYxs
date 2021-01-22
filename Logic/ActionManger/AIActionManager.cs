@@ -1135,7 +1135,7 @@ namespace Logic.ActionManger
 
             foreach (var skillBtn in enabledSkillButtons)
             {
-                var request = new CardRequestContext();
+                var request = new CardRequestContext() { SrcPlayer = PlayerContext.Player };
                 var shuouldTrigger = await OnRequestTriggerSkill(skillBtn.GetButtonInfo().SkillType, request);
                 if (shuouldTrigger)
                 {
@@ -1147,7 +1147,12 @@ namespace Logic.ActionManger
                         var virtualCard = response.Cards.First();
                         if (!shouldContinue)
                         {
-                            shouldContinue = await virtualCard.Popup();
+                            if (virtualCard is ChangedCard cv)
+                            {
+                                shouldContinue = await cv.TargetCard.Popup();
+                            }
+                            else
+                                shouldContinue = await virtualCard.Popup();
                         }
                     }
                 }
@@ -1517,7 +1522,7 @@ namespace Logic.ActionManger
             var enhanceSkills = PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled() && s is IEnhanceSha).OrderByDescending(s => (s as IEnhanceSha).EnhancePriority());
             foreach (var enhanceSkill in enhanceSkills)
             {
-                var request = new CardRequestContext();
+                var request = new CardRequestContext() { SrcPlayer = PlayerContext.Player };
                 var shuouldTrigger =
                     await OnRequestTriggerSkill(enhanceSkill.GetButtonInfo().SkillType, request);
                 if (shuouldTrigger)
@@ -1696,14 +1701,16 @@ namespace Logic.ActionManger
 
         #region 芦叶枪技能
         /// <summary>
-        /// 是否要发动龙鳞刀.
+        /// 是否要发动芦叶枪.
         /// </summary>
         /// <param name="cardRequestContext"></param>
         /// <returns></returns>
         private bool ShouldTriggerSkill_Luyeqiang(CardRequestContext cardRequestContext)
         {
-            var target = cardRequestContext.TargetPlayers?.FirstOrDefault();
-            if (target == null && PlayerContext.Player.CardsInHand.Count < 4)
+            //判断是否又可以攻击的玩家
+            var enemies = PlayerContext.GameLevel.GetAvaliableEnermies(PlayerContext.Player, new Sha(), AttackTypeEnum.Sha).GetAwaiter().GetResult();
+            var target = cardRequestContext.TargetPlayers?.FirstOrDefault() ?? enemies?.FirstOrDefault();
+            if (target == null && PlayerContext.Player.CardsInHand.Count < 3)
             {
                 return false;
             }
