@@ -14,6 +14,7 @@ namespace Logic.Model.Mark
             MarkStatus = Enums.MarkStatusEnum.NotStarted;
             MarkType = Enums.MarkTypeEnum.Mark;
             Description = "毒计";
+            Image = "/Resources/card/card_sha.jpg";
         }
 
         public override void Init()

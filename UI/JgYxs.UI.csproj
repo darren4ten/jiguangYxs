@@ -40,6 +40,8 @@
     <None Remove="Resources\card\jinnang\card_wuzhongshengyou.jpg" />
     <None Remove="Resources\card\jinnang\card_xiuyangshengxi.jpg" />
     <None Remove="Resources\drj.jpg" />
+    <None Remove="Resources\element\lao.png" />
+    <None Remove="Resources\element\lei.png" />
     <None Remove="Resources\element\minCard.png" />
     <None Remove="Resources\element\minCard1png.png" />
     <None Remove="Resources\hero\zhuyuanzhang.jpg" />
@@ -129,6 +131,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\drj.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\element\lao.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\element\lei.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\hero_direnjie.jpg">

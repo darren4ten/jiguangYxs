@@ -68,5 +68,7 @@
                 </Style>
             </RichTextBox.Resources>
         </userCtrl:BindableRichTextBox>
+        <userCtrl:Hero Margin="56,214,628,50" x:Name="TestHero"/>
+
     </Grid>
 </Window>

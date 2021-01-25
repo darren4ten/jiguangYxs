@@ -17,6 +17,7 @@ using Logic.Cards;
 using Logic.GameLevel;
 using Logic.GameLevel.Levels;
 using Logic.Model.Cards.BaseCards;
+using Logic.Model.Mark;
 using Logic.Model.Player;
 
 namespace UI.Levels
@@ -56,6 +57,8 @@ namespace UI.Levels
             GameDataContext.GameLevel.LogManager.AttachRecevier(HistoryPanel);
             RemainCards.DataContext = GameDataContext.GameLevel;
             TempCardDesk.DataContext = GameDataContext.GameLevel.TempCardDesk;
+            //GameDataContext.Player2.AddMark(new ShoupengleiMark()).GetAwaiter().GetResult();
+            //GameDataContext.Player2.AddMark(new HuadiweilaoMark()).GetAwaiter().GetResult();
             base.OnInitialized(e);
         }
     }

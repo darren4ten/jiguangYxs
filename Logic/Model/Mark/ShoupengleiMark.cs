@@ -23,6 +23,7 @@ namespace Logic.Model.Mark
             MarkStatus = Enums.MarkStatusEnum.NotStarted;
             MarkType = Enums.MarkTypeEnum.Card;
             Description = "判定黑桃2-9则爆炸";
+            Image = "/Resources/element/lei.png";
         }
 
         public override void Init()

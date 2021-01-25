@@ -12,11 +12,20 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Logic.ActionManger;
 using Logic.Cards;
 using Logic.Enums;
+using Logic.GameLevel;
+using Logic.GameLevel.Levels;
 using Logic.Log;
+using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Cards.EquipmentCards.Defense;
+using Logic.Model.Hero.Presizdent;
+using Logic.Model.Mark;
+using Logic.Model.Player;
+using Logic.Model.Skill;
+using Logic.Model.Skill.SubSkill;
 using Logic.Util.Extension;
 
 namespace JgYxs.UI
@@ -47,7 +56,33 @@ namespace JgYxs.UI
             });
             LvEquipment.ItemsSource = EquipmentSet;
             TestParagraph();
+            InitTestHero();
             base.OnInitialized(e);
+        }
+
+        private void InitTestHero()
+        {
+            var level1 = new GameLevel1();
+            var star3Zhuyuanzhang1 = new PlayerHero(3, new Zhuyuanzhang(), null,
+                new List<SkillBase>(){
+                    new Xixue(5,50),
+                });
+
+            var player1 = new Player(level1, new AiActionManager(), new List<PlayerHero>() { star3Zhuyuanzhang1 })
+            {
+                PlayerId = 1,
+                GroupId = Guid.NewGuid(),
+                RoundContext = new RoundContext()
+                {
+                    AttackDynamicFactor = AttackDynamicFactor.GetDefaultDeltaAttackFactor()
+                }
+            };
+            level1.OnLoad(player1, new List<Player>() {  });
+            player1.Init();
+            player1.AddCardInHand(new Sha()).GetAwaiter().GetResult();
+            player1.AddMark(new ShoupengleiMark()).GetAwaiter().GetResult();
+            player1.AddMark(new HuadiweilaoMark()).GetAwaiter().GetResult();
+            TestHero.DataContext = player1;
         }
 
         private void TestParagraph()

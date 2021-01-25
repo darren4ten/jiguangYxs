@@ -123,7 +123,7 @@ namespace Logic.Model.Player
         /// <summary>
         /// 标记(牌)，如画地为牢、手捧雷
         /// </summary>
-        public List<Mark.MarkBase> Marks { get; set; }
+        public ObservableCollection<Mark.MarkBase> Marks { get; set; }
 
         /// <summary>
         /// 可选的用户英雄
@@ -178,7 +178,7 @@ namespace Logic.Model.Player
                 }
             }
             CardsInHand = new ObservableCollection<CardBase>();
-            Marks = new List<Mark.MarkBase>();
+            Marks = new ObservableCollection<MarkBase>();
             EquipmentSet = new ObservableCollection<CardBase>();
             PlayerUiState = new PlayerUIState(this);
         }
@@ -1052,13 +1052,15 @@ namespace Logic.Model.Player
                     existMark.MarkTimes--;
                     if (existMark.MarkTimes <= 0)
                     {
-                        Marks.RemoveAll(p => p.MarkTypeId.Equals(mark.MarkTypeId));
+                        Marks.Remove(mark);
+                        //Marks.RemoveAll(p => p.MarkTypeId.Equals(mark.MarkTypeId));
                     }
                     return;
                 }
                 else
                 {
-                    Marks.RemoveAll(p => p.MarkTypeId.Equals(mark.MarkTypeId));
+                    Marks.Remove(mark);
+                    //Marks.RemoveAll(p => p.MarkTypeId.Equals(mark.MarkTypeId));
                 }
                 mark.Reset();
                 mark.PlayerContext = null;

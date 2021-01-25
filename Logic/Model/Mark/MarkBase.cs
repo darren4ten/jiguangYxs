@@ -14,6 +14,8 @@ namespace Logic.Model.Mark
 
         public MarkTypeEnum MarkType { get; set; }
 
+        public string Image { get; set; }
+
         public List<CardBase> Cards { get; set; }
 
         public PlayerContext PlayerContext { get; set; }

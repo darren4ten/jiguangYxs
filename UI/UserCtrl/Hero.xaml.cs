@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Logic.Model.Hero;
 using Logic.Model.Player;
 
@@ -11,22 +13,39 @@ namespace JgYxs.UI.UserCtrl
     public partial class Hero : UserControl
     {
         public Player Player { get; set; }
+        public bool ShowRight { get; set; }
 
-        //public Player CurPlayer => DataContext == null ? null : (Player)DataContext;
-        //public PlayerHero PlayerHero => CurPlayer == null ? null : CurPlayer.CurrentPlayerHero;
-        //public HeroBase CurHero => PlayerHero == null ? null : PlayerHero.Hero;
         public Hero()
         {
             if (DataContext != null)
             {
                 Player = (Player)DataContext;
             }
+
+            TestStr = "asdfasfasdfsdf";
+            this.Loaded += Hero_Loaded;
             InitializeComponent();
         }
+
+        private void Hero_Loaded(object sender, RoutedEventArgs e)
+        {
+            var parent = VisualTreeHelper.GetParent(this);
+            if (parent != null && parent is Window)
+            {
+                var pWin = (Window) parent;
+                Vector offset = VisualTreeHelper.GetOffset(this);
+                ShowRight = pWin.Width - offset.X < this.Width + 200;
+                TestStr = (this.Width + offset.X) + (ShowRight ? "Right" : "Left");
+            }
+
+        }
+
+        public string TestStr { get; set; }
 
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
         }
+
     }
 }

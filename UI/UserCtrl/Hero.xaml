@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:enums="clr-namespace:Logic.Model.Enums;assembly=Logic"
              mc:Ignorable="d" 
+             x:Name="HeroCtrl"
              Height="170"
              Width="116"
              d:DesignHeight="170" d:DesignWidth="116">
@@ -43,18 +44,32 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="Label" x:Key="TestLabel">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=ShowRight, ElementName=HeroCtrl}" Value="False">
+                    <Setter Property="Margin" Value="-8,42,0,0"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=ShowRight, ElementName=HeroCtrl}" Value="True">
+                    <Setter Property="Margin" Value="100,42,0,0"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid>
-        <Image Name="ImgBackgroundHero" HorizontalAlignment="Left" Height="170"  Width="116" Source="pack://application:,,,/Resources/hero/zhuyuanzhang.jpg" Stretch="Fill"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="7*"/>
+        </Grid.RowDefinitions>
+        <Image Name="ImgBackgroundHero" HorizontalAlignment="Center" Height="170"  Width="116" Source="pack://application:,,,/Resources/hero/zhuyuanzhang.jpg" Stretch="Fill" Grid.RowSpan="2"/>
         <TextBlock Name="LblHeroDisplayName" 
                   Text="{Binding CurrentPlayerHero.Hero.DisplayName}"
-                   TextAlignment="Center" FontSize="14" FontWeight="Bold" Height="100" MaxHeight="300" TextWrapping="Wrap" Margin="1,30,97,40"></TextBlock>
+                   TextAlignment="Center" FontSize="14" FontWeight="Bold" Height="100" MaxHeight="300" TextWrapping="Wrap" Margin="1,30,97,40" Grid.RowSpan="2"></TextBlock>
         <Ellipse Name="FriendMark" 
                  Style="{StaticResource FriendMark}"
                  HorizontalAlignment="Left" Height="26" Stroke="#803837" VerticalAlignment="Top" Width="26" Fill="#803837" Margin="-2,-2,0,0"></Ellipse>
         <Label Name="LblFriendMark"   Height="32" 
                Style="{StaticResource LblFriendMark}"
-               FontSize="14px" FontWeight="Bold" FontStyle="Oblique"  Margin="-2,-4,94,142"  Foreground="#fff">
+               FontSize="14px" FontWeight="Bold" FontStyle="Oblique"  Margin="-2,-4,94,23"  Foreground="#fff">
         </Label>
         <ListView Name="LvEquipment" Width="90"
                   Height="84"
@@ -62,8 +77,8 @@
                   ScrollViewer.VerticalScrollBarVisibility="Hidden" 
                   Cursor="Arrow"
                   BorderThickness="0"
-                  ItemsSource="{Binding EquipmentSet}"  Margin="8,76,8,30" 
-                  Background="#01FFFFFF"
+                  ItemsSource="{Binding EquipmentSet}"  Margin="13,25,13,10" 
+                  Background="#01FFFFFF" Grid.Row="1"
                   >
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -113,22 +128,51 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListView>
-        <Image Name="ImgSkillBar" VerticalAlignment="Bottom" Height="22"  Width="116" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
+        <Image Name="ImgSkillBar" VerticalAlignment="Top" Height="22"  Width="116" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Margin="0,97,0,0" Grid.Row="1" />
         <Image Name="ImgCardNumber" 
-               HorizontalAlignment="Left"  Height="32"  Width="24" Margin="-2,138,0,0" 
-               Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
+               HorizontalAlignment="Left"  Height="32"  Width="24" Margin="-2,87,0,0" 
+               Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
         <Label Name="LblCardNumber"
                HorizontalAlignment="Left"
                Content="{Binding CardsInHand.Count}" 
-               Height="32" Width="24" FontSize="16px" FontWeight="Bold" Margin="-2,138,0,0"  Foreground="#6C5237"></Label>
-        <Ellipse Name="EllipseCurrentLife" HorizontalAlignment="Right" Height="32" Margin="0,138,0,0" Stroke="#803837" VerticalAlignment="Top" Width="26" Fill="#803837"/>
+               Height="32" Width="24" FontSize="16px" FontWeight="Bold" Margin="-2,87,0,0"  Foreground="#6C5237" Grid.Row="1"></Label>
+        <Ellipse Name="EllipseCurrentLife" HorizontalAlignment="Right" Height="32" Margin="0,87,0,0" Stroke="#803837" VerticalAlignment="Top" Width="26" Fill="#803837" Grid.Row="1"/>
         <Label Name="LblCurrentLife" 
                HorizontalAlignment="Right"
                Content="{Binding CurrentPlayerHero.CurrentLife}"  
-               Height="32" Width="24" FontSize="16px" FontWeight="Bold" Margin="0,138,0,0"  Foreground="#fff"></Label>
-        <Image Name="ImgSkill1" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="24,151,0,3" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
-        <Image Name="ImgSkill2" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="40,151,0,3" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
-        <Image Name="ImgSkill3" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="56,151,0,3" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
-        <Image Name="ImgSkill4" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="72,151,0,3" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" />
+               Height="32" Width="24" FontSize="16px" FontWeight="Bold" Margin="0,87,0,0"  Foreground="#fff" Grid.Row="1"></Label>
+        <Image Name="ImgSkill1" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="24,100,0,1" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
+        <Image Name="ImgSkill2" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="40,100,0,1" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
+        <Image Name="ImgSkill3" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="56,100,0,1" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
+        <Image Name="ImgSkill4" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="72,100,0,1" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
+        <ListView Name="LvMarks" Width="18"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+                  ScrollViewer.VerticalScrollBarVisibility="Hidden" 
+                  Cursor="Arrow"
+                  BorderThickness="0"
+                  ItemsSource="{Binding Marks}"  Margin="94,24,-14,37" 
+                  Background="#01FFFFFF" Grid.RowSpan="2"
+                  >
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Vertical" IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel DataContext="{Binding }">
+                        <Image 
+                               Source="{Binding Image}"
+                               Width="18" Height="18" Stretch="Fill"></Image>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListView>
+        <Label 
+            Style="{StaticResource TestLabel}"
+               Content="{Binding Path=TestStr, ElementName=HeroCtrl}" 
+               HorizontalAlignment="Left" Margin="103,42,0,0" VerticalAlignment="Top" Grid.RowSpan="2">
+
+        </Label>
     </Grid>
 </UserControl>

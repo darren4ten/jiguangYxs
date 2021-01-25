@@ -22,6 +22,7 @@ namespace Logic.Model.Mark
             MarkStatus = Enums.MarkStatusEnum.NotStarted;
             MarkType = Enums.MarkTypeEnum.Card;
             Description = "画地为牢";
+            Image = "/Resources/element/lao.png";
         }
 
         public override bool? IsNegativeMark()
