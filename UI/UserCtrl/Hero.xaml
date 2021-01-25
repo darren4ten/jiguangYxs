@@ -1,10 +1,10 @@
 ﻿<UserControl x:Class="JgYxs.UI.UserCtrl.Hero"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:enums="clr-namespace:Logic.Model.Enums;assembly=Logic"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              x:Name="HeroCtrl"
              Height="170"
              Width="116"
@@ -13,166 +13,213 @@
         <Style TargetType="Label" x:Key="LblFriendMark">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsSameGroupWithCurrentPlayer}" Value="False">
-                    <Setter Property="Foreground" Value="Red"/>
-                    <Setter Property="Content" Value="敌"/>
+                    <Setter Property="Foreground" Value="Red" />
+                    <Setter Property="Content" Value="敌" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsSameGroupWithCurrentPlayer}" Value="True">
-                    <Setter Property="Foreground" Value="Green"/>
-                    <Setter Property="Content" Value="友"/>
+                    <Setter Property="Foreground" Value="Green" />
+                    <Setter Property="Content" Value="友" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsCurrentPlayer}" Value="True">
-                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Setter Property="Visibility" Value="Hidden" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsCurrentPlayer}" Value="False">
-                    <Setter Property="Visibility" Value="Visible"/>
+                    <Setter Property="Visibility" Value="Visible" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
         <Style TargetType="Ellipse" x:Key="FriendMark">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsSameGroupWithCurrentPlayer}" Value="False">
-                    <Setter Property="Fill" Value="Red"/>
+                    <Setter Property="Fill" Value="Red" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsSameGroupWithCurrentPlayer}" Value="True">
-                    <Setter Property="Fill" Value="Green"/>
+                    <Setter Property="Fill" Value="Green" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsCurrentPlayer}" Value="True">
-                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Setter Property="Visibility" Value="Hidden" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsCurrentPlayer}" Value="False">
-                    <Setter Property="Visibility" Value="Visible"/>
+                    <Setter Property="Visibility" Value="Visible" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
         <Style TargetType="Label" x:Key="TestLabel">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=ShowRight, ElementName=HeroCtrl}" Value="False">
-                    <Setter Property="Margin" Value="-8,42,0,0"/>
+                    <Setter Property="Margin" Value="-8,42,0,0" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Path=ShowRight, ElementName=HeroCtrl}" Value="True">
-                    <Setter Property="Margin" Value="100,42,0,0"/>
+                    <Setter Property="Margin" Value="100,42,0,0" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type Border}" x:Key="BorderMouseOver">
+            <Setter Property="Background" Value="#FF1F1D1D" />
+            <Setter Property="BorderBrush" Value="Black" />
+            <Style.Triggers>
+                <!--We should bind parent control with below code-->
+                <DataTrigger
+                    Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}"
+                    Value="True">
+                    <Setter Property="Background" Value="White" />
+                    <Setter Property="BorderBrush" Value="Black" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSameGroupWithCurrentPlayer}" Value="False">
+                    <Setter Property="Background" Value="Red" />
+                    <Setter Property="BorderBrush" Value="Red" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSameGroupWithCurrentPlayer}" Value="True">
+                    <Setter Property="Background" Value="ForestGreen" />
+                    <Setter Property="BorderBrush" Value="ForestGreen" />
+                </DataTrigger>
+            </Style.Triggers>
+         
+        </Style>
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="7*"/>
-        </Grid.RowDefinitions>
-        <Image Name="ImgBackgroundHero" HorizontalAlignment="Center" Height="170"  Width="116" Source="pack://application:,,,/Resources/hero/zhuyuanzhang.jpg" Stretch="Fill" Grid.RowSpan="2"/>
-        <TextBlock Name="LblHeroDisplayName" 
-                  Text="{Binding CurrentPlayerHero.Hero.DisplayName}"
-                   TextAlignment="Center" FontSize="14" FontWeight="Bold" Height="100" MaxHeight="300" TextWrapping="Wrap" Margin="1,30,97,40" Grid.RowSpan="2"></TextBlock>
-        <Ellipse Name="FriendMark" 
-                 Style="{StaticResource FriendMark}"
-                 HorizontalAlignment="Left" Height="26" Stroke="#803837" VerticalAlignment="Top" Width="26" Fill="#803837" Margin="-2,-2,0,0"></Ellipse>
-        <Label Name="LblFriendMark"   Height="32" 
-               Style="{StaticResource LblFriendMark}"
-               FontSize="14px" FontWeight="Bold" FontStyle="Oblique"  Margin="-2,-4,94,23"  Foreground="#fff">
-        </Label>
-        <ListView Name="LvEquipment" Width="90"
-                  Height="84"
-                  ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
-                  ScrollViewer.VerticalScrollBarVisibility="Hidden" 
-                  Cursor="Arrow"
-                  BorderThickness="0"
-                  ItemsSource="{Binding EquipmentSet}"  Margin="13,25,13,10" 
-                  Background="#01FFFFFF" Grid.Row="1"
-                  >
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Vertical" IsItemsHost="True" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel DataContext="{Binding }">
-                        <RichTextBox Block.LineHeight="6" Width="100" IsEnabled="False" BorderThickness="0">
-                            <FlowDocument>
-                                <Paragraph>
-                                    <Run Text="{Binding FlowerKindString,Mode=OneTime}">
-                                        <Run.Style>
-                                            <Style TargetType="Run">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Color}" Value="{x:Static enums:CardColorEnum.Red}">
-                                                        <Setter Property="Foreground" Value="Red"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Color}" Value="{x:Static enums:CardColorEnum.Black}">
-                                                        <Setter Property="Foreground" Value="Black"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Run.Style>
-                                    </Run>
-                                    <Run Text="{Binding Number}" Foreground="red">
-                                        <Run.Style>
-                                            <Style TargetType="Run">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Color}" Value="{x:Static enums:CardColorEnum.Red}">
-                                                        <Setter Property="Foreground" Value="Red"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Color}" Value="{x:Static enums:CardColorEnum.Black}">
-                                                        <Setter Property="Foreground" Value="Black"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Run.Style>
-                                    </Run>
-                                    <Run Text="{Binding DisplayName}" Foreground="Blue"/>
-                                    <Run Text="{Binding BaseAttackFactor.ShaDistance}" Foreground="Blue"/>
-                                </Paragraph>
-                            </FlowDocument>
-                        </RichTextBox>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListView>
-        <Image Name="ImgSkillBar" VerticalAlignment="Top" Height="22"  Width="116" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Margin="0,97,0,0" Grid.Row="1" />
-        <Image Name="ImgCardNumber" 
-               HorizontalAlignment="Left"  Height="32"  Width="24" Margin="-2,87,0,0" 
-               Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
-        <Label Name="LblCardNumber"
-               HorizontalAlignment="Left"
-               Content="{Binding CardsInHand.Count}" 
-               Height="32" Width="24" FontSize="16px" FontWeight="Bold" Margin="-2,87,0,0"  Foreground="#6C5237" Grid.Row="1"></Label>
-        <Ellipse Name="EllipseCurrentLife" HorizontalAlignment="Right" Height="32" Margin="0,87,0,0" Stroke="#803837" VerticalAlignment="Top" Width="26" Fill="#803837" Grid.Row="1"/>
-        <Label Name="LblCurrentLife" 
-               HorizontalAlignment="Right"
-               Content="{Binding CurrentPlayerHero.CurrentLife}"  
-               Height="32" Width="24" FontSize="16px" FontWeight="Bold" Margin="0,87,0,0"  Foreground="#fff" Grid.Row="1"></Label>
-        <Image Name="ImgSkill1" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="24,100,0,1" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
-        <Image Name="ImgSkill2" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="40,100,0,1" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
-        <Image Name="ImgSkill3" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="56,100,0,1" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
-        <Image Name="ImgSkill4" HorizontalAlignment="Left"  Height="18"  Width="15" Margin="72,100,0,1" Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
-        <ListView Name="LvMarks" Width="18"
-                  ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
-                  ScrollViewer.VerticalScrollBarVisibility="Hidden" 
-                  Cursor="Arrow"
-                  BorderThickness="0"
-                  ItemsSource="{Binding Marks}"  Margin="94,24,-14,37" 
-                  Background="#01FFFFFF" Grid.RowSpan="2"
-                  >
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Vertical" IsItemsHost="True" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel DataContext="{Binding }">
-                        <Image 
-                               Source="{Binding Image}"
-                               Width="18" Height="18" Stretch="Fill"></Image>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListView>
-        <Label 
-            Style="{StaticResource TestLabel}"
-               Content="{Binding Path=TestStr, ElementName=HeroCtrl}" 
-               HorizontalAlignment="Left" Margin="103,42,0,0" VerticalAlignment="Top" Grid.RowSpan="2">
+        <Border x:Name="ParentBorder" BorderThickness="1" Margin="0" CornerRadius="4"
+                Style="{StaticResource BorderMouseOver}" />
+        <Border BorderBrush="Gray"
+                BorderThickness="1"
+                Margin="2" CornerRadius="4">
+            <Border.Background>
+                <RadialGradientBrush>
+                    <GradientStop Color="#FF1D1D1D" Offset="0.107" />
+                    <GradientStop Color="#FF322E2E" Offset="1" />
+                    <GradientStop Color="#FF303030" Offset="0.737" />
+                </RadialGradientBrush>
+            </Border.Background>
+            <Grid >
+                <Image Name="ImgBackgroundHero" HorizontalAlignment="Center" Height="170" Width="116"
+                       Source="pack://application:,,,/Resources/hero/zhuyuanzhang.jpg" Stretch="Fill" Grid.RowSpan="2" />
+                <TextBlock Name="LblHeroDisplayName"
+                           Text="{Binding CurrentPlayerHero.Hero.DisplayName}"
+                           TextAlignment="Center" FontSize="14" FontWeight="Bold" Height="100" MaxHeight="300"
+                           TextWrapping="Wrap" Margin="1,30,97,40" Grid.RowSpan="2" />
+                <Ellipse Name="FriendMark"
+                         Style="{StaticResource FriendMark}"
+                         HorizontalAlignment="Left" Height="26" Stroke="#803837" VerticalAlignment="Top" Width="26"
+                         Fill="#803837" Margin="-2,-2,0,0" />
+                <Label Name="LblFriendMark" Height="32"
+                       Style="{StaticResource LblFriendMark}"
+                       VerticalAlignment="Top"
+                       Width="120"
+                       FontSize="14px" FontWeight="Bold" FontStyle="Oblique" Margin="-2,-4,94,23" Foreground="#fff" />
+                <ListView Name="LvEquipment" Width="90"
+                          Height="84"
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                          Cursor="Arrow"
+                          BorderThickness="0"
+                          ItemsSource="{Binding EquipmentSet}" Margin="13,55,13,10"
+                          Background="#01FFFFFF" Grid.Row="1">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Vertical" IsItemsHost="True" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel DataContext="{Binding }">
+                                <RichTextBox Block.LineHeight="6" Width="100" IsEnabled="False" BorderThickness="0">
+                                    <FlowDocument>
+                                        <Paragraph>
+                                            <Run Text="{Binding FlowerKindString,Mode=OneTime}">
+                                                <Run.Style>
+                                                    <Style TargetType="Run">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Color}"
+                                                                         Value="{x:Static enums:CardColorEnum.Red}">
+                                                                <Setter Property="Foreground" Value="Red" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Color}"
+                                                                         Value="{x:Static enums:CardColorEnum.Black}">
+                                                                <Setter Property="Foreground" Value="Black" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Run.Style>
+                                            </Run>
+                                            <Run Text="{Binding Number}" Foreground="red">
+                                                <Run.Style>
+                                                    <Style TargetType="Run">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Color}"
+                                                                         Value="{x:Static enums:CardColorEnum.Red}">
+                                                                <Setter Property="Foreground" Value="Red" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Color}"
+                                                                         Value="{x:Static enums:CardColorEnum.Black}">
+                                                                <Setter Property="Foreground" Value="Black" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Run.Style>
+                                            </Run>
+                                            <Run Text="{Binding DisplayName}" Foreground="Blue" />
+                                            <Run Text="{Binding BaseAttackFactor.ShaDistance}" Foreground="Blue" />
+                                        </Paragraph>
+                                    </FlowDocument>
+                                </RichTextBox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListView>
+                <Image Name="ImgSkillBar" VerticalAlignment="Top" Height="22" Width="116"
+                       Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill"
+                       Margin="-4,142,0,0" Grid.Row="1" />
+                <Image Name="ImgCardNumber"
+                       HorizontalAlignment="Left" Height="32" Width="24" Margin="-2,140,0,0"
+                       Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
+                <Label Name="LblCardNumber"
+                       HorizontalAlignment="Left"
+                       Content="{Binding CardsInHand.Count}"
+                       Height="32" Width="24" FontSize="16px" FontWeight="Bold" Margin="-2,136,0,0" Foreground="#6C5237"
+                       Grid.Row="1" />
+                <Ellipse Name="EllipseCurrentLife" HorizontalAlignment="Right" Height="32" Margin="0,134,0,0"
+                         Stroke="#803837" VerticalAlignment="Top" Width="26" Fill="#803837" Grid.Row="1" />
+                <Label Name="LblCurrentLife"
+                       HorizontalAlignment="Right"
+                       Content="{Binding CurrentPlayerHero.CurrentLife}"
+                       Height="32" Width="24" FontSize="16px" FontWeight="Bold" Margin="0,134,0,0" Foreground="#fff"
+                       Grid.Row="1" />
+                <Image Name="ImgSkill1" HorizontalAlignment="Left" Height="18" Width="15" Margin="24,142,0,1"
+                       Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
+                <Image Name="ImgSkill2" HorizontalAlignment="Left" Height="18" Width="15" Margin="40,142,0,1"
+                       Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
+                <Image Name="ImgSkill3" HorizontalAlignment="Left" Height="18" Width="15" Margin="56,142,0,1"
+                       Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
+                <Image Name="ImgSkill4" HorizontalAlignment="Left" Height="18" Width="15" Margin="72,142,0,1"
+                       Source="pack://application:,,,/Resources/element/minCard1png.png" Stretch="Fill" Grid.Row="1" />
+                <ListView Name="LvMarks" Width="18"
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                          Cursor="Arrow"
+                          BorderThickness="0"
+                          ItemsSource="{Binding Marks}" Margin="94,24,-14,37"
+                          Background="#01FFFFFF" Grid.RowSpan="2">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Vertical" IsItemsHost="True" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel DataContext="{Binding }">
+                                <Image
+                                    Source="{Binding Image}"
+                                    Width="18" Height="18" Stretch="Fill" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListView>
+                <!--<Label
+                    Style="{StaticResource TestLabel}"
+                    Content="{Binding Path=TestStr, ElementName=HeroCtrl}"
+                    HorizontalAlignment="Left" Margin="103,42,0,0" VerticalAlignment="Top" Grid.RowSpan="2" />-->
+            </Grid>
+        </Border>
 
-        </Label>
     </Grid>
 </UserControl>
