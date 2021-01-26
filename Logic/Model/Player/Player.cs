@@ -221,7 +221,7 @@ namespace Logic.Model.Player
                 CurrentPlayerHero.IsActive = false;
                 aliveHero.IsActive = true;
             }
-
+            OnPropertyChanged("IsAlive");
             await Task.FromResult(0);
         }
 

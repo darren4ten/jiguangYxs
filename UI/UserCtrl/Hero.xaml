@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:enums="clr-namespace:Logic.Model.Enums;assembly=Logic"
+             xmlns:userCtrl="clr-namespace:JgYxs.UI.UserCtrl"
              mc:Ignorable="d"
              x:Name="HeroCtrl"
              Height="170"
@@ -74,8 +75,8 @@
                     <Setter Property="BorderBrush" Value="ForestGreen" />
                 </DataTrigger>
             </Style.Triggers>
-         
         </Style>
+        <userCtrl:GrayImage x:Key="GrayImage" />
     </UserControl.Resources>
     <Grid>
         <Border x:Name="ParentBorder" BorderThickness="1" Margin="0" CornerRadius="4"
@@ -91,8 +92,25 @@
                 </RadialGradientBrush>
             </Border.Background>
             <Grid >
-                <Image Name="ImgBackgroundHero" HorizontalAlignment="Center" Height="170" Width="116"
-                       Source="pack://application:,,,/Resources/hero/zhuyuanzhang.jpg" Stretch="Fill" Grid.RowSpan="2" />
+                <Image 
+                    Name="ImgBackgroundHero" HorizontalAlignment="Center" 
+                    Height="170" Width="116"
+                    Tag="/Resources/hero/zhuyuanzhang.jpg"
+                    Stretch="Fill" Grid.RowSpan="2" >
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsAlive,NotifyOnSourceUpdated=True}" Value="False">
+                                    <Setter Property="Source" Value="{Binding RelativeSource={RelativeSource Self}, Path=Tag, Converter={StaticResource GrayImage}}"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsAlive,NotifyOnSourceUpdated=True}" Value="True">
+                                    <Setter Property="Source" Value="{Binding RelativeSource={RelativeSource Self}, Path=Tag}"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+
                 <TextBlock Name="LblHeroDisplayName"
                            Text="{Binding CurrentPlayerHero.Hero.DisplayName}"
                            TextAlignment="Center" FontSize="14" FontWeight="Bold" Height="100" MaxHeight="300"

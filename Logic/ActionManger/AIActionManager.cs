@@ -1553,7 +1553,7 @@ namespace Logic.ActionManger
             var skills = PlayerContext.Player.SkillButtons.Where(s => s.IsEnabled());
             foreach (var enhanceSkill in skills)
             {
-                var request = new CardRequestContext();
+                var request = new CardRequestContext() { SrcPlayer = PlayerContext.Player };
                 var shuouldTrigger =
                     await OnRequestTriggerSkill(enhanceSkill.GetButtonInfo().SkillType, request);
                 if (shuouldTrigger)

@@ -16,10 +16,10 @@
             <UserCtrl:CardHistoryPanel x:Name="HistoryPanel" Height="523" />
         </StackPanel>
         <UserCtrl:Hero 
-            x:Name="Player2"
+            x:Name="Player3"
             HorizontalAlignment="Left" Margin="166,7,0,0" VerticalAlignment="Top" />
         <UserCtrl:Hero 
-            x:Name="Player3"
+            x:Name="Player2"
             HorizontalAlignment="Left" Margin="559,7,0,0" VerticalAlignment="Top" />
         <UserCtrl:PlayerPanel
             x:Name="CurPlayerPanel"

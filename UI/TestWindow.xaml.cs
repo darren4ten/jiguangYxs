@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -38,6 +39,8 @@ namespace JgYxs.UI
         public ObservableCollection<CardBase> EquipmentSet { get; set; } = new ObservableCollection<CardBase>();
         public Paragraph CurP { get; set; }
 
+        public Player player1 { get; set; }
+
         public FlowDocument FlowDocument { get; set; }
         public TestWindow()
         {
@@ -68,7 +71,7 @@ namespace JgYxs.UI
                     new Xixue(5,50),
                 });
 
-            var player1 = new Player(level1, new AiActionManager(), new List<PlayerHero>() { star3Zhuyuanzhang1 })
+            player1 = new Player(level1, new AiActionManager(), new List<PlayerHero>() { star3Zhuyuanzhang1 })
             {
                 PlayerId = 1,
                 GroupId = Guid.NewGuid(),
@@ -77,7 +80,7 @@ namespace JgYxs.UI
                     AttackDynamicFactor = AttackDynamicFactor.GetDefaultDeltaAttackFactor()
                 }
             };
-            level1.OnLoad(player1, new List<Player>() {  });
+            level1.OnLoad(player1, new List<Player>() { });
             player1.Init();
             player1.AddCardInHand(new Sha()).GetAwaiter().GetResult();
             player1.AddMark(new ShoupengleiMark()).GetAwaiter().GetResult();
@@ -184,6 +187,11 @@ namespace JgYxs.UI
                 p.Inlines.Add(nameRun);
             }
             FlowDocument.Blocks.Add(p);
+        }
+
+        private void TestHero_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            player1.MakeDie().GetAwaiter().GetResult();
         }
     }
 }
