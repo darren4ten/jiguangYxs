@@ -206,6 +206,14 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public bool IsAlive => _availablePlayerHeroes.Any(p => !p.IsDead);
 
+        /// <summary>
+        /// 设置被动请求上下文
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        public void SetCardRequestContext(CardRequestContext cardRequestContext)
+        {
+            CardRequestContext = cardRequestContext;
+        }
 
         /// <summary>
         /// 使当前英雄死亡,如果有其他或者的player则切换
@@ -383,23 +391,24 @@ namespace Logic.Model.Player
         {
             cardRequestContext.AttackDynamicFactor =
                 cardRequestContext.AttackDynamicFactor ?? AttackDynamicFactor.GetDefaultDeltaAttackFactor();
-            //设置被请求的上下文
-            CardRequestContext = cardRequestContext;
+            //设置被请求的上下文为原始请求的深拷贝
+            var newCardRequestContext = cardRequestContext.DeepClone();
+            CardRequestContext = newCardRequestContext;
             var responseContext = new CardResponseContext();
-            await TriggerEvent(Enums.EventTypeEnum.BeforeBeidongPlayCard, cardRequestContext, responseContext, roundContext);
-            await TriggerEvent(Enums.EventTypeEnum.BeidongPlayCard, cardRequestContext, responseContext, roundContext);
+            await TriggerEvent(Enums.EventTypeEnum.BeforeBeidongPlayCard, newCardRequestContext, responseContext, roundContext);
+            await TriggerEvent(Enums.EventTypeEnum.BeidongPlayCard, newCardRequestContext, responseContext, roundContext);
             //如果被取消或者处理成功了，就直接返回
             if (responseContext.ResponseResult == ResponseResultEnum.Success || responseContext.ResponseResult == ResponseResultEnum.Cancelled)
             {
                 return responseContext;
             }
-            var newRequestContext = GetCombindCardRequestContext(cardRequestContext,
+            var newRequestContext = GetCombindCardRequestContext(newCardRequestContext,
                 CurrentPlayerHero.BaseAttackFactor, roundContext);
             var res = await ActionManager.OnRequestResponseCard(newRequestContext);
-            await TriggerEvent(Enums.EventTypeEnum.AfterBeidongPlayCard, cardRequestContext, res, roundContext);
+            await TriggerEvent(Enums.EventTypeEnum.AfterBeidongPlayCard, newCardRequestContext, res, roundContext);
             if (res.Cards?.Any() == true)
             {
-                string actionName = cardRequestContext.AttackType == AttackTypeEnum.SelectCard ? "选择了" : "出牌";
+                string actionName = newCardRequestContext.AttackType == AttackTypeEnum.SelectCard ? "选择了" : "出牌";
                 Console.WriteLine($"[{PlayerName}{PlayerId}]{actionName}{string.Join(",", res.Cards.Select(p => p.ToString()))}");
                 _gameLevel.LogManager.LogAction(
                                  new RichTextParagraph(
@@ -426,7 +435,7 @@ namespace Logic.Model.Player
                     }
                 });
 
-                if (res.ResponseResult == ResponseResultEnum.UnKnown && res.Cards.Count() >= cardRequestContext.MinCardCountToPlay && res.Cards.Count <= cardRequestContext.MaxCardCountToPlay)
+                if (res.ResponseResult == ResponseResultEnum.UnKnown && res.Cards.Count() >= newCardRequestContext.MinCardCountToPlay && res.Cards.Count <= newCardRequestContext.MaxCardCountToPlay)
                 {
                     res.ResponseResult = ResponseResultEnum.Success;
                 }
@@ -1162,7 +1171,7 @@ namespace Logic.Model.Player
                 IsMerged = true,
                 Panel = cardRequestContext.Panel
             };
-            newCardRequestContext.AttackDynamicFactor = DeepCloneAttackDynamicFactor(cardRequestContext.AttackDynamicFactor);
+            newCardRequestContext.AttackDynamicFactor = cardRequestContext.AttackDynamicFactor?.DeepClone();
             if (baseAttackDynamicFactor != null)
             {
                 newCardRequestContext.AttackDynamicFactor =
@@ -1210,55 +1219,6 @@ namespace Logic.Model.Player
         }
 
         /// <summary>
-        /// 深拷贝
-        /// </summary>
-        /// <param name="factor"></param>
-        /// <returns></returns>
-        private AttackDynamicFactor DeepCloneAttackDynamicFactor(AttackDynamicFactor factor)
-        {
-            var newAttackDynamicFactor = factor == null ? AttackDynamicFactor.GetDefaultDeltaAttackFactor() :
-                new AttackDynamicFactor()
-                {
-                    DefenseDistance = factor.DefenseDistance,
-                    TannangDistance = factor.TannangDistance,
-                    IsShaNotAvoidable = factor.IsShaNotAvoidable,
-                    MaxCardCountInHand = factor.MaxCardCountInHand,
-                    WuzhongshengyouCardCount = factor.WuzhongshengyouCardCount,
-                    MaxLife = factor.MaxLife,
-                    MaxShaTargetCount = factor.MaxShaTargetCount,
-                    MaxShaTimes = factor.MaxShaTimes,
-                    PickCardCountPerRound = factor.PickCardCountPerRound,
-                    ShaCountAvoidJuedou = factor.ShaCountAvoidJuedou,
-                    ShaDistance = factor.ShaDistance,
-                    ShanCountAvoidSha = factor.ShanCountAvoidSha,
-                    Damage = new Damage()
-                    {
-                        FenghuolangyanDamage = factor.Damage.FenghuolangyanDamage,
-                        JuedouDamage = factor.Damage.JuedouDamage,
-                        ShaDamage = factor.Damage.ShaDamage,
-                        WanjianqifaDamage = factor.Damage.WanjianqifaDamage,
-                        ShoupengleiDamage = factor.Damage.ShoupengleiDamage,
-                        GongxinDamage = factor.Damage.GongxinDamage,
-                        DujiDamage = factor.Damage.DujiDamage
-                    },
-                    Recover = new Recover()
-                    {
-                        XiuyangshengxiLife = factor.Recover.XiuyangshengxiLife,
-                        XixueLife = factor.Recover.XixueLife,
-                        YaoLife = factor.Recover.YaoLife
-                    },
-                    SkipOption = new SkipOption()
-                    {
-                        ShouldSkipEnterMyRound = factor.SkipOption.ShouldSkipEnterMyRound,
-                        ShouldSkipPickCard = factor.SkipOption.ShouldSkipPickCard,
-                        ShouldSkipPlayCard = factor.SkipOption.ShouldSkipPlayCard,
-                        ShouldSkipThrowCard = factor.SkipOption.ShouldSkipThrowCard,
-                    }
-                };
-            return newAttackDynamicFactor;
-        }
-
-        /// <summary>
         /// 将两个AttackDynamicFactor参数合并
         /// </summary>
         /// <param name="src"></param>
@@ -1268,12 +1228,12 @@ namespace Logic.Model.Player
         {
             if (src == null)
             {
-                return DeepCloneAttackDynamicFactor(target);
+                return target?.DeepClone();
             }
 
             if (target == null)
             {
-                return DeepCloneAttackDynamicFactor(src);
+                return src.DeepClone();
             }
             AttackDynamicFactor result = AttackDynamicFactor.GetDefaultDeltaAttackFactor();
 
@@ -1546,5 +1506,6 @@ namespace Logic.Model.Player
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
     }
 }

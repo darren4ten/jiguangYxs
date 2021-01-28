@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using JgYxs.UI.Model;
+using Logic.GameLevel;
 using Logic.Model.Player;
 
 namespace JgYxs.UI.UserCtrl
@@ -12,24 +13,11 @@ namespace JgYxs.UI.UserCtrl
     public partial class PlayerPanel : UserControl
     {
         Player Player { get; set; }
-        public UIState GetUiAction()
-        {
-            return (UIState)DataContext;
-        }
+    
         public PlayerPanel()
         {
             //Player = (Player)DataContext;
             InitializeComponent();
-        }
-
-        private void Btn1Click(object sender, RoutedEventArgs e)
-        {
-            GetUiAction()?.BtnAction1?.BtnRoutedEventHandler?.Invoke(sender, e);
-        }
-
-        private void Btn2Click(object sender, RoutedEventArgs e)
-        {
-            GetUiAction()?.BtnAction2?.BtnRoutedEventHandler?.Invoke(sender, e);
         }
 
         protected override void OnInitialized(EventArgs e)

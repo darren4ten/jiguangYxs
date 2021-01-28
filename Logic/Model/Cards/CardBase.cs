@@ -421,6 +421,7 @@ namespace Logic.Cards
 
                     if (selectRequest.MinTargetCount == 0 || (targetResponse?.Targets != null && targetResponse.Targets.Count >= selectRequest.MinTargetCount))
                     {
+                        //todo:询问是否打牌,OnRequestConfirmPlayCard
                         request.SrcPlayer = PlayerContext.Player;
                         request.TargetPlayers = targetResponse.Targets;
                         request.AttackType = selectRequest.TargetType;
@@ -430,6 +431,7 @@ namespace Logic.Cards
                 }
                 else
                 {
+                    //todo:询问是否打牌,OnRequestConfirmPlayCard
                     request.SrcPlayer = PlayerContext.Player;
                     await PlayCard(request, PlayerContext.Player.RoundContext);
                     return true;

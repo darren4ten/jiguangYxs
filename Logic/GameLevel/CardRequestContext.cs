@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.Enums;
 using Logic.GameLevel.Panel;
@@ -72,6 +73,10 @@ namespace Logic.GameLevel
         public string Message { get; set; }
 
         /// <summary>
+        /// 是否是群体请求
+        /// </summary>
+        public bool IsGroupRequest { get; set; }
+        /// <summary>
         /// 是否是汇总的结果
         /// </summary>
         public bool IsMerged { get; set; }
@@ -82,9 +87,42 @@ namespace Logic.GameLevel
         public PanelBase Panel { get; set; }
 
         /// <summary>
+        /// 请求完成source
+        /// </summary>
+        public TaskCompletionSource<CardResponseContext> RequestTaskCompletionSource { get; set; }
+
+        /// <summary>
         /// 备用的请求上下文，可以用来传递SelectTargetcontext
         /// </summary>
         public object AdditionalContext { get; set; }
+
+        /// <summary>
+        /// 深拷贝
+        /// </summary>
+        /// <returns></returns>
+        public CardRequestContext DeepClone()
+        {
+            return new CardRequestContext()
+            {
+                RequestCard = RequestCard,
+                MaxCardCountToPlay = MaxCardCountToPlay,
+                AdditionalContext = AdditionalContext,
+                AttackDynamicFactor = AttackDynamicFactor.DeepClone(),
+                AttackType = AttackType,
+                CardScope = CardScope,
+                FlowerKind = FlowerKind,
+                IsGroupRequest = IsGroupRequest,
+                IsMerged = IsMerged,
+                Message = Message,
+                MinCardCountToPlay = MinCardCountToPlay,
+                Panel = Panel,
+                RequestId = RequestId,
+                RequestTaskCompletionSource = RequestTaskCompletionSource,
+                SrcCards = SrcCards,
+                SrcPlayer = SrcPlayer,
+                TargetPlayers = TargetPlayers
+            };
+        }
 
         public static CardRequestContext GetBaseCardRequestContext(List<Player> targets)
         {

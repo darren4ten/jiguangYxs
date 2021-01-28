@@ -83,6 +83,54 @@ namespace Logic.GameLevel
         public SkipOption SkipOption { get; set; }
 
         /// <summary>
+        /// 深拷贝
+        /// </summary>
+        /// <returns></returns>
+        public AttackDynamicFactor DeepClone()
+        {
+            var newAttackDynamicFactor = new AttackDynamicFactor()
+            {
+                DefenseDistance = DefenseDistance,
+                TannangDistance = TannangDistance,
+                IsShaNotAvoidable = IsShaNotAvoidable,
+                MaxCardCountInHand = MaxCardCountInHand,
+                WuzhongshengyouCardCount = WuzhongshengyouCardCount,
+                MaxLife = MaxLife,
+                MaxShaTargetCount = MaxShaTargetCount,
+                MaxShaTimes = MaxShaTimes,
+                PickCardCountPerRound = PickCardCountPerRound,
+                ShaCountAvoidJuedou = ShaCountAvoidJuedou,
+                ShaDistance = ShaDistance,
+                ShanCountAvoidSha = ShanCountAvoidSha,
+                IsShaNotAvoidableByYuruyi = IsShaNotAvoidableByYuruyi,
+                Damage = new Damage()
+                {
+                    FenghuolangyanDamage = Damage.FenghuolangyanDamage,
+                    JuedouDamage = Damage.JuedouDamage,
+                    ShaDamage = Damage.ShaDamage,
+                    WanjianqifaDamage = Damage.WanjianqifaDamage,
+                    ShoupengleiDamage = Damage.ShoupengleiDamage,
+                    GongxinDamage = Damage.GongxinDamage,
+                    DujiDamage = Damage.DujiDamage
+                },
+                Recover = new Recover()
+                {
+                    XiuyangshengxiLife = Recover.XiuyangshengxiLife,
+                    XixueLife = Recover.XixueLife,
+                    YaoLife = Recover.YaoLife
+                },
+                SkipOption = new SkipOption()
+                {
+                    ShouldSkipEnterMyRound = SkipOption.ShouldSkipEnterMyRound,
+                    ShouldSkipPickCard = SkipOption.ShouldSkipPickCard,
+                    ShouldSkipPlayCard = SkipOption.ShouldSkipPlayCard,
+                    ShouldSkipThrowCard = SkipOption.ShouldSkipThrowCard,
+                }
+            };
+            return newAttackDynamicFactor;
+        }
+
+        /// <summary>
         /// 获取默认的英雄攻击相关的基础信息（非增量）
         /// </summary>
         /// <returns></returns>
