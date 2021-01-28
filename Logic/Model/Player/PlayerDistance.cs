@@ -7,7 +7,7 @@ namespace Logic.Model.Player
     public class PlayerDistance
     {
         /// <summary>
-        /// 探囊取物的距离
+        /// 探囊取物的距离,计算进攻马、防御马
         /// </summary>
         public int TannangDistance { get; set; }
 
@@ -19,6 +19,6 @@ namespace Logic.Model.Player
         /// <summary>
         /// 不计算src武器的情况下的距离。
         /// </summary>
-        public int ShaDistanceWithouWeapon { get; set; }
+        public int ShaDistanceWithoutWeapon { get; set; }
     }
 }

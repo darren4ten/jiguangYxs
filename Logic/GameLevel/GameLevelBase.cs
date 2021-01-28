@@ -187,23 +187,36 @@ namespace Logic.GameLevel
         public PlayerDistance GetPlayersDistance(Player src, Player target)
         {
             //获取物理距离
-            var dist = new PlayerDistance() { };
-            var targetPlayerId = target.PlayerId;
-            Player nextPlayer = src.GetNextPlayer(false);
-            while (nextPlayer.PlayerId != targetPlayerId && dist.ShaDistance < 10)
-            {
-                dist.ShaDistanceWithouWeapon++;
-                dist.TannangDistance++;
-                nextPlayer = nextPlayer.GetNextPlayer(false);
-            }
-            //查看toPlayer是否装备防御马
-            //获取探囊距离
+            var dist1 = GetPlayersDistanceOnReverseTimeClock(src, target);
+            var dist2 = GetPlayersDistanceOnReverseTimeClock(target, src);
+            var actDist = Math.Min(dist1, dist2);
+            var dist = new PlayerDistance();
+            dist.ShaDistance = actDist;
+            dist.TannangDistance = actDist;
+            dist.ShaDistanceWithoutWeapon = actDist;
+
             dist.TannangDistance =
-                dist.TannangDistance + target.CurrentPlayerHero.BaseAttackFactor.DefenseDistance;
-            dist.ShaDistance = dist.ShaDistanceWithouWeapon - src.CurrentPlayerHero.GetAttackFactor().ShaDistance;
-            dist.ShaDistance = dist.ShaDistance <= 1 ? 1 : dist.ShaDistance;
+                dist.TannangDistance + target.CurrentPlayerHero.BaseAttackFactor.DefenseDistance - src.CurrentPlayerHero.BaseAttackFactor.TannangDistance;
+            dist.ShaDistanceWithoutWeapon += target.CurrentPlayerHero.BaseAttackFactor.DefenseDistance - src.CurrentPlayerHero.BaseAttackFactor.TannangDistance;
+            dist.ShaDistance = dist.ShaDistanceWithoutWeapon - src.CurrentPlayerHero.GetAttackFactor().ShaDistance + 1;
             return dist;
         }
+
+        public int GetPlayersDistanceOnReverseTimeClock(Player src, Player target)
+        {
+            var shaDistance = 1;
+            var targetPlayerId = target.PlayerId;
+            //正向距离
+            Player nextPlayer = src.GetNextPlayer(false);
+            while (nextPlayer.PlayerId != targetPlayerId && shaDistance < 10)
+            {
+                shaDistance++;
+                nextPlayer = nextPlayer.GetNextPlayer(false);
+            }
+
+            return shaDistance;
+        }
+
 
         /// <summary>
         /// 获取所有可达的敌人

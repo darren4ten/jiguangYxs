@@ -1607,7 +1607,7 @@ namespace Logic.ActionManger
                 if (!nextPlayer.IsSameGroup(PlayerContext.Player))
                 {
                     var dist = PlayerContext.GameLevel.GetPlayersDistance(PlayerContext.Player, nextPlayer);
-                    if (dist.ShaDistanceWithouWeapon <= shaDistance)
+                    if (dist.ShaDistanceWithoutWeapon <= shaDistance)
                     {
                         shouldEquip = true;
                         break;
