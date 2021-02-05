@@ -35,7 +35,7 @@ namespace Logic.ActionManger
 
             string displayMessage = $"是否发动“{skillType.GetDescription()}?”";
             var tcs = new TaskCompletionSource<CardResponseContext>();
-            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, displayMessage);
+            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, displayMessage, "确认", "取消");
             var res = await tcs.Task;
             return res != null && res.ResponseResult == ResponseResultEnum.Success ? true : false;
         }
@@ -86,9 +86,14 @@ namespace Logic.ActionManger
             return new CardResponseContext() { };
         }
 
+        private void ShowActionBar(string message, string btnOkText, string btnCancelText) { }
         public override async Task<CardResponseContext> OnRequestResponseCard(CardRequestContext cardRequestContext)
         {
-            throw new NotImplementedException();
+            //showMsg("请出牌","取消",()=>{req.tcs.setResult(new response())})
+            string displayMessage = $"是否打出“{cardRequestContext.RequestCard.DisplayName}?”";
+            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(cardRequestContext.RequestTaskCompletionSource, displayMessage, null, "取消");
+            var res = await cardRequestContext.RequestTaskCompletionSource.Task;
+            return res;
         }
 
         public override async Task<CardResponseContext> OnRequestPickCardFromPanel(PickCardFromPanelRequest request)
@@ -123,7 +128,36 @@ namespace Logic.ActionManger
 
         public override async Task<SelectedTargetsResponse> OnRequestSelectTargets(SelectedTargetsRequest request)
         {
-            throw new NotImplementedException();
+            if (request.MinTargetCount <= 0 && request.MaxTargetCount <= 0)
+            {
+                return new SelectedTargetsResponse()
+                {
+                    Status = ResponseResultEnum.UnKnown
+                };
+            }
+            string displayMessage = $"请选择{request.MinTargetCount}{(request.MaxTargetCount > request.MinTargetCount ? "-" + request.MaxTargetCount : "")}个目标";
+            //弹窗提示选择目标
+            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(null, displayMessage, null, null);
+            //UI更新可供选择的目标，将可选的目标高亮出来，
+            //1. 监听玩家被click的事件，如果click了，则检查目标是否可选且目标数目是不是达到选择目标的要求，
+            var response = await PlayerContext.Player.PlayerUiState.HighlightAvailableTargets(request, null);
+            //2. 完成目标选择之后（取消或者确定），恢复玩家的选中状态为idle.
+            PlayerContext.Player.PlayerUiState.RestoreSelectStatus(SelectStatusEnum.Idle);
+
+            if (response.ResponseResult == ResponseResultEnum.Success)
+            {
+                return new SelectedTargetsResponse()
+                {
+                    Status = ResponseResultEnum.Success,
+                    Targets = PlayerContext.Player.PlayerUiState.GetSelectedTargets()
+                };
+            }
+
+            //  1.1 如果满足了要求，则弹窗显示确定、取消按钮，如果确定，则返回selecte目标，如果取消，则返回失败
+            return new SelectedTargetsResponse()
+            {
+                Status = ResponseResultEnum.Failed,
+            };
         }
     }
 }

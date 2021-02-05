@@ -6,7 +6,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Logic.ActionManger;
 using Logic.GameLevel;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.Interface;
@@ -223,7 +225,7 @@ namespace Logic.Cards
         public static bool CanBeidongPlayCard<T>(PlayerContext playerContext)
         {
             if (playerContext.Player.IsInBeidongMode() &&
-                (playerContext.Player.CardRequestContext.RequestCard == null || playerContext.Player.CardRequestContext.RequestCard is T))
+                (playerContext.Player.CurrentCardRequestContext.RequestCard == null || playerContext.Player.CurrentCardRequestContext.RequestCard is T))
             {
                 return true;
             }
@@ -406,10 +408,10 @@ namespace Logic.Cards
 
 
         /// <summary>
-        /// 弹出卡牌。即如果该牌可以打出，则打出
+        /// 主动打牌，弹出卡牌。即如果该牌可以打出，则打出
         /// </summary>
         /// <returns>返回是否出过牌</returns>
-        public virtual async Task<bool> Popup()
+        public virtual async Task<bool> Popup(TaskCompletionSource<CardResponseContext> taskCompletionSource = null)
         {
             if (CanBePlayed())
             {
@@ -417,11 +419,11 @@ namespace Logic.Cards
                 if (this is INeedTargets)
                 {
                     var selectRequest = ((INeedTargets)this).GetSelectTargetRequest();
+                    selectRequest.RequestTaskCompletionSource = taskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
                     var targetResponse = await SelectTargets(selectRequest);
-
-                    if (selectRequest.MinTargetCount == 0 || (targetResponse?.Targets != null && targetResponse.Targets.Count >= selectRequest.MinTargetCount))
+                    if (selectRequest.MinTargetCount == 0
+                        || (targetResponse?.Targets != null && targetResponse.Targets.Count >= selectRequest.MinTargetCount))
                     {
-                        //todo:询问是否打牌,OnRequestConfirmPlayCard
                         request.SrcPlayer = PlayerContext.Player;
                         request.TargetPlayers = targetResponse.Targets;
                         request.AttackType = selectRequest.TargetType;
@@ -431,16 +433,41 @@ namespace Logic.Cards
                 }
                 else
                 {
-                    //todo:询问是否打牌,OnRequestConfirmPlayCard
-                    request.SrcPlayer = PlayerContext.Player;
-                    await PlayCard(request, PlayerContext.Player.RoundContext);
-                    return true;
+                    //如果是人类，则展示确认按钮
+                    var continuePlay = await ShowPlayButton();
+                    if (continuePlay)
+                    {
+                        request.SrcPlayer = PlayerContext.Player;
+                        await PlayCard(request, PlayerContext.Player.RoundContext);
+                        return true;
+                    }
                 }
-
-                return false;
             }
 
             return false;
+        }
+
+        private async Task<bool> ShowPlayButton()
+        {
+            if (PlayerContext.Player.ActionManager is StandardActionManager)
+            {
+                TaskCompletionSource<CardResponseContext> tcs = new TaskCompletionSource<CardResponseContext>();
+
+                string displayMessage = "";
+                PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, displayMessage, "确定", "");
+                var res = await tcs.Task;
+                if (res.ResponseResult == ResponseResultEnum.Success)
+                {
+                    return true;
+                }
+                else
+                {
+                    //如果没有确认，则不出牌
+                    return false;
+                }
+            }
+            //如果是机器人，则直接出牌
+            return true;
         }
 
         private string GetFlowerKind()

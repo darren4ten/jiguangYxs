@@ -15,7 +15,7 @@ namespace Logic.GameLevel
     /// </summary>
     public class CardRequestContext
     {
-        public Guid? RequestId { get; set; }
+        public Guid RequestId { get; set; } = Guid.NewGuid();
         /// <summary>
         /// 最大出牌数
         /// </summary>
