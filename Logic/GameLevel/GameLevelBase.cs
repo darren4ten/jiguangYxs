@@ -21,6 +21,7 @@ using Logic.Util.Extension;
 using System.ComponentModel;
 using Logic.Annotations;
 using System.Runtime.CompilerServices;
+using Logic.GameLevel.Panel;
 
 namespace Logic.GameLevel
 {
@@ -50,7 +51,7 @@ namespace Logic.GameLevel
 
         public string Name { get; set; }
         public string Description { get; set; }
-
+        
         /// <summary>
         /// 游戏是否结束
         /// </summary>

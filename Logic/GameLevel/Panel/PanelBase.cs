@@ -50,6 +50,12 @@ namespace Logic.GameLevel.Panel
         public ObservableCollection<Player> PlayersToShare { get; set; }
 
         /// <summary>
+        /// 卡牌点击事件
+        /// </summary>
+        public CardEventHandler OnClickedHandler { get; set; }
+
+
+        /// <summary>
         /// 将CardBase转成PanelCard
         /// </summary>
         /// <param name="cards"></param>

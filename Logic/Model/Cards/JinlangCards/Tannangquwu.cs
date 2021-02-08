@@ -63,7 +63,7 @@ namespace Logic.Model.Cards.JinlangCards
                 EquipmentCards = PanelBase.ConvertToPanelCard(target.EquipmentSet, true),
                 InHandCards = PanelBase.ConvertToPanelCard(target.CardsInHand, false),//todo:混乱手牌顺序
                 MarkCards = PanelBase.ConvertToPanelCard(target.Marks, true),
-                CardOwner = target
+                CardOwner = target,
             };
             var res = await PlayerContext.Player.ResponseCard(new CardRequestContext()
             {
@@ -94,7 +94,7 @@ namespace Logic.Model.Cards.JinlangCards
                                   new RichTextWrapper("抽取了标记"),
                                   new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
                                   new RichTextWrapper("。")
-                               )); 
+                               ));
                 await panel.CardOwner.MoveCardToTargetHand(PlayerContext.Player, new List<CardBase>() { p.Card });
                 await panel.CardOwner.RemoveMark(p.Mark);
             });
@@ -111,7 +111,7 @@ namespace Logic.Model.Cards.JinlangCards
                                   new RichTextWrapper("抽取了装备"),
                                   new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
                                   new RichTextWrapper("。")
-                               )); 
+                               ));
                 await panel.CardOwner.MoveCardToTargetHand(PlayerContext.Player, new List<CardBase>() { p.Card });
             });
             //检查手牌
@@ -127,7 +127,7 @@ namespace Logic.Model.Cards.JinlangCards
                                    new RichTextWrapper("抽取了手牌"),
                                    new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
                                    new RichTextWrapper("。")
-                                )); 
+                                ));
                 await panel.CardOwner.MoveCardToTargetHand(PlayerContext.Player, new List<CardBase>() { p.Card });
             });
             await Task.FromResult(0);

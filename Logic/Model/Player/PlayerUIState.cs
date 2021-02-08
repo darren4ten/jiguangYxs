@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Logic.Annotations;
 using Logic.GameLevel;
+using Logic.GameLevel.Panel;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
 
@@ -16,6 +17,11 @@ namespace Logic.Model.Player
     public delegate Task<bool?> CardEventHandler(object sender);
     public class PlayerUIState : INotifyPropertyChanged
     {
+        /// <summary>
+        /// 面板，如探囊取物、五谷丰登
+        /// </summary>
+        public PanelBase Panel { get; set; }
+
         public ActionBar ActionBar { get; set; }
 
         public SelectStatusEnum SelectStatus { get; set; }

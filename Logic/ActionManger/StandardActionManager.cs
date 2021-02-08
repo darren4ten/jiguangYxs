@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.GameLevel;
+using Logic.GameLevel.Panel;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.JinlangCards;
 using Logic.Model.Enums;
@@ -107,7 +108,33 @@ namespace Logic.ActionManger
 
         public override async Task<CardResponseContext> OnRequestPickCardFromPanel(PickCardFromPanelRequest request)
         {
-            throw new NotImplementedException();
+            PlayerContext.Player.PlayerUiState.Panel = request.Panel;
+            request.RequestTaskCompletionSource =
+                request.RequestTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
+            //弹出窗体，提示选择牌，
+            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(request.RequestTaskCompletionSource, request.Panel.DisplayMessage, null, null);
+            PlayerContext.Player.PlayerUiState.Panel.OnClickedHandler = async (sender) =>
+                {
+                    if (sender is PanelCard card)
+                    {
+                        if (CanSelectPanelCard(card))
+                        {
+                            request.RequestTaskCompletionSource.SetResult(new CardResponseContext()
+                            {
+                                Cards = new List<CardBase>() { card.Card }
+                            });
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                    return await Task.FromResult(false);
+                };
+            var r = await request.RequestTaskCompletionSource.Task;
+            //关闭面板，并返回结果
+            PlayerContext.Player.PlayerUiState.Panel = null;
+            return r;
         }
 
         public override async Task OnRequestStartStep_EnterMyRound()
@@ -207,6 +234,16 @@ namespace Logic.ActionManger
         }
 
         #region 私有逻辑
+        /// <summary>
+        /// 面板牌能否被选中
+        /// </summary>
+        /// <param name="pCard"></param>
+        /// <returns></returns>
+        private bool CanSelectPanelCard(PanelCard pCard)
+        {
+            return pCard != null && pCard.SelectedBy == null;
+        }
+
         /// <summary>
         /// 是否显示主动出牌的“确认”按钮
         /// </summary>
