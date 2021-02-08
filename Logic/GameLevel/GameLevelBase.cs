@@ -474,9 +474,10 @@ namespace Logic.GameLevel
             }
 
             var tasks = new List<Task<CardResponseContext>>();
+            var taskDic = new Dictionary<int, TaskCompletionSource<CardResponseContext>>();
             foreach (var requestTargetPlayer in request.TargetPlayers)
             {
-                tasks.Add(requestTargetPlayer.ActionManager.OnParallelRequestResponseCard(new CardRequestContext()
+                var req = new CardRequestContext()
                 {
                     AttackType = request.AttackType,
                     RequestCard = request.RequestCard,
@@ -487,8 +488,14 @@ namespace Logic.GameLevel
                     TargetPlayers = new List<Player>()
                     {
                         requestTargetPlayer
-                    }
-                }));
+                    },
+                    RequestTaskCompletionSource = requestTargetPlayer.IsAi()
+                        ? null
+                        : new TaskCompletionSource<CardResponseContext>()
+                };
+                var t = requestTargetPlayer.ActionManager.OnParallelRequestResponseCard(req);
+                taskDic.Add(t.Id, req.RequestTaskCompletionSource);
+                tasks.Add(t);
             }
 
             CardResponseContext response = null;
@@ -500,7 +507,13 @@ namespace Logic.GameLevel
                 {
                     response = tmpResult;
                 }
+                //如果有人响应过请求，则其他请求需要被取消。在移除之前将其他task Cancel掉。
+                if (taskDic.ContainsKey(task.Id) && taskDic[task.Id] != null)
+                {
+                    taskDic[task.Id].SetResult(new CardResponseContext() { ResponseResult = ResponseResultEnum.Failed, Message = "其他玩家已响应" });
+                }
                 tasks.Remove(task);
+
             } while (response == null && tasks.Count > 0);
 
             var responseCard = response?.Cards?.FirstOrDefault();

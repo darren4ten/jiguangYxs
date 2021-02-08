@@ -54,48 +54,7 @@ namespace Logic.ActionManger
         /// <returns></returns>
         public override async Task<CardResponseContext> OnParallelRequestResponseCard(CardRequestContext cardRequestContext)
         {
-            //1. 手牌中是否有请求的牌
-            //2. 技能是否能够提供请求的牌
-            if (PlayerContext.Player.CardsInHand.All(c => c.GetType() != cardRequestContext.RequestCard.GetType()))
-            {
-                var tcs = new TaskCompletionSource<CardResponseContext>();
-
-                Func<Task<CardResponseContext>> showMsg = async () =>
-                {
-                    string displayMessage = $"是否打出“{cardRequestContext.RequestCard.DisplayName}?”";
-                    //设置被动请求，包括
-                    //设置被动请求参数、
-                    //UI弹出提示信息、
-                    //等待玩家选择卡牌（检查CardRequestContext）,如果IsGroupRequest=true则代表不弃牌，卡牌弹出并确认按钮之后tcs.setresult
-                    PlayerContext.Player.SetCardRequestContext(new CardRequestContext()
-                    {
-                        Message = displayMessage,
-                        RequestCard = cardRequestContext.RequestCard,
-                        SrcPlayer = cardRequestContext.SrcPlayer,
-                        MaxCardCountToPlay = cardRequestContext.MaxCardCountToPlay,
-                        MinCardCountToPlay = cardRequestContext.MaxCardCountToPlay,
-                        IsGroupRequest = true,
-                        RequestTaskCompletionSource = tcs
-                    });
-                    var res = await tcs.Task;
-                    return res;
-                };
-
-                if (cardRequestContext.RequestCard is Sha && PlayerContext.Player.SkillButtonInfoList.Any(s => s.IsEnabled && s is IAbility sa && sa.CanProvideSha()))
-                {
-                    return await showMsg();
-                }
-                else if (cardRequestContext.RequestCard is Wuxiekeji && PlayerContext.Player.SkillButtonInfoList.Any(s => s.IsEnabled && s is IAbility sa && sa.CanProviderWuxiekeji()))
-                {
-                    return await showMsg();
-                }
-                else if (cardRequestContext.RequestCard is Yao && PlayerContext.Player.SkillButtonInfoList.Any(s => s.IsEnabled && s is IAbility sa && sa.CanProvideYao()))
-                {
-                    return await showMsg();
-                }
-            }
-            //默认返回失败
-            return new CardResponseContext() { };
+            return await OnRequestResponseCard(cardRequestContext);
         }
 
         public override async Task<CardResponseContext> OnRequestResponseCard(CardRequestContext cardRequestContext)
