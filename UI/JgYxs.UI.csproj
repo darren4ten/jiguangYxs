@@ -149,6 +149,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Levels\Level_002_NoFriend2Enemies_Human.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Resource1.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -189,6 +192,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Levels\Level_002_NoFriend2Enemies_Human.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="UserCtrl\PlayerPanel.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

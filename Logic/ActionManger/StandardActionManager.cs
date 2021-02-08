@@ -24,6 +24,7 @@ namespace Logic.ActionManger
     /// </summary>
     public class StandardActionManager : ActionManagerBase
     {
+        public StandardActionManager() { }
         public StandardActionManager(PlayerContext playContext) : base(playContext)
         {
         }
