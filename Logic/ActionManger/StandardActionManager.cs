@@ -108,7 +108,6 @@ namespace Logic.ActionManger
 
         public override async Task<CardResponseContext> OnRequestPickCardFromPanel(PickCardFromPanelRequest request)
         {
-            PlayerContext.Player.PlayerUiState.Panel = request.Panel;
             request.RequestTaskCompletionSource =
                 request.RequestTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
             //弹出窗体，提示选择牌，
@@ -132,8 +131,6 @@ namespace Logic.ActionManger
                     return await Task.FromResult(false);
                 };
             var r = await request.RequestTaskCompletionSource.Task;
-            //关闭面板，并返回结果
-            PlayerContext.Player.PlayerUiState.Panel = null;
             return r;
         }
 

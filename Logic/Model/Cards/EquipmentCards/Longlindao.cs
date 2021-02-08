@@ -69,6 +69,8 @@ namespace Logic.Model.Cards.EquipmentCards
                                     PlayersToShare = new ObservableCollection<Player.Player>() { PlayerContext.Player }
                                 },
                             };
+
+                            PlayerContext.Player.PlayerUiState.ShowPanel(panelRequest.Panel);
                             var response = await PlayerContext.Player.ActionManager.OnRequestPickCardFromPanel(panelRequest);
 
                             //从装备栏中移除 
@@ -135,6 +137,7 @@ namespace Logic.Model.Cards.EquipmentCards
                                 panelRequest.Panel.InHandCards.Remove(p);
                             });
                             responseContext.ResponseResult = ResponseResultEnum.Cancelled;
+                            PlayerContext.Player.PlayerUiState.ClosePanel(panelRequest.Panel);
                         }
                     }
                 }));

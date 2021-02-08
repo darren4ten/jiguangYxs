@@ -51,7 +51,12 @@ namespace Logic.GameLevel
 
         public string Name { get; set; }
         public string Description { get; set; }
-        
+
+        /// <summary>
+        /// 面板，如探囊取物、五谷丰登
+        /// </summary>
+        public PanelBase Panel { get; set; }
+
         /// <summary>
         /// 游戏是否结束
         /// </summary>

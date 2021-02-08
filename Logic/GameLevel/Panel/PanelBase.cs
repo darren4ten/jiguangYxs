@@ -20,6 +20,11 @@ namespace Logic.GameLevel.Panel
         public string DisplayMessage { get; set; }
 
         /// <summary>
+        /// 是否是全局的，如五谷丰登。
+        /// </summary>
+        public bool IsGlobal { get; set; }
+
+        /// <summary>
         /// 装备栏
         /// </summary>
         public ObservableCollection<PanelCard> EquipmentCards { get; set; }

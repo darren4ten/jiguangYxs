@@ -127,6 +127,46 @@ namespace Logic.Model.Player
         }
 
         /// <summary>
+        /// 显示面板
+        /// </summary>
+        /// <param name="panel"></param>
+        public void ShowPanel(PanelBase panel)
+        {
+            if (BindPlayer.IsAi())
+            {
+                return;
+            }
+            if (panel.IsGlobal)
+            {
+                BindPlayer.GameLevel.Panel = panel;
+            }
+            else
+            {
+                BindPlayer.PlayerUiState.Panel = panel;
+            }
+        }
+
+        /// <summary>
+        /// 关闭面板
+        /// </summary>
+        /// <param name="panel"></param>
+        public void ClosePanel(PanelBase panel)
+        {
+            if (BindPlayer.IsAi())
+            {
+                return;
+            }
+            if (panel.IsGlobal)
+            {
+                BindPlayer.GameLevel.Panel = null;
+            }
+            else
+            {
+                BindPlayer.PlayerUiState.Panel = null;
+            }
+        }
+
+        /// <summary>
         /// 恢复所有人的选中状态为指定状态
         /// </summary>
         /// <param name="status"></param>

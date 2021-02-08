@@ -60,9 +60,11 @@ namespace Logic.Model.Cards.JinlangCards
             {
                 DisplayMessage = "请选择一张要抽取的牌",
                 UnknownCards = PanelBase.ConvertToPanelCard(cards, true),
-                CardOwner = null
+                CardOwner = null,
+                IsGlobal = true
             };
 
+            PlayerContext.Player.PlayerUiState.ShowPanel(panel);
             do
             {
                 var req = new CardRequestContext()
@@ -104,6 +106,7 @@ namespace Logic.Model.Cards.JinlangCards
                 await currentPlayer.AddCardsInHand(res.Cards);
                 currentPlayer = currentPlayer.GetNextPlayer(false);
             } while (currentPlayer != null && currentPlayer != PlayerContext.Player);
+            PlayerContext.Player.PlayerUiState.ClosePanel(panel);
 
             return cardResponseContext;
         }

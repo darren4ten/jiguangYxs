@@ -65,6 +65,7 @@ namespace Logic.Model.Cards.JinlangCards
                 MarkCards = PanelBase.ConvertToPanelCard(target.Marks, true),
                 CardOwner = target,
             };
+            PlayerContext.Player.PlayerUiState.ShowPanel(panel);
             var res = await PlayerContext.Player.ResponseCard(new CardRequestContext()
             {
                 MaxCardCountToPlay = 1,
@@ -76,6 +77,7 @@ namespace Logic.Model.Cards.JinlangCards
             }, cardResponseContext, roundContext, false);
             //移除Panel中SelectedBy为当前player的牌
             await RemoveCardsFromPanel(panel, cardRequestContext, cardResponseContext, roundContext);
+            PlayerContext.Player.PlayerUiState.ClosePanel(panel);
             return res;
         }
 
