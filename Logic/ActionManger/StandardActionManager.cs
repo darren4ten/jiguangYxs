@@ -153,17 +153,20 @@ namespace Logic.ActionManger
 
         public override async Task OnRequestStartStep_EnterMyRound()
         {
-            throw new NotImplementedException();
+            await Task.FromResult(0);
         }
 
         public override async Task OnRequestStartStep_PickCard()
         {
-            throw new NotImplementedException();
+            await Task.FromResult(0);
         }
 
         public override async Task OnRequestStartStep_PlayCard()
         {
-            throw new NotImplementedException();
+            //请求出牌时，提示请求出牌
+            var tcs = PlayerContext.Player.RoundContext.RoundTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
+            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, "请出牌", null, "取消");
+            await tcs.Task;
         }
 
         public override async Task OnRequestStartStep_ThrowCard()

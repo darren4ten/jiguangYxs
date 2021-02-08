@@ -515,7 +515,8 @@ namespace Logic.Model.Player
             RoundContext = new RoundContext()
             {
                 AttackDynamicFactor = AttackDynamicFactor.GetDefaultDeltaAttackFactor(),
-                SkillTriggerTimesDic = new Dictionary<SkillTypeEnum, int>()
+                SkillTriggerTimesDic = new Dictionary<SkillTypeEnum, int>(),
+                RoundTaskCompletionSource = IsAi() ? new TaskCompletionSource<CardResponseContext>() : null
             };
             RoundContext.AttackDynamicFactor.MaxShaTimes = 1;
             var request = new CardRequestContext();
