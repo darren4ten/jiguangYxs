@@ -444,24 +444,21 @@ namespace Logic.ActionManger
         /// <summary>
         /// 请求处理弃牌阶段逻辑
         /// </summary>
+        /// <param name="throwCount"></param>
         /// <returns></returns>
-        public override async Task OnRequestStartStep_ThrowCard()
+        public override async Task<List<CardBase>> OnRequestStartStep_ThrowCard(int throwCount)
         {
             //弃牌阶段，按照价值、优先级升序取弃牌数张牌弃掉
             var cards = PlayerContext.Player.CardsInHand.OrderBy(c => GetCardAiValue(c).Value);
-            var attackFactor = PlayerContext.Player.MergeAttackDynamicFactor(PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor,
-                  PlayerContext.Player.RoundContext.AttackDynamicFactor);
-            var throwCount = cards.Count() - Math.Max(attackFactor.MaxCardCountInHand, PlayerContext.Player.CurrentPlayerHero.CurrentLife);
             if (throwCount > 0)
             {
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】需要弃{throwCount}张牌。");
                 var cardsToThrow = cards.Take(throwCount).ToList();
-
-                //将该牌置入TempCardDesk
-                await PlayerContext.Player.RemoveCardsInHand(cardsToThrow, null, null, null);
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】弃掉了{string.Join(",", cardsToThrow)}。");
+                return cardsToThrow;
             }
-            await Task.FromResult(0);
+
+            return await Task.FromResult(new List<CardBase>());
         }
 
         /// <summary>

@@ -700,8 +700,22 @@ namespace Logic.Model.Player
                 return;
             }
 
-            await ActionManager.OnRequestStartStep_ThrowCard();
-
+            var attackFactor = MergeAttackDynamicFactor(CurrentPlayerHero.BaseAttackFactor,
+                RoundContext.AttackDynamicFactor);
+            var throwCount = CardsInHand.Count() - Math.Max(attackFactor.MaxCardCountInHand, CurrentPlayerHero.CurrentLife);
+            throwCount = throwCount <= 0 ? 0 : throwCount;
+            var cardsToThrow = await ActionManager.OnRequestStartStep_ThrowCard(throwCount);
+            await RemoveCardsInHand(cardsToThrow, null, null, null);
+            if (throwCount > 0 && cardsToThrow.Any())
+            {
+                GameLevel.LogManager.LogAction(new RichTextParagraph(
+                    new RichTextWrapper(PlayerId.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
+                    new RichTextWrapper($"【{CurrentPlayerHero.Hero.DisplayName}】", RichTextWrapper.GetColor(ColorEnum.Blue), 12, true),
+                    new RichTextWrapper("弃牌", RichTextWrapper.GetColor(ColorEnum.Red)),
+                    new RichTextWrapper(string.Join(",", cardsToThrow), RichTextWrapper.GetColor(ColorEnum.Red)),
+                    new RichTextWrapper("。")
+                ));
+            }
             await GameLevel.GlobalEventBus.TriggerEvent(EventTypeEnum.AfterThrowCard, GameLevel.HostPlayerHero,
                 request, RoundContext, response);
             await TriggerEvent(EventTypeEnum.AfterThrowCard, request, response, RoundContext);

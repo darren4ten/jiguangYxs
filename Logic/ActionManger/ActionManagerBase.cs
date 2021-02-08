@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Logic.Cards;
 using Logic.GameLevel;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
@@ -42,7 +43,7 @@ namespace Logic.ActionManger
 
         public abstract Task OnRequestStartStep_PlayCard();
 
-        public abstract Task OnRequestStartStep_ThrowCard();
+        public abstract Task<List<CardBase>> OnRequestStartStep_ThrowCard(int throwCount);
 
         public abstract Task OnRequestStartStep_ExitMyRound();
 

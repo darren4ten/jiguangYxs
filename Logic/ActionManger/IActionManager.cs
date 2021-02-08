@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Logic.Cards;
 using Logic.GameLevel;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse;
@@ -62,8 +63,9 @@ namespace Logic.ActionManger
         /// <summary>
         ///  请求开始弃牌阶段
         /// </summary>
+        /// <param name="throwCount"></param>
         /// <returns></returns>
-        Task OnRequestStartStep_ThrowCard();
+        Task<List<CardBase>> OnRequestStartStep_ThrowCard(int throwCount);
 
         /// <summary>
         /// 请求结束回合阶段
