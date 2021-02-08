@@ -504,6 +504,8 @@ namespace Logic.Model.Player
                       new RichTextWrapper("的回合结束", RichTextWrapper.GetColor(ColorEnum.Blue)),
                       new RichTextWrapper("---", RichTextWrapper.GetColor(ColorEnum.Black))
                       ));
+            //或者结束清空回合上下文.
+            RoundContext = null;
         }
 
         /// <summary>

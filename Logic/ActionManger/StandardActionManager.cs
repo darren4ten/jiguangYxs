@@ -205,7 +205,7 @@ namespace Logic.ActionManger
 
         public override async Task OnRequestStartStep_ExitMyRound()
         {
-            throw new NotImplementedException();
+            await Task.FromResult(0);
         }
 
         /// <summary>
