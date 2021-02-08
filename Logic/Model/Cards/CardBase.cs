@@ -85,6 +85,19 @@ namespace Logic.Cards
             }
         }
 
+        private bool _isPopout;
+        /// <summary>
+        /// 是否是弹出状态
+        /// </summary>
+        public bool IsPopout
+        {
+            get { return _isPopout; }
+            set
+            {
+                _isPopout = value;
+                OnPropertyChanged();
+            }
+        }
 
         private int _num;
         /// <summary>
@@ -449,7 +462,7 @@ namespace Logic.Cards
 
         private async Task<bool> ShowPlayButton()
         {
-            if (PlayerContext.Player.ActionManager is StandardActionManager)
+            if (!PlayerContext.IsAi())
             {
                 TaskCompletionSource<CardResponseContext> tcs = new TaskCompletionSource<CardResponseContext>();
 

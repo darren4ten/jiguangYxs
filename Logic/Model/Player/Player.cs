@@ -443,7 +443,7 @@ namespace Logic.Model.Player
                 }
             }
             //清除被请求的上下文
-            CardRequestContexts.RemoveAll(c => c.RequestId == newCardRequestContext.RequestId);
+            await RemoveCardRequestContext(newCardRequestContext.RequestId);
             return res;
         }
 
@@ -1306,6 +1306,34 @@ namespace Logic.Model.Player
 
         #endregion
 
+        /// <summary>
+        /// 移除失效的cardrequest
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns></returns>
+        private Task RemoveCardRequestContext(Guid requestId)
+        {
+            var removedCount = CardRequestContexts.RemoveAll(c => c.RequestId == requestId);
+            if (removedCount > 0 && !IsAi())
+            {
+                //检查如果是主动出牌模式，则：
+                //  如果没有cardRequestContexts的时候，提示请出牌
+                //检查如果是被动出牌模式，则：
+                //  如果只剩下最后一个cardRequestContext的时候提示
+                if (IsInZhudongMode())
+                {
+                    if (!CardRequestContexts.Any())
+                    {
+                        var tcs = RoundContext.RoundTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
+                        PlayerUiState.SetupOkCancelActionBar(tcs, "请出牌", null, "取消");
+                        return tcs.Task;
+                    }
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+
         #region IsAvailableForPlayer的具体逻辑
         /// <summary>
         /// 是否可以被治愈
@@ -1497,6 +1525,15 @@ namespace Logic.Model.Player
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// 是否是ai
+        /// </summary>
+        /// <returns></returns>
+        public bool IsAi()
+        {
+            return ActionManager is AiActionManager;
         }
 
         #endregion

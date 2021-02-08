@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Logic.Model.Enums;
 
 namespace Logic.GameLevel
@@ -23,5 +24,10 @@ namespace Logic.GameLevel
         /// 回合中各个技能触发次数字典
         /// </summary>
         public Dictionary<SkillTypeEnum, int> SkillTriggerTimesDic { get; set; }
+
+        /// <summary>
+        /// 回合结束的任务
+        /// </summary>
+        public TaskCompletionSource<CardResponseContext> RoundTaskCompletionSource { get; set; }
     }
 }

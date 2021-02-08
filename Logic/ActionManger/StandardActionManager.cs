@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Logic.Cards;
 using Logic.GameLevel;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.JinlangCards;
@@ -26,6 +27,12 @@ namespace Logic.ActionManger
         {
         }
 
+        /// <summary>
+        /// 请求触发技能
+        /// </summary>
+        /// <param name="skillType"></param>
+        /// <param name="cardRequestContext"></param>
+        /// <returns></returns>
         public override async Task<bool> OnRequestTriggerSkill(SkillTypeEnum skillType, CardRequestContext cardRequestContext)
         {
             //询问是否发动技能，一般只有被动技能才会需要询问，比如：集权、反击、鲁莽
@@ -40,6 +47,11 @@ namespace Logic.ActionManger
             return res != null && res.ResponseResult == ResponseResultEnum.Success ? true : false;
         }
 
+        /// <summary>
+        /// 并发请求出牌，只要有一个人出过牌就结束
+        /// </summary>
+        /// <param name="cardRequestContext"></param>
+        /// <returns></returns>
         public override async Task<CardResponseContext> OnParallelRequestResponseCard(CardRequestContext cardRequestContext)
         {
             //1. 手牌中是否有请求的牌
@@ -86,11 +98,49 @@ namespace Logic.ActionManger
             return new CardResponseContext() { };
         }
 
-        private void ShowActionBar(string message, string btnOkText, string btnCancelText) { }
         public override async Task<CardResponseContext> OnRequestResponseCard(CardRequestContext cardRequestContext)
         {
-            //showMsg("请出牌","取消",()=>{req.tcs.setResult(new response())})
             string displayMessage = $"是否打出“{cardRequestContext.RequestCard.DisplayName}?”";
+            //todo:如果武器牌可选，则高亮武器牌
+
+            //处理选择牌的请求
+            if (cardRequestContext.AttackType == AttackTypeEnum.SelectCard)
+            {
+                return await OnRequestPickCardFromPanel(new PickCardFromPanelRequest()
+                {
+                    MaxCount = cardRequestContext.MaxCardCountToPlay,
+                    MinCount = cardRequestContext.MinCardCountToPlay,
+                    Panel = cardRequestContext.Panel,
+                    RequestId = cardRequestContext.RequestId
+                });
+            }
+
+            //监听卡牌的弹出事件，如果卡牌弹出，则检查是否符合出牌要求：
+            //1. 花色要求
+            //2. 具体卡牌要求
+            //3. 出牌数量要求
+            PlayerContext.Player.PlayerUiState.OnCardInHandClicked = async (sender) =>
+            {
+                if (sender is CardBase card)
+                {
+                    card.IsPopout = !card.IsPopout;
+
+                    //如果是弹出状态，检查要求。如果能够满足要求，则弹出确认、取消按钮
+                    //满足的要求：出牌数小于等于最大出牌数，出牌满足花色和出牌要求
+                    //典型场景：
+                    //1. 出一张杀或者闪
+                    //2. 出一张红桃
+                    //3. 出两张手牌
+                    //4. 出两张杀或两张闪
+
+                    //检查手牌所有IsPopout的牌
+                    if (CanShowPlayButton(cardRequestContext))
+                    {
+                        PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(cardRequestContext.RequestTaskCompletionSource, displayMessage, "确定", "取消");
+                    }
+                }
+                return await Task.FromResult(false);
+            };
             PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(cardRequestContext.RequestTaskCompletionSource, displayMessage, null, "取消");
             var res = await cardRequestContext.RequestTaskCompletionSource.Task;
             return res;
@@ -126,6 +176,11 @@ namespace Logic.ActionManger
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 请求选择目标
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public override async Task<SelectedTargetsResponse> OnRequestSelectTargets(SelectedTargetsRequest request)
         {
             if (request.MinTargetCount <= 0 && request.MaxTargetCount <= 0)
@@ -159,5 +214,35 @@ namespace Logic.ActionManger
                 Status = ResponseResultEnum.Failed,
             };
         }
+
+        #region 私有逻辑
+        private bool CanShowPlayButton(CardRequestContext cardRequestContext)
+        {
+            //检查手牌所有IsPopout的牌
+            var pendingPlayCards = PlayerContext.Player.CardsInHand.Where(p => p.IsPopout).ToList();
+            if (
+                 pendingPlayCards.Count() <= cardRequestContext.MaxCardCountToPlay && pendingPlayCards.Count() >= cardRequestContext.MinCardCountToPlay
+            )
+            {
+                foreach (var p in pendingPlayCards)
+                {
+                    if (cardRequestContext.RequestCard.GetType() != p.GetType())
+                    {
+                        return false;
+                    }
+                    if (cardRequestContext.FlowerKind != Enums.FlowerKindEnum.Any)
+                    {
+                        if (cardRequestContext.FlowerKind != p.FlowerKind)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
     }
 }

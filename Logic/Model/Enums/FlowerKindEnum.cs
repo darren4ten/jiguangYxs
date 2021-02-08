@@ -6,6 +6,7 @@ namespace Logic.Enums
 {
     public enum FlowerKindEnum
     {
+        Any,
         Meihua,
         Fangkuai,
         Heitao,

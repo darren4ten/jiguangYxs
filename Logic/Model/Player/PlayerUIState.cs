@@ -13,6 +13,7 @@ using Logic.Model.RequestResponse.Request;
 namespace Logic.Model.Player
 {
     public delegate Task<bool?> BtnRoutedEventHandler();
+    public delegate Task<bool?> CardEventHandler(object sender);
     public class PlayerUIState : INotifyPropertyChanged
     {
         public ActionBar ActionBar { get; set; }
@@ -27,6 +28,11 @@ namespace Logic.Model.Player
         /// 玩家被单击的事件
         /// </summary>
         public BtnRoutedEventHandler OnPlayerClicked { get; set; }
+
+        /// <summary>
+        /// 手牌被单击的事件
+        /// </summary>
+        public CardEventHandler OnCardInHandClicked { get; set; }
 
         /// <summary>
         /// UI绑定的Player
@@ -138,7 +144,6 @@ namespace Logic.Model.Player
         {
             //找出所有可选择的目标
             var targets = BindPlayer.GameLevel.GetAlivePlayers();
-            var tcs = new TaskCompletionSource<CardResponseContext>();
             foreach (var target in targets)
             {
                 //获取两个player之间的距离，检查是否在攻击范围内
@@ -168,7 +173,7 @@ namespace Logic.Model.Player
                             var areReady = AreTargetsReady(request);
                             if (areReady)
                             {
-                                BindPlayer.PlayerUiState.SetupOkCancelActionBar(tcs, "", "确定", "取消");
+                                BindPlayer.PlayerUiState.SetupOkCancelActionBar(request.RequestTaskCompletionSource, "", "确定", "取消");
                             }
 
                             return await Task.FromResult(false);
@@ -180,20 +185,8 @@ namespace Logic.Model.Player
                 }
             }
 
-            if (request.RequestTaskCompletionSource != null)
-            {
-                var r = Task.WaitAny(request.RequestTaskCompletionSource.Task, tcs.Task);
-                if (r == 1)
-                {
-                    return new CardResponseContext()
-                    {
-                        ResponseResult = ResponseResultEnum.Cancelled,
-                        Message = "外部请求已完成或者终止"
-                    };
-                }
-            }
 
-            var response = await tcs.Task;
+            var response = await request.RequestTaskCompletionSource.Task;
             return response;
         }
 
