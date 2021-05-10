@@ -266,6 +266,7 @@ namespace Logic.Model.Player
 
         public BtnAction BtnAction1 { get; set; }
         public BtnAction BtnAction2 { get; set; }
+        public BtnAction BtnAction3 { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

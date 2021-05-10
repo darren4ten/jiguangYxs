@@ -27,6 +27,7 @@ namespace Logic.ActionManger
         public StandardActionManager() { }
         public StandardActionManager(PlayerContext playContext) : base(playContext)
         {
+            PlayerContext.Player.PlayerUiState.ActionBar = new ActionBar();
         }
 
         /// <summary>

@@ -30,7 +30,7 @@ namespace Logic.Cards
             get { return _cardId; }
             set
             {
-                _num = value;
+                _cardId = value;
                 OnPropertyChanged();
             }
         }

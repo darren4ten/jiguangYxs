@@ -31,20 +31,45 @@ namespace JgYxs.UI
             //testWindow.Show();
             //Close();
             //return;
+            InitLevel(2);
+        }
+
+        private void InitLevel(int level)
+        {
             GameDataContext gameDataContext = new GameDataContext() { TestStr = "ATestString" };
-            gameDataContext.GameLevel = new GameLevel1();
-            this.Dispatcher.BeginInvoke(new Action(async () =>
+            if (level == 1)
             {
-                await gameDataContext.GameLevel.Start((() =>
+                gameDataContext.GameLevel = new GameLevel1();
+                this.Dispatcher.BeginInvoke(new Action(async () =>
                 {
-                    gameDataContext.CurrentPlayer = gameDataContext.GameLevel.CurrentPlayer;
-                    gameDataContext.Player2 = gameDataContext.CurrentPlayer.GetNextPlayer(false);
-                    gameDataContext.Player3 = gameDataContext.Player2.GetNextPlayer(false);
-                    var level1 = new Level_001_NoFriend2Enemies(gameDataContext);
-                    this.Close();
-                    level1.Show();
+                    await gameDataContext.GameLevel.Start((() =>
+                    {
+                        gameDataContext.CurrentPlayer = gameDataContext.GameLevel.CurrentPlayer;
+                        gameDataContext.Player2 = gameDataContext.CurrentPlayer.GetNextPlayer(false);
+                        gameDataContext.Player3 = gameDataContext.Player2.GetNextPlayer(false);
+                        var level1 = new Level_001_NoFriend2Enemies(gameDataContext);
+                        this.Close();
+                        level1.Show();
+                    }));
                 }));
-            }));
+            }
+            else if (level == 2)
+            {
+                gameDataContext.GameLevel = new GameLevel2();
+                this.Dispatcher.BeginInvoke(new Action(async () =>
+                {
+                    await gameDataContext.GameLevel.Start((() =>
+                    {
+                        gameDataContext.CurrentPlayer = gameDataContext.GameLevel.CurrentPlayer;
+                        gameDataContext.Player2 = gameDataContext.CurrentPlayer.GetNextPlayer(false);
+                        gameDataContext.Player3 = gameDataContext.Player2.GetNextPlayer(false);
+                        var level1 = new Level_002_NoFriend2Enemies_Human(gameDataContext);
+                        this.Close();
+                        level1.Show();
+                    }));
+                }));
+            }
+
         }
     }
 }

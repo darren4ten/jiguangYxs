@@ -9,9 +9,8 @@ namespace JgYxs.UI.UserCtrl
     /// </summary>
     public partial class Card : UserControl
     {
-        private bool IsCardPopup = false;
-
-        public CardBase CurCard { get; set; }
+        public CardBase CurCard => (CardBase)DataContext;
+        private double _initMarginTop;
         public CardBase GetCard()
         {
             return (CardBase)DataContext;
@@ -19,19 +18,21 @@ namespace JgYxs.UI.UserCtrl
 
         public Card()
         {
-            CurCard = (CardBase)DataContext;
             InitializeComponent();
+            _initMarginTop = this.Margin.Top;
         }
 
+        public double CurrentMarginTop => CurCard.IsPopout ? _initMarginTop - 5 : _initMarginTop;
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            var card = GetCard();
-            var mt = IsCardPopup ? this.Margin.Top - 5 : this.Margin.Top + 5;
-            var mb = IsCardPopup ? this.Margin.Top + 5 : this.Margin.Top - 5;
-            this.Margin = new Thickness(this.Margin.Left, mt, this.Margin.Right, mb);
-            IsCardPopup = !IsCardPopup;
-            //MessageBox.Show($"You clicked {card.Number} {card.CardType}:{card.Name}");
+            //////单击卡牌时，
+            //var card = GetCard();
+            //var mt = IsCardPopup ? this.Margin.Top - 5 : this.Margin.Top + 5;
+            //var mb = IsCardPopup ? this.Margin.Top + 5 : this.Margin.Top - 5;
+            //this.Margin = new Thickness(this.Margin.Left, mt, this.Margin.Right, mb);
+            //IsCardPopup = !IsCardPopup;
+            ////MessageBox.Show($"You clicked {card.Number} {card.CardType}:{card.Name}");
         }
     }
 }

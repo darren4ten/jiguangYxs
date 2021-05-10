@@ -25,12 +25,14 @@
                 HorizontalAlignment="Left" Visibility="{Binding BtnAction2.IsVisible}" 
                 Margin="579,10,0,0" VerticalAlignment="Top" Width="75"/>-->
         <ListBox Margin="125,50,116,5"
+                 Name="CardsInHand"
                  ItemsSource="{Binding  CurrentPlayer.CardsInHand}"
                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
                  Background="Transparent">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Padding" Value="0"/>
+                    <EventSetter Event="Button.Click" Handler="OnCardInHandClicked"/>
                 </Style>
             </ListBox.ItemContainerStyle>
             <ListBox.ItemsPanel>
@@ -39,9 +41,10 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel DataContext="{Binding }">
-                        <userCtrl1:Card DataContext="{Binding }" />
+                <DataTemplate >
+                    <StackPanel DataContext="{Binding }"  MouseLeftButtonDown="OnCardInHandClicked">
+                        <userCtrl1:Card x:Name="cardCtrl" DataContext="{Binding }">
+                        </userCtrl1:Card>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

@@ -45,7 +45,7 @@ namespace UI.Levels
             this.GameDataContext = game;
             Names = new List<string>() { "Zhangsan", "Lisi" };
             TestName = "Lucy";
-        
+
             InitializeComponent();
         }
 
@@ -57,6 +57,7 @@ namespace UI.Levels
             GameDataContext.GameLevel.LogManager.AttachRecevier(HistoryPanel);
             RemainCards.DataContext = GameDataContext.GameLevel;
             TempCardDesk.DataContext = GameDataContext.GameLevel.TempCardDesk;
+            ActionBar.DataContext = GameDataContext.GameLevel.CurrentPlayer.PlayerUiState.ActionBar;
             //GameDataContext.Player2.AddMark(new ShoupengleiMark()).GetAwaiter().GetResult();
             //GameDataContext.Player2.AddMark(new HuadiweilaoMark()).GetAwaiter().GetResult();
             base.OnInitialized(e);

@@ -15,6 +15,15 @@
                         BorderThickness="0"
                 Background="Transparent"
                 >
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Style.Triggers>
+                        <!--<DataTrigger Binding="{Binding IsPopout}" Value="true">
+                            <Setter Property="Margin" Value="{Binding }"></Setter>
+                        </DataTrigger>-->
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
             <Grid>
                 <Image Source="{Binding Image}" Width="78" Height="108" Margin="-2"  Stretch="Fill"/>
                 <Label x:Name="LblNumber"

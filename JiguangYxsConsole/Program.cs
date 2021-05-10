@@ -13,7 +13,7 @@ namespace JiguangYxsConsole
             var game = new GameTest();
             try
             {
-                await game.RunGameLevel();
+                await game.RunGame(2);
                 Console.WriteLine("Game End!");
                 Console.Read();
             }
