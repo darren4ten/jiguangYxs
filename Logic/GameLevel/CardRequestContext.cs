@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Logic.Cards;
@@ -124,6 +125,26 @@ namespace Logic.GameLevel
             };
         }
 
+        /// <summary>
+        /// 给定的卡牌是否符合request要求
+        /// </summary>
+        /// <param name="cards"></param>
+        /// <returns></returns>
+        public bool IsMatch(IEnumerable<CardBase> cards)
+        {
+            if (cards == null)
+            {
+                return false;
+            }
+
+            if (IsCountMatch(cards) && cards.All(IsFlowKindMatch) && IsCardTypeMatch(cards))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public static CardRequestContext GetBaseCardRequestContext(List<Player> targets)
         {
             return new CardRequestContext()
@@ -134,6 +155,20 @@ namespace Logic.GameLevel
                 TargetPlayers = targets,
                 AttackDynamicFactor = AttackDynamicFactor.GetDefaultBaseAttackFactor()
             };
+        }
+
+        private bool IsCardTypeMatch(IEnumerable<CardBase> cards)
+        {
+            return RequestCard == null || cards.All(p => p.GetType() == RequestCard.GetType());
+        }
+
+        private bool IsCountMatch(IEnumerable<CardBase> cards)
+        {
+            return cards != null && cards.Count() >= MinCardCountToPlay && cards.Count() <= MaxCardCountToPlay;
+        }
+        private bool IsFlowKindMatch(CardBase card)
+        {
+            return FlowerKind == FlowerKindEnum.Any || card.FlowerKind == FlowerKind;
         }
     }
 }

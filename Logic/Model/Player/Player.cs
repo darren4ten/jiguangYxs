@@ -193,6 +193,7 @@ namespace Logic.Model.Player
                 Player = this
             };
             ActionManager.SetPlayerContext(playerContext);
+            ActionManager.Setup();
             _availablePlayerHeroes.ForEach(p =>
             {
                 p.AttachPlayerContext(playerContext);

@@ -22,7 +22,11 @@ namespace Logic.ActionManger
         {
         }
 
-        public void SetPlayerContext(PlayerContext playerContext)
+        public virtual void Setup()
+        {
+
+        }
+        public virtual void SetPlayerContext(PlayerContext playerContext)
         {
             PlayerContext = playerContext;
         }

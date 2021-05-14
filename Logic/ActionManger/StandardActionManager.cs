@@ -24,8 +24,17 @@ namespace Logic.ActionManger
     /// </summary>
     public class StandardActionManager : ActionManagerBase
     {
-        public StandardActionManager() { }
+        public StandardActionManager()
+        {
+           
+        }
+
         public StandardActionManager(PlayerContext playContext) : base(playContext)
+        {
+            PlayerContext.Player.PlayerUiState.ActionBar = new ActionBar();
+        }
+
+        public override void Setup()
         {
             PlayerContext.Player.PlayerUiState.ActionBar = new ActionBar();
         }
@@ -148,10 +157,11 @@ namespace Logic.ActionManger
 
         public override async Task OnRequestStartStep_PlayCard()
         {
+            PlayerContext.Player.RoundContext.RoundTaskCompletionSource =
+                new TaskCompletionSource<CardResponseContext>();
             //请求出牌时，提示请求出牌
-            var tcs = PlayerContext.Player.RoundContext.RoundTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
-            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, "请出牌", null, "取消");
-            await tcs.Task;
+            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(PlayerContext.Player.RoundContext.RoundTaskCompletionSource, "请出牌", null, "取消");
+            await PlayerContext.Player.RoundContext.RoundTaskCompletionSource.Task;
         }
 
         public override async Task<List<CardBase>> OnRequestStartStep_ThrowCard(int throwCount)

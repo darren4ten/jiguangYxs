@@ -22,7 +22,16 @@ namespace Logic.Model.Player
         /// </summary>
         public PanelBase Panel { get; set; }
 
-        public ActionBar ActionBar { get; set; }
+        private ActionBar _actionBar;
+        public ActionBar ActionBar
+        {
+            get { return _actionBar; }
+            set
+            {
+                _actionBar = value;
+                OnPropertyChanged();
+            }
+        }
 
         public SelectStatusEnum SelectStatus { get; set; }
 
@@ -65,7 +74,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public void SetupOkCancelActionBar(TaskCompletionSource<CardResponseContext> tcs, string displayMessage, string okText, string cancelText, BtnRoutedEventHandler btn1EventHandler = null, BtnRoutedEventHandler btn2EventHandler = null)
         {
-            ActionBar = new ActionBar();
+            ActionBar = ActionBar ?? new ActionBar();
             ActionBar.Visiable = true;
             ActionBar.DisplayMessage = new DisplayMessage()
             {
@@ -74,7 +83,11 @@ namespace Logic.Model.Player
             };
             if (string.IsNullOrEmpty(okText))
             {
-                ActionBar.BtnAction1 = null;
+                ActionBar.BtnAction1 = ActionBar.BtnAction1 ?? new BtnAction()
+                {
+                    IsVisible = false
+                };
+                ActionBar.BtnAction1.IsVisible = false;
             }
             else
             {
@@ -100,7 +113,11 @@ namespace Logic.Model.Player
 
             if (string.IsNullOrEmpty(cancelText))
             {
-                ActionBar.BtnAction2 = null;
+                ActionBar.BtnAction2 = ActionBar.BtnAction2 ?? new BtnAction()
+                {
+                    IsVisible = false
+                };
+                ActionBar.BtnAction2.IsVisible = false;
             }
             else
             {
@@ -124,6 +141,12 @@ namespace Logic.Model.Player
                     }
                 };
             }
+
+            ActionBar.BtnAction3 = ActionBar.BtnAction3 ?? new BtnAction()
+            {
+                IsVisible = false
+            };
+            ActionBar.BtnAction3.IsVisible = false;
         }
 
         /// <summary>
@@ -204,7 +227,7 @@ namespace Logic.Model.Player
                             var selResults = GetSelectedTargets();
                             //切换状态
                             target.PlayerUiState.SelectStatus =
-                                target.PlayerUiState.SelectStatus == SelectStatusEnum.IsSelected ? SelectStatusEnum.PendingSelected : SelectStatusEnum.IsSelected;
+                        target.PlayerUiState.SelectStatus == SelectStatusEnum.IsSelected ? SelectStatusEnum.PendingSelected : SelectStatusEnum.IsSelected;
                             //检查当前选中的数目是否超过了最大值，如果超过，则将逆时针最近的一个选中的目标取消选中
                             if (selResults.Count >= request.MaxTargetCount - 1)
                             {
@@ -259,14 +282,89 @@ namespace Logic.Model.Player
     public class ActionBar : INotifyPropertyChanged
     {
         public Guid ActionId { get; set; }
-        public bool Visiable { get; set; }
-        public ToastMessage ToastMessage { get; set; }
 
-        public DisplayMessage DisplayMessage { get; set; }
+        private bool _Visiable;
 
-        public BtnAction BtnAction1 { get; set; }
-        public BtnAction BtnAction2 { get; set; }
-        public BtnAction BtnAction3 { get; set; }
+        public bool Visiable
+        {
+            get
+            {
+                return _Visiable;
+            }
+            set
+            {
+                _Visiable = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ToastMessage _toastMessage;
+        public ToastMessage ToastMessage
+        {
+            get
+            {
+                return _toastMessage;
+            }
+            set
+            {
+                _toastMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DisplayMessage _displayMessage;
+        public DisplayMessage DisplayMessage
+        {
+            get
+            {
+                return _displayMessage;
+            }
+            set
+            {
+                _displayMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private BtnAction _btnAction1;
+        public BtnAction BtnAction1
+        {
+            get
+            {
+                return _btnAction1;
+            }
+            set
+            {
+                _btnAction1 = value;
+                OnPropertyChanged();
+            }
+        }
+        private BtnAction _btnAction2;
+        public BtnAction BtnAction2
+        {
+            get
+            {
+                return _btnAction2;
+            }
+            set
+            {
+                _btnAction2 = value;
+                OnPropertyChanged();
+            }
+        }
+        private BtnAction _btnAction3;
+        public BtnAction BtnAction3
+        {
+            get
+            {
+                return _btnAction3;
+            }
+            set
+            {
+                _btnAction3 = value;
+                OnPropertyChanged();
+            }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -278,8 +376,30 @@ namespace Logic.Model.Player
 
     public class BtnAction : INotifyPropertyChanged
     {
-        public string BtnText { get; set; }
-        public bool IsVisible { get; set; }
+        private string _btnText;
+        public string BtnText {
+            get
+            {
+                return _btnText;
+            }
+            set
+            {
+                _btnText = value;
+                OnPropertyChanged();
+            }
+        }
+        private bool _isVisible;
+        public bool IsVisible {
+            get
+            {
+                return _isVisible;
+            }
+            set
+            {
+                _isVisible = value;
+                OnPropertyChanged();
+            }
+        }
 
         public BtnRoutedEventHandler BtnRoutedEventHandler { get; set; }
 
@@ -294,9 +414,33 @@ namespace Logic.Model.Player
 
     public class DisplayMessage : INotifyPropertyChanged
     {
-        public bool IsVisible { get; set; }
+        private bool _isVisible;
+        public bool IsVisible
+        {
+            get
+            {
+                return _isVisible;
+            }
+            set
+            {
+                _isVisible = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public string Content { get; set; }
+        private string _content;
+        public string Content
+        {
+            get
+            {
+                return _content;
+            }
+            set
+            {
+                _content = value;
+                OnPropertyChanged();
+            }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

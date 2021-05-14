@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -8,6 +9,7 @@ using System.Windows.Input;
 using JgYxs.UI.Model;
 using Logic.Cards;
 using Logic.GameLevel;
+using Logic.Model.Enums;
 using Logic.Model.Player;
 
 namespace JgYxs.UI.UserCtrl
@@ -71,23 +73,66 @@ namespace JgYxs.UI.UserCtrl
                 card.IsPopout = false;
             }
             RefreshCardPopoutStatus(card);
-           
+
+            var cards = Player.CardsInHand.Where(p => p.IsPopout).ToList();
             //检查弹出的牌是否可以被打出，即检查弹出的牌是否是CardRequestContext需要的或者RoundContext的需求，
             //  如果不符合，则ActionBar的DisplayMessage需要提示出牌不合理，只显示取消按钮
             //  如果符合，则显示确认和取消按钮
+            //被动出牌
             if (recentRequest != null)
             {
-                var popCount = Player.CardsInHand.Count(c => c.IsPopout);
-                if (popCount >= recentRequest.MinCardCountToPlay && popCount <= recentRequest.MaxCardCountToPlay)
+                if (recentRequest.IsMatch(cards))
                 {
+                    //继续检查出牌是否符合要求，如果符合要求
                     //提示确认、取消
-                    //Player.PlayerUiState.SetupOkCancelActionBar();
+                    Player.PlayerUiState.SetupOkCancelActionBar(recentRequest.RequestTaskCompletionSource, "确定出牌", "确定", "取消", (
+                        () =>
+                        {
+                            recentRequest.RequestTaskCompletionSource.SetResult(new CardResponseContext()
+                            {
+                                Cards = cards,
+                                ResponseResult = ResponseResultEnum.Success
+                            });
+                            return null;
+                        }));
                 }
                 else
                 {
                     //提示还需要选择至少MaxCardCountToPlay-MinCardCountToPlay 张牌
+                    Player.PlayerUiState.SetupOkCancelActionBar(recentRequest.RequestTaskCompletionSource, "选择的牌不可以被打出", null, "取消");
                 }
+            }
+            //主动出牌
+            else
+            {
+                var firstCard = cards.FirstOrDefault();
+                if (firstCard != null)
+                {
+                    if (firstCard.CanBePlayed())
+                    {
+                        Player.PlayerUiState.SetupOkCancelActionBar(Player.RoundContext.RoundTaskCompletionSource, "确定出牌", "确定", "取消", (
+                            () =>
+                            {
+                                Player.RoundContext.RoundTaskCompletionSource.SetResult(new CardResponseContext()
+                                {
+                                    Cards = cards,
+                                    ResponseResult = ResponseResultEnum.Success
+                                });
+                                return null;
+                            }));
+                    }
+                    else
+                    {
+                        //提示还需要选择至少MaxCardCountToPlay-MinCardCountToPlay 张牌
+                        Player.PlayerUiState.SetupOkCancelActionBar(Player.RoundContext.RoundTaskCompletionSource, "选择的牌不可以被打出", null, "取消");
+                    }
 
+                }
+                else
+                {
+                    //提示还需要选择至少MaxCardCountToPlay-MinCardCountToPlay 张牌
+                    Player.PlayerUiState.SetupOkCancelActionBar(Player.RoundContext.RoundTaskCompletionSource, "请出牌", null, "取消");
+                }
             }
         }
     }

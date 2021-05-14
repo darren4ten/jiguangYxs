@@ -29,7 +29,7 @@ namespace UI.Levels
     {
         public GameDataContext GameDataContext { get; set; } = new GameDataContext()
         {
-            CurrentPlayer = new Player(new GameLevel1(), new AiActionManager(), new List<Logic.Model.Player.PlayerHero>())
+            CurrentPlayer = new Player(new GameLevel2(), new AiActionManager(), new List<Logic.Model.Player.PlayerHero>())
         };
 
         public List<string> Names { get; set; }
