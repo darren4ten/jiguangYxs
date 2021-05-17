@@ -10,6 +10,7 @@ using Logic.GameLevel;
 using Logic.GameLevel.Panel;
 using Logic.Model.Enums;
 using Logic.Model.RequestResponse.Request;
+using Logic.Model.RequestResponse.Response;
 
 namespace Logic.Model.Player
 {
@@ -97,7 +98,7 @@ namespace Logic.Model.Player
                     IsVisible = true,
                     BtnRoutedEventHandler = async () =>
                     {
-                        ActionBar.Visiable = false;
+                        HideActionBar();
                         if (btn1EventHandler == null)
                         {
                             tcs.SetResult(new CardResponseContext() { ResponseResult = ResponseResultEnum.Success });
@@ -127,7 +128,7 @@ namespace Logic.Model.Player
                     IsVisible = true,
                     BtnRoutedEventHandler = async () =>
                     {
-                        ActionBar.Visiable = false;
+                        HideActionBar();
                         if (btn2EventHandler == null)
                         {
                             tcs.SetResult(new CardResponseContext() { ResponseResult = ResponseResultEnum.Cancelled });
@@ -148,6 +149,7 @@ namespace Logic.Model.Player
             };
             ActionBar.BtnAction3.IsVisible = false;
         }
+
 
         /// <summary>
         /// 显示面板
@@ -209,12 +211,17 @@ namespace Logic.Model.Player
         /// </summary>
         /// <param name="request"></param>
         /// <param name="clickedAction">点击之后的动作</param>
-        public async Task<CardResponseContext> HighlightAvailableTargets(SelectedTargetsRequest request, Action<object> clickedAction)
+        public async Task<SelectedTargetsResponse> HighlightAvailableTargets(SelectedTargetsRequest request, Action<object> clickedAction)
         {
             //找出所有可选择的目标
             var targets = BindPlayer.GameLevel.GetAlivePlayers();
             foreach (var target in targets)
             {
+                if (target.PlayerId == BindPlayer.PlayerId)
+                {
+                    target.PlayerUiState.SelectStatus = SelectStatusEnum.Idle;
+                    continue;
+                }
                 //获取两个player之间的距离，检查是否在攻击范围内
                 var canBeSelected = await BindPlayer.IsAvailableForPlayer(target, request.SrcCards?.FirstOrDefault(), request.TargetType);
                 //设置玩家选中状态
@@ -242,10 +249,16 @@ namespace Logic.Model.Player
                             var areReady = AreTargetsReady(request);
                             if (areReady)
                             {
-                                BindPlayer.PlayerUiState.SetupOkCancelActionBar(request.RequestTaskCompletionSource, "", "确定", "取消");
+                                //BindPlayer.PlayerUiState.SetupOkCancelActionBar(request.RequestTaskCompletionSource, "", "确定", "取消");
+                                request.SelectTargetsRequestTaskCompletionSource.SetResult(new SelectedTargetsResponse()
+                                {
+                                    Status = ResponseResultEnum.Success,
+                                    Targets = GetSelectedTargets()
+                                });
+
                             }
 
-                            return await Task.FromResult(false);
+                            return await Task.FromResult(true);
                         };
                 }
                 else
@@ -255,7 +268,7 @@ namespace Logic.Model.Player
             }
 
 
-            var response = await request.RequestTaskCompletionSource.Task;
+            var response = await request.SelectTargetsRequestTaskCompletionSource.Task;
             return response;
         }
 
@@ -277,6 +290,18 @@ namespace Logic.Model.Player
             return false;
         }
 
+        private void HideActionBar()
+        {
+            ActionBar.Visiable = false;
+            ActionBar.DisplayMessage = new DisplayMessage()
+            {
+                Content = "",
+                IsVisible = false
+            };
+            ActionBar.BtnAction1.IsVisible = false;
+            ActionBar.BtnAction2.IsVisible = false;
+            ActionBar.BtnAction3.IsVisible = false;
+        }
     }
 
     public class ActionBar : INotifyPropertyChanged
@@ -377,7 +402,8 @@ namespace Logic.Model.Player
     public class BtnAction : INotifyPropertyChanged
     {
         private string _btnText;
-        public string BtnText {
+        public string BtnText
+        {
             get
             {
                 return _btnText;
@@ -389,7 +415,8 @@ namespace Logic.Model.Player
             }
         }
         private bool _isVisible;
-        public bool IsVisible {
+        public bool IsVisible
+        {
             get
             {
                 return _isVisible;

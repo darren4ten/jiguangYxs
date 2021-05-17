@@ -74,6 +74,14 @@
                     <Setter Property="Background" Value="ForestGreen" />
                     <Setter Property="BorderBrush" Value="ForestGreen" />
                 </DataTrigger>
+                <DataTrigger Binding="{Binding CurrentPlayerHero.PlayerUIState.SelectStatus}" Value="{x:Static enums:SelectStatusEnum.PendingSelected}">
+                    <Setter Property="Background" Value="BlueViolet" />
+                    <Setter Property="BorderBrush" Value="Blue" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding CurrentPlayerHero.PlayerUIState.SelectStatus}" Value="{x:Static enums:SelectStatusEnum.IsSelected}">
+                    <Setter Property="Background" Value="BlueViolet" />
+                    <Setter Property="BorderBrush" Value="Yellow" />
+                </DataTrigger>
             </Style.Triggers>
         </Style>
         <userCtrl:GrayImage x:Key="GrayImage" />
@@ -107,6 +115,7 @@
                                     <Setter Property="Source" Value="{Binding RelativeSource={RelativeSource Self}, Path=Tag}"></Setter>
                                 </DataTrigger>
                             </Style.Triggers>
+                            <EventSetter Event="MouseLeftButtonDown" Handler="OnPlayerClicked"></EventSetter>
                         </Style>
                     </Image.Style>
                 </Image>

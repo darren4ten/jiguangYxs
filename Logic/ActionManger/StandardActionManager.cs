@@ -26,7 +26,7 @@ namespace Logic.ActionManger
     {
         public StandardActionManager()
         {
-           
+
         }
 
         public StandardActionManager(PlayerContext playContext) : base(playContext)
@@ -225,21 +225,22 @@ namespace Logic.ActionManger
             var response = await PlayerContext.Player.PlayerUiState.HighlightAvailableTargets(request, null);
             //2. 完成目标选择之后（取消或者确定），恢复玩家的选中状态为idle.
             PlayerContext.Player.PlayerUiState.RestoreSelectStatus(SelectStatusEnum.Idle);
+            return response;
 
-            if (response.ResponseResult == ResponseResultEnum.Success)
-            {
-                return new SelectedTargetsResponse()
-                {
-                    Status = ResponseResultEnum.Success,
-                    Targets = PlayerContext.Player.PlayerUiState.GetSelectedTargets()
-                };
-            }
+            //if (response.Status == ResponseResultEnum.Success)
+            //{
+            //    return new SelectedTargetsResponse()
+            //    {
+            //        Status = ResponseResultEnum.Success,
+            //        Targets = PlayerContext.Player.PlayerUiState.GetSelectedTargets()
+            //    };
+            //}
 
-            //  1.1 如果满足了要求，则弹窗显示确定、取消按钮，如果确定，则返回selecte目标，如果取消，则返回失败
-            return new SelectedTargetsResponse()
-            {
-                Status = ResponseResultEnum.Failed,
-            };
+            ////  1.1 如果满足了要求，则弹窗显示确定、取消按钮，如果确定，则返回selecte目标，如果取消，则返回失败
+            //return new SelectedTargetsResponse()
+            //{
+            //    Status = ResponseResultEnum.Failed,
+            //};
         }
 
         #region 私有逻辑

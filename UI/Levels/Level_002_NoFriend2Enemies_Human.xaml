@@ -8,7 +8,6 @@
         ResizeMode="NoResize"
         Title="Level_001_NoFriend2Enemies" Height="530" Width="1032">
     <Grid Height="520" Width="1032">
-        <UserCtrl:TempCardDesk x:Name="TempCardDesk" HorizontalAlignment="Left" Margin="176,186,0,0" VerticalAlignment="Top"/>
         <Image Source="pack://application:,,,/Resources/bg/dragon.jpg" Stretch="Fill" />
 
         <StackPanel Width="200"
@@ -32,5 +31,6 @@
         <UserCtrl:ActionBar 
             x:Name="ActionBar"
             HorizontalAlignment="Center" Margin="-10,334,0,0" VerticalAlignment="Top"/>
+        <UserCtrl:TempCardDesk x:Name="TempCardDesk" HorizontalAlignment="Left" Margin="176,186,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

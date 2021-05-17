@@ -432,7 +432,7 @@ namespace Logic.Cards
                 if (this is INeedTargets)
                 {
                     var selectRequest = ((INeedTargets)this).GetSelectTargetRequest();
-                    selectRequest.RequestTaskCompletionSource = taskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
+                    selectRequest.SelectTargetsRequestTaskCompletionSource = new TaskCompletionSource<SelectedTargetsResponse>();
                     var targetResponse = await SelectTargets(selectRequest);
                     if (selectRequest.MinTargetCount == 0
                         || (targetResponse?.Targets != null && targetResponse.Targets.Count >= selectRequest.MinTargetCount))
@@ -440,27 +440,28 @@ namespace Logic.Cards
                         request.SrcPlayer = PlayerContext.Player;
                         request.TargetPlayers = targetResponse.Targets;
                         request.AttackType = selectRequest.TargetType;
-                        await PlayCard(request, PlayerContext.Player.RoundContext);
-                        return true;
+                        return await ShowPlayButton(async () =>
+                        {
+                            await PlayCard(request, PlayerContext.Player.RoundContext);
+                        });
                     }
                 }
                 else
                 {
                     //如果是人类，则展示确认按钮
-                    var continuePlay = await ShowPlayButton();
-                    if (continuePlay)
+                    return await ShowPlayButton(async () =>
                     {
                         request.SrcPlayer = PlayerContext.Player;
                         await PlayCard(request, PlayerContext.Player.RoundContext);
-                        return true;
-                    }
+                    });
+
                 }
             }
 
             return false;
         }
 
-        private async Task<bool> ShowPlayButton()
+        private async Task<bool> ShowPlayButton(Func<Task> action)
         {
             if (!PlayerContext.IsAi())
             {
@@ -469,6 +470,7 @@ namespace Logic.Cards
                 string displayMessage = "";
                 PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, displayMessage, "确定", "");
                 var res = await tcs.Task;
+                await action();
                 if (res.ResponseResult == ResponseResultEnum.Success)
                 {
                     return true;
@@ -479,6 +481,7 @@ namespace Logic.Cards
                     return false;
                 }
             }
+            await action();
             //如果是机器人，则直接出牌
             return true;
         }

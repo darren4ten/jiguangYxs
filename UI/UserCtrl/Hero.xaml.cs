@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using Logic.Model.Hero;
 using Logic.Model.Player;
@@ -32,7 +33,7 @@ namespace JgYxs.UI.UserCtrl
             var parent = VisualTreeHelper.GetParent(this);
             if (parent != null && parent is Window)
             {
-                var pWin = (Window) parent;
+                var pWin = (Window)parent;
                 Vector offset = VisualTreeHelper.GetOffset(this);
                 ShowRight = pWin.Width - offset.X < this.Width + 200;
                 TestStr = (this.Width + offset.X) + (ShowRight ? "Right" : "Left");
@@ -47,5 +48,11 @@ namespace JgYxs.UI.UserCtrl
             base.OnInitialized(e);
         }
 
+        private async void OnPlayerClicked(object sender, MouseButtonEventArgs e)
+        {
+            var dt = ((Image)sender).DataContext;
+            var player = (Player)dt;
+            await player.PlayerUiState.OnPlayerClicked();
+        }
     }
 }

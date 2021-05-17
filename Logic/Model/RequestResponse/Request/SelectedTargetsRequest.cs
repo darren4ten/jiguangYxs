@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Logic.Cards;
 using Logic.GameLevel;
 using Logic.Model.Enums;
+using Logic.Model.RequestResponse.Response;
 
 namespace Logic.Model.RequestResponse.Request
 {
@@ -32,5 +34,7 @@ namespace Logic.Model.RequestResponse.Request
         /// 最小目标数
         /// </summary>
         public int MinTargetCount { get; set; }
+
+        public TaskCompletionSource<SelectedTargetsResponse> SelectTargetsRequestTaskCompletionSource { get; set; }
     }
 }

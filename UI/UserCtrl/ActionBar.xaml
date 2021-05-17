@@ -23,6 +23,8 @@
             <Setter Property="Width" Value="90"></Setter>
             <Setter Property="Height" Value="22"></Setter>
             <Setter Property="FontSize" Value="12"></Setter>
+            <EventSetter Event="Button.Click" Handler="EventSetter_OnHandler">
+           </EventSetter>
         </Style>
     </UserControl.Resources>
     <Grid>
