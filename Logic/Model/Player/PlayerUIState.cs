@@ -101,7 +101,7 @@ namespace Logic.Model.Player
                         HideActionBar();
                         if (btn1EventHandler == null)
                         {
-                            tcs.SetResult(new CardResponseContext() { ResponseResult = ResponseResultEnum.Success });
+                            tcs?.SetResult(new CardResponseContext() { ResponseResult = ResponseResultEnum.Success });
                         }
                         else
                         {
@@ -131,7 +131,7 @@ namespace Logic.Model.Player
                         HideActionBar();
                         if (btn2EventHandler == null)
                         {
-                            tcs.SetResult(new CardResponseContext() { ResponseResult = ResponseResultEnum.Cancelled });
+                            tcs?.SetResult(new CardResponseContext() { ResponseResult = ResponseResultEnum.Cancelled });
                         }
                         else
                         {

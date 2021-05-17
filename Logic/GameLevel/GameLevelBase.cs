@@ -516,7 +516,7 @@ namespace Logic.GameLevel
                 //如果有人响应过请求，则其他请求需要被取消。在移除之前将其他task Cancel掉。
                 if (taskDic.ContainsKey(task.Id) && taskDic[task.Id] != null)
                 {
-                    taskDic[task.Id].SetResult(new CardResponseContext() { ResponseResult = ResponseResultEnum.Failed, Message = "其他玩家已响应" });
+                    taskDic[task.Id].TrySetResult(new CardResponseContext() { ResponseResult = ResponseResultEnum.Failed, Message = "其他玩家已响应" });
                 }
                 tasks.Remove(task);
 

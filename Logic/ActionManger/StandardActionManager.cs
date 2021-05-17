@@ -73,7 +73,7 @@ namespace Logic.ActionManger
         {
             string displayMessage = $"是否打出“{cardRequestContext.RequestCard.DisplayName}?”";
             //todo:如果武器牌可选，则高亮武器牌
-            var tcs = cardRequestContext.RequestTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
+            var tcs = cardRequestContext.RequestTaskCompletionSource;
             //处理选择牌的请求
             if (cardRequestContext.AttackType == AttackTypeEnum.SelectCard)
             {
@@ -87,34 +87,13 @@ namespace Logic.ActionManger
                 });
             }
 
-            //监听卡牌的弹出事件，如果卡牌弹出，则检查是否符合出牌要求：
-            //1. 花色要求
-            //2. 具体卡牌要求
-            //3. 出牌数量要求
-            PlayerContext.Player.PlayerUiState.OnCardInHandClicked = async (sender) =>
-            {
-                if (sender is CardBase card)
+            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, displayMessage, null, "取消", btn2EventHandler: (
+                async () =>
                 {
-                    card.IsPopout = !card.IsPopout;
-
-                    //如果是弹出状态，检查要求。如果能够满足要求，则弹出确认、取消按钮
-                    //满足的要求：出牌数小于等于最大出牌数，出牌满足花色和出牌要求
-                    //典型场景：
-                    //1. 出一张杀或者闪
-                    //2. 出一张红桃
-                    //3. 出两张手牌
-                    //4. 出两张杀或两张闪
-
-                    //检查手牌所有IsPopout的牌
-                    if (CanShowPlayButton(cardRequestContext))
-                    {
-                        PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(cardRequestContext.RequestTaskCompletionSource, displayMessage, "确定", "取消");
-                    }
-                }
-                return await Task.FromResult(false);
-            };
-            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(cardRequestContext.RequestTaskCompletionSource, displayMessage, null, "取消");
-            var res = await (cardRequestContext.RequestTaskCompletionSource?.Task ?? tcs.Task);
+                    tcs.SetResult(new CardResponseContext() { ResponseResult = ResponseResultEnum.Failed });
+                    return await Task.FromResult(true);
+                }));
+            var res = await tcs.Task;
             return res;
         }
 

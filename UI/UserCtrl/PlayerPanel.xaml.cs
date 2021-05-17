@@ -101,6 +101,8 @@ namespace JgYxs.UI.UserCtrl
                     //提示还需要选择至少MaxCardCountToPlay-MinCardCountToPlay 张牌
                     Player.PlayerUiState.SetupOkCancelActionBar(recentRequest.RequestTaskCompletionSource, "选择的牌不可以被打出", null, "取消");
                 }
+
+                await recentRequest.RequestTaskCompletionSource.Task;
             }
             //主动出牌
             else
@@ -132,7 +134,12 @@ namespace JgYxs.UI.UserCtrl
                 else
                 {
                     //提示还需要选择至少MaxCardCountToPlay-MinCardCountToPlay 张牌
-                    Player.PlayerUiState.SetupOkCancelActionBar(Player.RoundContext.RoundTaskCompletionSource, "请出牌", null, "取消");
+                    Player.PlayerUiState.SetupOkCancelActionBar(Player.RoundContext?.RoundTaskCompletionSource, "请出牌", null, "取消");
+                }
+
+                if (Player.RoundContext?.RoundTaskCompletionSource != null)
+                {
+                    await Player.RoundContext.RoundTaskCompletionSource.Task;
                 }
             }
         }

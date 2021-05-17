@@ -397,6 +397,8 @@ namespace Logic.Model.Player
             //设置被请求的上下文为原始请求的深拷贝
             var newCardRequestContext = cardRequestContext.DeepClone();
             CardRequestContexts.Add(newCardRequestContext);
+            newCardRequestContext.RequestTaskCompletionSource = newCardRequestContext.RequestTaskCompletionSource ??
+                                                                new TaskCompletionSource<CardResponseContext>();
             var responseContext = new CardResponseContext();
             await TriggerEvent(Enums.EventTypeEnum.BeforeBeidongPlayCard, newCardRequestContext, responseContext, roundContext);
             await TriggerEvent(Enums.EventTypeEnum.BeidongPlayCard, newCardRequestContext, responseContext, roundContext);
@@ -1189,7 +1191,8 @@ namespace Logic.Model.Player
                 SrcPlayer = cardRequestContext.SrcPlayer,
                 TargetPlayers = cardRequestContext.TargetPlayers,
                 IsMerged = true,
-                Panel = cardRequestContext.Panel
+                Panel = cardRequestContext.Panel,
+                RequestTaskCompletionSource = cardRequestContext.RequestTaskCompletionSource
             };
             newCardRequestContext.AttackDynamicFactor = cardRequestContext.AttackDynamicFactor?.DeepClone();
             if (baseAttackDynamicFactor != null)
