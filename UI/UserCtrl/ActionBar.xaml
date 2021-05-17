@@ -28,9 +28,12 @@
         </Style>
     </UserControl.Resources>
     <Grid>
+        
         <Label Name="LblDisplayMessage" 
-               Foreground="Red"
-               Width="600" Height="20" FontSize="12" Content="{Binding DisplayMessage.Content }" Margin="0,0,0,45">
+               Foreground="Green"
+               BorderThickness="1"
+               FontWeight="Bold"
+               Width="600" Height="30" FontSize="14" Content="{Binding DisplayMessage.Content}" Margin="0,0,0,20">
             <Label.Style>
                 <Style TargetType="Label">
                     <Style.Triggers>
@@ -42,7 +45,6 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-
             </Label.Style>
         </Label>
         <Button Name="Btn1"
@@ -59,5 +61,11 @@
                 Style="{StaticResource Btn}"
                 DataContext="{Binding BtnAction3}"
                 Margin="438,23,72,3"></Button>
+        <!--<Label Name="LblDisplayMessage1" 
+               Foreground="Red"
+               Width="600" Height="30" FontSize="12"
+               BorderThickness="1"
+               Content="Test asdf content" Margin="0,0,0,20">
+        </Label>-->
     </Grid>
 </UserControl>

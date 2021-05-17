@@ -73,7 +73,7 @@ namespace Logic.ActionManger
         {
             string displayMessage = $"是否打出“{cardRequestContext.RequestCard.DisplayName}?”";
             //todo:如果武器牌可选，则高亮武器牌
-
+            var tcs = cardRequestContext.RequestTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
             //处理选择牌的请求
             if (cardRequestContext.AttackType == AttackTypeEnum.SelectCard)
             {
@@ -82,7 +82,8 @@ namespace Logic.ActionManger
                     MaxCount = cardRequestContext.MaxCardCountToPlay,
                     MinCount = cardRequestContext.MinCardCountToPlay,
                     Panel = cardRequestContext.Panel,
-                    RequestId = cardRequestContext.RequestId
+                    RequestId = cardRequestContext.RequestId,
+                    RequestTaskCompletionSource = tcs
                 });
             }
 
@@ -113,7 +114,7 @@ namespace Logic.ActionManger
                 return await Task.FromResult(false);
             };
             PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(cardRequestContext.RequestTaskCompletionSource, displayMessage, null, "取消");
-            var res = await cardRequestContext.RequestTaskCompletionSource.Task;
+            var res = await (cardRequestContext.RequestTaskCompletionSource?.Task ?? tcs.Task);
             return res;
         }
 
