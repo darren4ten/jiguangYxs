@@ -72,7 +72,7 @@ namespace Logic.ActionManger
 
         public override async Task<CardResponseContext> OnRequestResponseCard(CardRequestContext cardRequestContext)
         {
-            string displayMessage = string.IsNullOrEmpty(cardRequestContext?.Message) ? $"是否打出“{cardRequestContext?.RequestCard?.DisplayName}?”" : cardRequestContext.Message;
+            string displayMessage = string.IsNullOrEmpty(cardRequestContext?.Message) ? GetMessage(cardRequestContext) : cardRequestContext.Message;
             //todo:如果武器牌可选，则高亮武器牌
             var tcs = cardRequestContext.RequestTaskCompletionSource;
             //处理选择牌的请求
@@ -229,6 +229,28 @@ namespace Logic.ActionManger
         }
 
         #region 私有逻辑
+
+        private string GetMessage(CardRequestContext cardRequestContext)
+        {
+            if (cardRequestContext == null)
+            {
+                return null;
+            }
+            string message = "是否打出";
+
+            if (cardRequestContext.MaxCardCountToPlay > cardRequestContext.MinCardCountToPlay)
+            {
+                message += cardRequestContext.MinCardCountToPlay + "-" + cardRequestContext.MaxCardCountToPlay + "张";
+            }
+            else if (cardRequestContext.MaxCardCountToPlay == cardRequestContext.MinCardCountToPlay && cardRequestContext.MaxCardCountToPlay > 1)
+            {
+                message += cardRequestContext.MinCardCountToPlay + "张";
+            }
+
+            message += "“" + cardRequestContext.RequestCard?.DisplayName + "”";
+            return message;
+        }
+
         /// <summary>
         /// 面板牌能否被选中
         /// </summary>

@@ -18,6 +18,7 @@ using Logic.GameLevel;
 using Logic.GameLevel.Levels;
 using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.EquipmentCards;
+using Logic.Model.Cards.JinlangCards;
 using Logic.Model.Mark;
 using Logic.Model.Player;
 
@@ -65,6 +66,13 @@ namespace UI.Levels
                 new Sha(),
                 new Shan()
             }).GetAwaiter().GetResult();
+            GameDataContext.Player2.AddCardsInHand(new List<CardBase>()
+            {
+                new Juedou(),
+                new Sha(),
+                new Shan()
+            }).GetAwaiter().GetResult();
+
             base.OnInitialized(e);
         }
     }
