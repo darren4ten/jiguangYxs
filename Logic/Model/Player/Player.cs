@@ -1335,23 +1335,6 @@ namespace Logic.Model.Player
         private Task RemoveCardRequestContext(Guid requestId)
         {
             var removedCount = CardRequestContexts.RemoveAll(c => c.RequestId == requestId);
-            if (removedCount > 0 && !IsAi())
-            {
-                //检查如果是主动出牌模式，则：
-                //  如果没有cardRequestContexts的时候，提示请出牌
-                //检查如果是被动出牌模式，则：
-                //  如果只剩下最后一个cardRequestContext的时候提示
-                if (IsInZhudongMode())
-                {
-                    if (!CardRequestContexts.Any())
-                    {
-                        var tcs = RoundContext.RoundTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
-                        PlayerUiState.SetupOkCancelActionBar(tcs, "请出牌", null, "取消");
-                        return tcs.Task;
-                    }
-                }
-            }
-
             return Task.CompletedTask;
         }
 
