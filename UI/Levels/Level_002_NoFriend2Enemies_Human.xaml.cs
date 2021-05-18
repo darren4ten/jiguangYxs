@@ -17,6 +17,7 @@ using Logic.Cards;
 using Logic.GameLevel;
 using Logic.GameLevel.Levels;
 using Logic.Model.Cards.BaseCards;
+using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Mark;
 using Logic.Model.Player;
 
@@ -43,9 +44,6 @@ namespace UI.Levels
         public Level_002_NoFriend2Enemies_Human(GameDataContext game)
         {
             this.GameDataContext = game;
-            Names = new List<string>() { "Zhangsan", "Lisi" };
-            TestName = "Lucy";
-
             InitializeComponent();
         }
 
@@ -60,6 +58,13 @@ namespace UI.Levels
             ActionBar.DataContext = GameDataContext.GameLevel.CurrentPlayer.PlayerUiState.ActionBar;
             //GameDataContext.Player2.AddMark(new ShoupengleiMark()).GetAwaiter().GetResult();
             //GameDataContext.Player2.AddMark(new HuadiweilaoMark()).GetAwaiter().GetResult();
+
+            GameDataContext.CurrentPlayer.AddCardsInHand(new List<CardBase>()
+            {
+                new Bolangchui(),
+                new Sha(),
+                new Shan()
+            }).GetAwaiter().GetResult();
             base.OnInitialized(e);
         }
     }

@@ -66,12 +66,13 @@ namespace Logic.ActionManger
         /// <returns></returns>
         public override async Task<CardResponseContext> OnParallelRequestResponseCard(CardRequestContext cardRequestContext)
         {
-            return await OnRequestResponseCard(cardRequestContext);
+            return await PlayerContext.Player.ResponseCard(cardRequestContext, null, null);
+            //return await OnRequestResponseCard(cardRequestContext);
         }
 
         public override async Task<CardResponseContext> OnRequestResponseCard(CardRequestContext cardRequestContext)
         {
-            string displayMessage = $"是否打出“{cardRequestContext.RequestCard.DisplayName}?”";
+            string displayMessage = string.IsNullOrEmpty(cardRequestContext?.Message) ? $"是否打出“{cardRequestContext?.RequestCard?.DisplayName}?”" : cardRequestContext.Message;
             //todo:如果武器牌可选，则高亮武器牌
             var tcs = cardRequestContext.RequestTaskCompletionSource;
             //处理选择牌的请求
@@ -91,7 +92,7 @@ namespace Logic.ActionManger
                 async () =>
                 {
                     tcs.SetResult(new CardResponseContext() { ResponseResult = ResponseResultEnum.Failed });
-                    return await Task.FromResult(true);
+                    return await Task.FromResult(false);
                 }));
             var res = await tcs.Task;
             return res;
@@ -140,12 +141,16 @@ namespace Logic.ActionManger
             PlayerContext.Player.RoundContext.RoundTaskCompletionSource =
                 new TaskCompletionSource<CardResponseContext>();
             //请求出牌时，提示请求出牌
-            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(PlayerContext.Player.RoundContext.RoundTaskCompletionSource, "请出牌", null, "取消");
+            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(PlayerContext.Player.RoundContext.RoundTaskCompletionSource, "请出牌", null, "结束出牌");
             await PlayerContext.Player.RoundContext.RoundTaskCompletionSource.Task;
         }
 
         public override async Task<List<CardBase>> OnRequestStartStep_ThrowCard(int throwCount)
         {
+            if (throwCount <= 0)
+            {
+                return null;
+            }
             var tcs = PlayerContext.Player.RoundContext.RoundTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
             PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, $"请弃掉{throwCount}张牌", null, null);
             //设置手牌的点击事件为选择牌

@@ -107,40 +107,48 @@ namespace JgYxs.UI.UserCtrl
             //主动出牌
             else
             {
-                var firstCard = cards.FirstOrDefault();
-                if (firstCard != null)
+                if (Player.IsInZhudongMode())
                 {
-                    if (firstCard.CanBePlayed())
+                    var firstCard = cards.FirstOrDefault();
+                    if (firstCard != null)
                     {
-                        //var popTcs = new CancellationTokenSource();
-                        var popRes = await firstCard.Popup();
-                        //Player.PlayerUiState.SetupOkCancelActionBar(Player.RoundContext.RoundTaskCompletionSource, "确定出牌", "确定", "取消", (async () =>
-                        //    {
-                        //        Player.RoundContext.RoundTaskCompletionSource.SetResult(new CardResponseContext()
-                        //        {
-                        //            Cards = cards,
-                        //            ResponseResult = ResponseResultEnum.Success
-                        //        });
-                        //        return await Task.FromResult(true);
-                        //    }));
+                        if (firstCard.CanBePlayed())
+                        {
+                            //var popTcs = new CancellationTokenSource();
+                            var popRes = await firstCard.Popup();
+                            //Player.PlayerUiState.SetupOkCancelActionBar(Player.RoundContext.RoundTaskCompletionSource, "确定出牌", "确定", "取消", (async () =>
+                            //    {
+                            //        Player.RoundContext.RoundTaskCompletionSource.SetResult(new CardResponseContext()
+                            //        {
+                            //            Cards = cards,
+                            //            ResponseResult = ResponseResultEnum.Success
+                            //        });
+                            //        return await Task.FromResult(true);
+                            //    }));
+                        }
+                        else
+                        {
+                            //提示还需要选择至少MaxCardCountToPlay-MinCardCountToPlay 张牌
+                            Player.PlayerUiState.SetupOkCancelActionBar(Player.RoundContext?.RoundTaskCompletionSource, "选择的牌不可以被打出", null, "结束出牌");
+                        }
+
                     }
                     else
                     {
                         //提示还需要选择至少MaxCardCountToPlay-MinCardCountToPlay 张牌
-                        Player.PlayerUiState.SetupOkCancelActionBar(Player.RoundContext?.RoundTaskCompletionSource, "选择的牌不可以被打出", null, "取消");
+                        Player.PlayerUiState.SetupOkCancelActionBar(Player.RoundContext?.RoundTaskCompletionSource, "请出牌", null, "结束出牌");
                     }
-
+                    if (Player.RoundContext?.RoundTaskCompletionSource != null)
+                    {
+                        await Player.RoundContext.RoundTaskCompletionSource.Task;
+                    }
                 }
                 else
                 {
-                    //提示还需要选择至少MaxCardCountToPlay-MinCardCountToPlay 张牌
-                    Player.PlayerUiState.SetupOkCancelActionBar(Player.RoundContext?.RoundTaskCompletionSource, "请出牌", null, "取消");
+                    Player.PlayerUiState.SetupOkCancelActionBar(null, "选择的牌不可以被打出", null, null);
                 }
 
-                if (Player.RoundContext?.RoundTaskCompletionSource != null)
-                {
-                    await Player.RoundContext.RoundTaskCompletionSource.Task;
-                }
+               
             }
         }
     }

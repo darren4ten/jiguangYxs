@@ -74,11 +74,11 @@
                     <Setter Property="Background" Value="ForestGreen" />
                     <Setter Property="BorderBrush" Value="ForestGreen" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding CurrentPlayerHero.PlayerUIState.SelectStatus}" Value="{x:Static enums:SelectStatusEnum.PendingSelected}">
+                <DataTrigger Binding="{Binding PlayerUiState.SelectStatus}" Value="{x:Static enums:SelectStatusEnum.PendingSelected}">
                     <Setter Property="Background" Value="BlueViolet" />
                     <Setter Property="BorderBrush" Value="Blue" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding CurrentPlayerHero.PlayerUIState.SelectStatus}" Value="{x:Static enums:SelectStatusEnum.IsSelected}">
+                <DataTrigger Binding="{Binding PlayerUiState.SelectStatus}" Value="{x:Static enums:SelectStatusEnum.IsSelected}">
                     <Setter Property="Background" Value="BlueViolet" />
                     <Setter Property="BorderBrush" Value="Yellow" />
                 </DataTrigger>

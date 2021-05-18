@@ -250,7 +250,7 @@ namespace Logic.Model.Player
                             if (areReady)
                             {
                                 //BindPlayer.PlayerUiState.SetupOkCancelActionBar(request.RequestTaskCompletionSource, "", "确定", "取消");
-                                request.SelectTargetsRequestTaskCompletionSource.SetResult(new SelectedTargetsResponse()
+                                request.SelectTargetsRequestTaskCompletionSource.TrySetResult(new SelectedTargetsResponse()
                                 {
                                     Status = ResponseResultEnum.Success,
                                     Targets = GetSelectedTargets()
@@ -263,7 +263,11 @@ namespace Logic.Model.Player
                 }
                 else
                 {
-                    target.PlayerUiState.OnPlayerClicked = null;
+                    target.PlayerUiState.OnPlayerClicked = (async () =>
+                    {
+                        Console.WriteLine($"{BindPlayer.PlayerName} 被点击了");
+                        return await Task.FromResult(false);
+                    });
                 }
             }
 
@@ -292,6 +296,29 @@ namespace Logic.Model.Player
 
         private void HideActionBar()
         {
+            if (BindPlayer.IsInZhudongMode())
+            {
+                ActionBar.Visiable = true;
+                ActionBar.DisplayMessage = new DisplayMessage()
+                {
+                    Content = "",
+                    IsVisible = false
+                };
+                ActionBar.BtnAction1.IsVisible = false;
+                ActionBar.BtnAction2.IsVisible = true;
+                ActionBar.BtnAction2.BtnText = "结束出牌";
+                ActionBar.BtnAction2.BtnRoutedEventHandler = async () =>
+                {
+                    BindPlayer.RoundContext.RoundTaskCompletionSource?.TrySetResult(new CardResponseContext()
+                    {
+                        ResponseResult = ResponseResultEnum.Success
+                    });
+                    return await Task.FromResult(true);
+                };
+                ActionBar.BtnAction3.IsVisible = false;
+                return;
+            }
+
             ActionBar.Visiable = false;
             ActionBar.DisplayMessage = new DisplayMessage()
             {

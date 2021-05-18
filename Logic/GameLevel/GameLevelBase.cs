@@ -483,6 +483,7 @@ namespace Logic.GameLevel
             var taskDic = new Dictionary<int, TaskCompletionSource<CardResponseContext>>();
             foreach (var requestTargetPlayer in request.TargetPlayers)
             {
+
                 var req = new CardRequestContext()
                 {
                     AttackType = request.AttackType,
@@ -497,7 +498,8 @@ namespace Logic.GameLevel
                     },
                     RequestTaskCompletionSource = requestTargetPlayer.IsAi()
                         ? null
-                        : new TaskCompletionSource<CardResponseContext>()
+                        : new TaskCompletionSource<CardResponseContext>(),
+                    Message = $"是否为{(request.SrcPlayer.PlayerId == requestTargetPlayer.PlayerId ? "自己" : request.SrcPlayer.ToString())}受到的{request.AttackType.GetDescription()}打出“{request.RequestCard.DisplayName}”"
                 };
                 var t = requestTargetPlayer.ActionManager.OnParallelRequestResponseCard(req);
                 taskDic.Add(t.Id, req.RequestTaskCompletionSource);

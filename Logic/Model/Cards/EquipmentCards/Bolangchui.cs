@@ -55,7 +55,8 @@ namespace Logic.Model.Cards.EquipmentCards
                            MaxCardCountToPlay = 2,
                            MinCardCountToPlay = 2,
                            SrcPlayer = PlayerContext.Player,
-                           TargetPlayers = new List<Player.Player>() { PlayerContext.Player }
+                           TargetPlayers = new List<Player.Player>() { PlayerContext.Player },
+                           Message = "是否打出两张牌强制命中？"
                        }, responseContext, roundContext);
                        if (res.ResponseResult == ResponseResultEnum.Success || (res.Cards != null && res.Cards.Count == 2))
                        {
