@@ -52,7 +52,10 @@ namespace JgYxs.UI.UserCtrl
         {
             var dt = ((Image)sender).DataContext;
             var player = (Player)dt;
-            await player.PlayerUiState.OnPlayerClicked();
+            if (player.PlayerUiState.OnPlayerClicked != null)
+            {
+                await player.PlayerUiState.OnPlayerClicked();
+            }
         }
     }
 }

@@ -76,11 +76,15 @@
                 </DataTrigger>
                 <DataTrigger Binding="{Binding PlayerUiState.SelectStatus}" Value="{x:Static enums:SelectStatusEnum.PendingSelected}">
                     <Setter Property="Background" Value="BlueViolet" />
-                    <Setter Property="BorderBrush" Value="Blue" />
+                    <Setter Property="BorderBrush" Value="BlueViolet" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding PlayerUiState.SelectStatus}" Value="{x:Static enums:SelectStatusEnum.IsSelected}">
-                    <Setter Property="Background" Value="BlueViolet" />
+                    <Setter Property="Background" Value="Yellow" />
                     <Setter Property="BorderBrush" Value="Yellow" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding PlayerUiState.SelectStatus}" Value="{x:Static enums:SelectStatusEnum.Idle}">
+                    <Setter Property="Background" Value="Red" />
+                    <Setter Property="BorderBrush" Value="Red" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -90,7 +94,7 @@
         <Border x:Name="ParentBorder" BorderThickness="1" Margin="0" CornerRadius="4"
                 Style="{StaticResource BorderMouseOver}" />
         <Border BorderBrush="Gray"
-                BorderThickness="1"
+                BorderThickness="1"  
                 Margin="2" CornerRadius="4">
             <Border.Background>
                 <RadialGradientBrush>
@@ -114,10 +118,58 @@
                                 <DataTrigger Binding="{Binding IsAlive,NotifyOnSourceUpdated=True}" Value="True">
                                     <Setter Property="Source" Value="{Binding RelativeSource={RelativeSource Self}, Path=Tag}"></Setter>
                                 </DataTrigger>
+                                <DataTrigger  Binding="{Binding PlayerUiState.SelectStatus}" Value="{x:Static enums:SelectStatusEnum.IsNotAbleToSelected}">
+                                    <Setter Property="OpacityMask">
+                                        <Setter.Value>
+                                            <DrawingBrush>
+                                                <DrawingBrush.Drawing>
+                                                    <GeometryDrawing>
+                                                        <GeometryDrawing.Brush>
+                                                            <RadialGradientBrush>
+                                                                <RadialGradientBrush.GradientStops>
+                                                                    <GradientStop Offset="0" Color="Green" />
+                                                                    <GradientStop Offset="1" Color="Transparent" />
+                                                                </RadialGradientBrush.GradientStops>
+                                                            </RadialGradientBrush>
+                                                        </GeometryDrawing.Brush>
+                                                        <GeometryDrawing.Geometry>
+                                                            <RectangleGeometry Rect="0.00,0.00 100,100" />
+                                                        </GeometryDrawing.Geometry>
+                                                        <GeometryDrawing.Pen>
+                                                            <Pen Thickness="0.1" Brush="Green" />
+                                                        </GeometryDrawing.Pen>
+                                                    </GeometryDrawing>
+                                                </DrawingBrush.Drawing>
+                                            </DrawingBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
                             </Style.Triggers>
                             <EventSetter Event="MouseLeftButtonDown" Handler="OnPlayerClicked"></EventSetter>
                         </Style>
                     </Image.Style>
+                    <!--<Image.OpacityMask>
+                        <DrawingBrush>
+                            <DrawingBrush.Drawing>
+                                <GeometryDrawing>
+                                    <GeometryDrawing.Brush>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.GradientStops>
+                                                <GradientStop Offset="0" Color="Green" />
+                                                <GradientStop Offset="1" Color="Transparent" />
+                                            </RadialGradientBrush.GradientStops>
+                                        </RadialGradientBrush>
+                                    </GeometryDrawing.Brush>
+                                    <GeometryDrawing.Geometry>
+                                        <RectangleGeometry Rect="0.00,0.00 100,100" />
+                                    </GeometryDrawing.Geometry>
+                                    <GeometryDrawing.Pen>
+                                        <Pen Thickness="0.1" Brush="Green" />
+                                    </GeometryDrawing.Pen>
+                                </GeometryDrawing>
+                            </DrawingBrush.Drawing>
+                        </DrawingBrush>
+                    </Image.OpacityMask>-->
                 </Image>
 
                 <TextBlock Name="LblHeroDisplayName"

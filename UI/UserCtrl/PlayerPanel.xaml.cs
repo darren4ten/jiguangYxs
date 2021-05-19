@@ -74,6 +74,7 @@ namespace JgYxs.UI.UserCtrl
                 card.IsPopout = false;
             }
             RefreshCardPopoutStatus(card);
+            Player.PlayerUiState.RestoreSelectStatus(SelectStatusEnum.Idle);
 
             var cards = Player.CardsInHand.Where(p => p.IsPopout).ToList();
             //检查弹出的牌是否可以被打出，即检查弹出的牌是否是CardRequestContext需要的或者RoundContext的需求，

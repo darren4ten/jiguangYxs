@@ -69,7 +69,7 @@ namespace UI.Levels
             GameDataContext.Player2.AddCardsInHand(new List<CardBase>()
             {
                 new Juedou(),
-                new Sha(),
+                new Fangyuma(),
                 new Shan()
             }).GetAwaiter().GetResult();
 

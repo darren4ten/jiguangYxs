@@ -34,7 +34,16 @@ namespace Logic.Model.Player
             }
         }
 
-        public SelectStatusEnum SelectStatus { get; set; }
+        private SelectStatusEnum _selectStatus;
+        public SelectStatusEnum SelectStatus
+        {
+            get { return _selectStatus; }
+            set
+            {
+                _selectStatus = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string BoarderColor { get; set; }
 
