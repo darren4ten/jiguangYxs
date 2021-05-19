@@ -13,7 +13,7 @@
         <StackPanel Width="200"
                     Height="520"
                     HorizontalAlignment="Right">
-            <UserCtrl:CardHistoryPanel x:Name="HistoryPanel" Height="523" />
+            <UserCtrl:CardHistoryPanel x:Name="HistoryPanel" Height="518" />
         </StackPanel>
         <UserCtrl:Hero 
             x:Name="Player3"

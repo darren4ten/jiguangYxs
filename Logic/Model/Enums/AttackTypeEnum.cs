@@ -18,6 +18,8 @@ namespace Logic.Model.Enums
         Xiadan,
         Hongyan,
         Gongxin,
+        [Description("手捧雷")]
+        Shoupenglei,
         /// <summary>
         /// 求药
         /// </summary>

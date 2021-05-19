@@ -28,6 +28,13 @@ namespace Logic.Model.Cards.JinlangCards
             return base.CanBePlayed() && PlayerContext.Player.Marks?.Any(m => m is ShoupengleiMark) != true;
         }
 
+        protected override Task<CardResponseContext> OnBeforePlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
+            RoundContext roundContext)
+        {
+            cardRequestContext.AttackType = AttackTypeEnum.Shoupenglei;
+            return base.OnBeforePlayCard(cardRequestContext, cardResponseContext, roundContext);
+        }
+
         protected override async Task<CardResponseContext> OnAfterPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
             RoundContext roundContext)
         {
