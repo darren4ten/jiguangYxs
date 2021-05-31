@@ -152,36 +152,51 @@ namespace Logic.ActionManger
                 return null;
             }
 
-            var tcs = PlayerContext.Player.RoundContext.RoundTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
-            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, $"请弃掉{throwCount}张牌", null, null);
-            //设置手牌的点击事件为选择牌
+            var newCardRequestContext = new CardRequestContext()
+            {
+                RequestTaskCompletionSource = new TaskCompletionSource<CardResponseContext>(),
+                MinCardCountToPlay = throwCount,
+                MaxCardCountToPlay = throwCount
+            };
+            PlayerContext.Player.CardRequestContexts.Add(newCardRequestContext);
 
-            //PlayerContext.Player.PlayerUiState.OnCardInHandClicked = async (sender) =>
-            //{
-            //    if (sender is CardBase card)
-            //    {
-            //        card.IsPopout = !card.IsPopout;
-            //        //检查手牌所有IsPopout的牌
-            //        if (CanShowThrowButton(throwCount))
-            //        {
-            //            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, "", "确定", null, (async () =>
-            //                {
-            //                    tcs.SetResult(new CardResponseContext()
-            //                    {
-            //                        ResponseResult = ResponseResultEnum.Success,
-            //                        Cards = PlayerContext.Player.CardsInHand.Where(p => p.IsPopout).ToList()
-            //                    });
-            //                    return await Task.FromResult(true);
-            //                }));
-            //        }
-            //        else
-            //        {
-            //            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, $"请选择{throwCount}张牌", null, null);
-            //        }
-            //    }
-            //    return await Task.FromResult(false);
-            //};
-            var res = await tcs.Task;
+            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(newCardRequestContext.RequestTaskCompletionSource, $"请弃掉{throwCount}张牌", "确定", null, (async () =>
+            {
+                newCardRequestContext.RequestTaskCompletionSource.SetResult(new CardResponseContext()
+                {
+                    ResponseResult = ResponseResultEnum.Success,
+                    Cards = PlayerContext.Player.CardsInHand.Where(p => p.IsPopout).ToList()
+                });
+                return await Task.FromResult(true);
+            }));
+            ////设置手牌的点击事件为选择牌
+
+            ////PlayerContext.Player.PlayerUiState.OnCardInHandClicked = async (sender) =>
+            ////{
+            ////    if (sender is CardBase card)
+            ////    {
+            ////        card.IsPopout = !card.IsPopout;
+            ////        //检查手牌所有IsPopout的牌
+            ////        if (CanShowThrowButton(throwCount))
+            ////        {
+            ////            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, "", "确定", null, (async () =>
+            ////                {
+            ////                    tcs.SetResult(new CardResponseContext()
+            ////                    {
+            ////                        ResponseResult = ResponseResultEnum.Success,
+            ////                        Cards = PlayerContext.Player.CardsInHand.Where(p => p.IsPopout).ToList()
+            ////                    });
+            ////                    return await Task.FromResult(true);
+            ////                }));
+            ////        }
+            ////        else
+            ////        {
+            ////            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, $"请选择{throwCount}张牌", null, null);
+            ////        }
+            ////    }
+            ////    return await Task.FromResult(false);
+            ////};
+            var res = await newCardRequestContext.RequestTaskCompletionSource.Task;
             return res.Cards;
         }
 

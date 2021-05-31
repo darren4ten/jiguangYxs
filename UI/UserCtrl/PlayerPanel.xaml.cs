@@ -148,8 +148,6 @@ namespace JgYxs.UI.UserCtrl
                 {
                     Player.PlayerUiState.SetupOkCancelActionBar(null, "选择的牌不可以被打出", null, null);
                 }
-
-               
             }
         }
     }
