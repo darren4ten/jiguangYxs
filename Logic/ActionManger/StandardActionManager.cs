@@ -156,7 +156,8 @@ namespace Logic.ActionManger
             {
                 RequestTaskCompletionSource = new TaskCompletionSource<CardResponseContext>(),
                 MinCardCountToPlay = throwCount,
-                MaxCardCountToPlay = throwCount
+                MaxCardCountToPlay = throwCount,
+                AttackType = AttackTypeEnum.ThrowCard
             };
             PlayerContext.Player.CardRequestContexts.Add(newCardRequestContext);
 
@@ -169,6 +170,8 @@ namespace Logic.ActionManger
                 });
                 return await Task.FromResult(true);
             }));
+            //默认弃牌的时候不能出牌
+            PlayerContext.Player.PlayerUiState.ActionBar.BtnAction1.IsEnabled = false;
             ////设置手牌的点击事件为选择牌
 
             ////PlayerContext.Player.PlayerUiState.OnCardInHandClicked = async (sender) =>

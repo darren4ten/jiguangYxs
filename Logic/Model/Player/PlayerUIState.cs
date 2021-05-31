@@ -96,6 +96,7 @@ namespace Logic.Model.Player
             {
                 ActionBar.BtnAction1 = ActionBar.BtnAction1 ?? new BtnAction()
                 {
+                    IsEnabled = true,
                     IsVisible = false
                 };
                 ActionBar.BtnAction1.IsVisible = false;
@@ -105,6 +106,7 @@ namespace Logic.Model.Player
                 ActionBar.BtnAction1 = new BtnAction()
                 {
                     BtnText = okText,
+                    IsEnabled = true,
                     IsVisible = true,
                     BtnRoutedEventHandler = async () =>
                     {
@@ -126,6 +128,7 @@ namespace Logic.Model.Player
             {
                 ActionBar.BtnAction2 = ActionBar.BtnAction2 ?? new BtnAction()
                 {
+                    IsEnabled = true,
                     IsVisible = false
                 };
                 ActionBar.BtnAction2.IsVisible = false;
@@ -135,6 +138,7 @@ namespace Logic.Model.Player
                 ActionBar.BtnAction2 = new BtnAction()
                 {
                     BtnText = cancelText,
+                    IsEnabled = true,
                     IsVisible = true,
                     BtnRoutedEventHandler = async () =>
                     {
@@ -155,6 +159,7 @@ namespace Logic.Model.Player
 
             ActionBar.BtnAction3 = ActionBar.BtnAction3 ?? new BtnAction()
             {
+                IsEnabled = true,
                 IsVisible = false
             };
             ActionBar.BtnAction3.IsVisible = false;
@@ -247,6 +252,66 @@ namespace Logic.Model.Player
                 {
                     BindPlayer.PlayerUiState.SetupOkCancelActionBar(null, "选择的牌不可以被打出", null, null);
                 }
+            }
+        }
+
+        /// <summary>
+        /// 弃牌请求时的手牌点击事件
+        /// </summary>
+        /// <param name="card"></param>
+        /// <param name="uiAction"></param>
+        public async void ThrowCardCardInHandClicked(CardBase card, Action<CardBase> uiAction)
+        {
+            //手牌被单击，则检查手牌是否可以打出
+            //检查最大可以弹出的手牌数 maxPopCardCount（默认1）
+            // maxPopCardCount=CardRequestContext!=null && CardRequestContext.MaxCardCountToPlay>1?CardRequestContext.MaxCardCountToPlay:1;
+            //检查当前已弹出的牌数是否超过了maxPopCardCount,如果是，则将最先弹出的卡牌收回；如果没有，则直接将该牌弹出
+            var recentRequest = BindPlayer.CardRequestContexts?.LastOrDefault();
+            var maxPopCardCount = recentRequest != null && recentRequest.MaxCardCountToPlay > 1 ? recentRequest.MaxCardCountToPlay : 1;
+            if (!card.IsPopout)
+            {
+                if (BindPlayer.CardsInHand.Count(c => c.IsPopout) >= maxPopCardCount)
+                {
+                    var firstCard = BindPlayer.CardsInHand.First(c => c.IsPopout);
+                    firstCard.IsPopout = false;
+                    uiAction(firstCard);
+                }
+                card.IsPopout = true;
+            }
+            else
+            {
+                card.IsPopout = false;
+            }
+            uiAction(card);
+            BindPlayer.PlayerUiState.RestoreSelectStatus(SelectStatusEnum.Idle);
+
+            var cards = BindPlayer.CardsInHand.Where(p => p.IsPopout).ToList();
+            //检查弹出的牌是否可以被打出，即检查弹出的牌是否是CardRequestContext需要的或者RoundContext的需求，
+            //  如果不符合，则ActionBar的DisplayMessage需要提示出牌不合理，只显示取消按钮
+            //  如果符合，则显示确认和取消按钮
+            //被动出牌
+            if (recentRequest != null)
+            {
+                if (recentRequest.IsMatch(cards))
+                {
+                    //继续检查出牌是否符合要求，如果符合要求
+                    //提示确认、取消
+                    BindPlayer.PlayerUiState.ActionBar.BtnAction1.IsEnabled = true;
+                }
+                else
+                {
+                    //提示还需要选择至少MaxCardCountToPlay-MinCardCountToPlay 张牌
+                    BindPlayer.PlayerUiState.ActionBar.BtnAction1.IsEnabled = false;
+                    BindPlayer.PlayerUiState.ActionBar.DisplayMessage.IsVisible = true;
+                    BindPlayer.PlayerUiState.ActionBar.DisplayMessage.Content = recentRequest.Message;
+                }
+
+                await recentRequest.RequestTaskCompletionSource.Task;
+            }
+            //主动出牌
+            else
+            {
+                Console.WriteLine("Unexpected error.");
             }
         }
 
@@ -527,6 +592,20 @@ namespace Logic.Model.Player
 
     public class BtnAction : INotifyPropertyChanged
     {
+        private bool _enabled;
+        public bool IsEnabled
+        {
+            get
+            {
+                return _enabled;
+            }
+            set
+            {
+                _enabled = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _btnText;
         public string BtnText
         {

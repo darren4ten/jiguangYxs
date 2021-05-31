@@ -76,6 +76,8 @@ namespace Logic.Model.Enums
         Huadiweilao,
         [Description("探囊取物")]
         Tannangquwu,
+        [Description("弃牌")]
+        ThrowCard,
         /// <summary>
         /// 博浪锤
         /// </summary>

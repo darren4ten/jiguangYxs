@@ -18,6 +18,7 @@
                     <Setter Property="Visibility" Value="Hidden"/>
                 </DataTrigger>
             </Style.Triggers>
+            <Setter Property="IsEnabled" Value="{Binding IsEnabled}"></Setter>
             <Setter Property="Content" Value="{Binding BtnText}"></Setter>
             <Setter Property="Background" Value="Azure"></Setter>
             <Setter Property="Width" Value="90"></Setter>
