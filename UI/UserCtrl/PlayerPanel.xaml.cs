@@ -54,7 +54,7 @@ namespace JgYxs.UI.UserCtrl
             //手牌被单击，则检查手牌是否可以打出
             var cardCtrl = (ListBoxItem)sender;
             var card = (CardBase)cardCtrl.DataContext;
-            Player.PlayerUiState.DefaultCardInHandClicked(card, RefreshCardPopoutStatus);
+            Player.PlayerUiState.CardsInHandHandler(card, RefreshCardPopoutStatus);
         }
     }
 }

@@ -171,6 +171,8 @@ namespace Logic.ActionManger
                 return await Task.FromResult(true);
             }));
             //默认弃牌的时候不能出牌
+            PlayerContext.Player.PlayerUiState.CardsInHandHandler =
+                PlayerContext.Player.PlayerUiState.ThrowCardCardInHandClicked;
             PlayerContext.Player.PlayerUiState.ActionBar.BtnAction1.IsEnabled = false;
             ////设置手牌的点击事件为选择牌
 

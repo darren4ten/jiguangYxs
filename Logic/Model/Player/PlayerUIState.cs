@@ -58,7 +58,8 @@ namespace Logic.Model.Player
         /// <summary>
         /// 手牌被单击的事件
         /// </summary>
-        public CardEventHandler OnCardInHandClicked { get; set; }
+        public delegate void CardEventHandler(CardBase card, Action<CardBase> uiAction);
+        public CardEventHandler CardsInHandHandler { get; set; }
 
         /// <summary>
         /// UI绑定的Player
@@ -85,6 +86,7 @@ namespace Logic.Model.Player
         /// <returns></returns>
         public void SetupOkCancelActionBar(TaskCompletionSource<CardResponseContext> tcs, string displayMessage, string okText, string cancelText, BtnRoutedEventHandler btn1EventHandler = null, BtnRoutedEventHandler btn2EventHandler = null)
         {
+            CardsInHandHandler = DefaultCardInHandClicked;
             ActionBar = ActionBar ?? new ActionBar();
             ActionBar.Visiable = true;
             ActionBar.DisplayMessage = new DisplayMessage()
