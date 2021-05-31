@@ -168,6 +168,8 @@ namespace Logic.ActionManger
                     ResponseResult = ResponseResultEnum.Success,
                     Cards = PlayerContext.Player.CardsInHand.Where(p => p.IsPopout).ToList()
                 });
+                //确定出牌后清理掉这个request，否则下一次主动出牌时会变成弃牌
+                await PlayerContext.Player.RemoveCardRequestContext(newCardRequestContext.RequestId);
                 return await Task.FromResult(true);
             }));
             //默认弃牌的时候不能出牌

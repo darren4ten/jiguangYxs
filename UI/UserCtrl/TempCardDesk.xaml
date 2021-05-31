@@ -4,9 +4,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:JgYxs.UI.UserCtrl"
+             xmlns:userCtrl="clr-namespace:JgYxs.UI.UserCtrl"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" 
              Width="500" Height="180"
              d:DesignHeight="180" d:DesignWidth="500">
+
+    <UserControl.Resources>
+        <!--缩小滚动条高度-->
+        <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
+            <Setter Property="Stylus.IsFlicksEnabled" Value="True" />
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Height" Value="4" />
+                    <Setter Property="MinHeight" Value="4" />
+                </Trigger>
+                <Trigger Property="Orientation" Value="Vertical">
+                    <Setter Property="Width" Value="4" />
+                    <Setter Property="MinWidth" Value="4" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+ 
     <Grid>
         <ListBox 
                  ItemsSource="{Binding  Cards}"
@@ -18,6 +38,7 @@
                     <Setter Property="Padding" Value="0"/>
                 </Style>
             </ListBox.ItemContainerStyle>
+            
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" IsItemsHost="True"/>

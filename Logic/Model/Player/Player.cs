@@ -405,6 +405,8 @@ namespace Logic.Model.Player
             //如果被取消或者处理成功了，就直接返回
             if (responseContext.ResponseResult == ResponseResultEnum.Success || responseContext.ResponseResult == ResponseResultEnum.Cancelled)
             {
+                //清除被请求的上下文
+                await RemoveCardRequestContext(newCardRequestContext.RequestId);
                 return responseContext;
             }
             var newRequestContext = GetCombindCardRequestContext(newCardRequestContext,
@@ -1210,6 +1212,17 @@ namespace Logic.Model.Player
             return newCardRequestContext;
         }
 
+        /// <summary>
+        /// 移除失效的cardrequest
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns></returns>
+        public Task RemoveCardRequestContext(Guid requestId)
+        {
+            var removedCount = CardRequestContexts.RemoveAll(c => c.RequestId == requestId);
+            return Task.CompletedTask;
+        }
+
         public override string ToString()
         {
             return $"{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】";
@@ -1327,17 +1340,7 @@ namespace Logic.Model.Player
 
         #endregion
 
-        /// <summary>
-        /// 移除失效的cardrequest
-        /// </summary>
-        /// <param name="requestId"></param>
-        /// <returns></returns>
-        private Task RemoveCardRequestContext(Guid requestId)
-        {
-            var removedCount = CardRequestContexts.RemoveAll(c => c.RequestId == requestId);
-            return Task.CompletedTask;
-        }
-
+        
         #region IsAvailableForPlayer的具体逻辑
         /// <summary>
         /// 是否可以被治愈
