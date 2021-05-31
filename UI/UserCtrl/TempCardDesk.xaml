@@ -32,7 +32,8 @@
                  ItemsSource="{Binding  Cards}"
                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
                  BorderThickness="0"
-                 Background="Transparent">
+                 Name="LbDesk"
+                 Background="Transparent" >
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Padding" Value="0"/>

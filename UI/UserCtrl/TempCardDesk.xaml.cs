@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +22,16 @@ namespace JgYxs.UI.UserCtrl
         public TempCardDesk()
         {
             InitializeComponent();
+            ((INotifyCollectionChanged)LbDesk.Items).CollectionChanged += OnTempCardsSizeChanged
+                ;
+        }
+
+        private void OnTempCardsSizeChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (LbDesk.Items.Count > 0)
+            {
+                LbDesk.ScrollIntoView(LbDesk.Items[^1]);
+            }
         }
     }
 }
