@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using JgYxs.UI.Model;
+using JgYxs.UI.UserCtrl.Panel;
 using Logic.Cards;
 using Logic.GameLevel;
 using Logic.GameLevel.Levels;
+using Logic.GameLevel.Panel;
 using Logic.Model.Cards.BaseCards;
+using Logic.Model.Cards.EquipmentCards;
+using Logic.Model.Cards.JinlangCards;
 using Logic.Model.Player;
 using UI.Levels;
 
@@ -31,7 +36,42 @@ namespace JgYxs.UI
             //testWindow.Show();
             //Close();
             //return;
-            InitLevel(2);
+            Test();
+            //InitLevel(2);
+        }
+
+        private void Test()
+        {
+            var tn = new TannangFudiPanel();
+            tn.DataContext = new PanelBase()
+            {
+                DisplayMessage = "探囊取物",
+                InHandCards = new ObservableCollection<PanelCard>()
+                {
+                    new PanelCard(new Sha(),true),
+                    new PanelCard(new Shoupenglei(),true),
+                },
+                EquipmentCards = new ObservableCollection<PanelCard>()
+                {
+                    new PanelCard(new Luyeqiang(),true),
+                    new PanelCard(new Hufu(),true),
+                },
+                OnClickedHandler = ((card, action) =>
+                {
+                    card.IsPopout = !card.IsPopout;
+                    action(card);
+                })
+            };
+
+            var win = new Window()
+            {
+                Content = tn,
+                Title = "探囊取物",
+                Width = tn.Width,
+                Height = tn.Height,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+            win.ShowDialog();
         }
 
         private void InitLevel(int level)

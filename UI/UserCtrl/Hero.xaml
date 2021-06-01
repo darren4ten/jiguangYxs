@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:enums="clr-namespace:Logic.Model.Enums;assembly=Logic"
              xmlns:userCtrl="clr-namespace:JgYxs.UI.UserCtrl"
+             xmlns:converter="clr-namespace:JgYxs.UI.UserCtrl.Converter"
              mc:Ignorable="d"
              x:Name="HeroCtrl"
              Height="170"
@@ -88,7 +89,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <userCtrl:GrayImage x:Key="GrayImage" />
+        <converter:GrayImage x:Key="GrayImage" />
     </UserControl.Resources>
     <Grid>
         <Border x:Name="ParentBorder" BorderThickness="1" Margin="0" CornerRadius="4"

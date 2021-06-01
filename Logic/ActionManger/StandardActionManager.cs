@@ -103,24 +103,25 @@ namespace Logic.ActionManger
             request.RequestTaskCompletionSource =
                 request.RequestTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
             //弹出窗体，提示选择牌，
+            PlayerContext.Player.PlayerUiState.ShowPanel(request.Panel);
             PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(request.RequestTaskCompletionSource, request.Panel.DisplayMessage, null, null);
-            PlayerContext.Player.PlayerUiState.Panel.OnClickedHandler = async (sender) =>
+            PlayerContext.Player.PlayerUiState.Panel.OnClickedHandler = (card, uiAction) =>
                 {
-                    if (sender is PanelCard card)
-                    {
-                        if (CanSelectPanelCard(card))
-                        {
-                            request.RequestTaskCompletionSource.SetResult(new CardResponseContext()
-                            {
-                                Cards = new List<CardBase>() { card.Card }
-                            });
-                        }
-                        else
-                        {
+                    //if (sender is PanelCard card)
+                    //{
+                    //    if (CanSelectPanelCard(card))
+                    //    {
+                    //        request.RequestTaskCompletionSource.SetResult(new CardResponseContext()
+                    //        {
+                    //            Cards = new List<CardBase>() { card.Card }
+                    //        });
+                    //    }
+                    //    else
+                    //    {
 
-                        }
-                    }
-                    return await Task.FromResult(false);
+                    //    }
+                    //}
+                    //return await Task.FromResult(false);
                 };
             var r = await request.RequestTaskCompletionSource.Task;
             return r;

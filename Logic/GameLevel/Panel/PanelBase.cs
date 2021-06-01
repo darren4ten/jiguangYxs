@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Logic.Cards;
@@ -28,16 +29,20 @@ namespace Logic.GameLevel.Panel
         /// 装备栏
         /// </summary>
         public ObservableCollection<PanelCard> EquipmentCards { get; set; }
+        public bool HasEquipmentCards => EquipmentCards?.Any() == true;
 
         /// <summary>
         /// 标记栏
         /// </summary>
         public ObservableCollection<PanelCard> MarkCards { get; set; }
 
+        public bool HasMarkCards => MarkCards?.Any() == true;
+
         /// <summary>
         /// 手牌栏
         /// </summary>
         public ObservableCollection<PanelCard> InHandCards { get; set; }
+        public bool HasInHandCards => InHandCards?.Any() == true;
 
         /// <summary>
         /// 自定义栏

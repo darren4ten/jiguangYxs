@@ -16,7 +16,11 @@ using Logic.Model.RequestResponse.Response;
 namespace Logic.Model.Player
 {
     public delegate Task<bool?> BtnRoutedEventHandler();
-    public delegate Task<bool?> CardEventHandler(object sender);
+    /// <summary>
+    /// 卡牌被单击的事件
+    /// </summary>
+    public delegate void CardEventHandler(CardBase card, Action<CardBase> uiAction);
+
     public class PlayerUIState : INotifyPropertyChanged
     {
         /// <summary>
@@ -54,11 +58,7 @@ namespace Logic.Model.Player
         /// 玩家被单击的事件
         /// </summary>
         public BtnRoutedEventHandler OnPlayerClicked { get; set; }
-
-        /// <summary>
-        /// 手牌被单击的事件
-        /// </summary>
-        public delegate void CardEventHandler(CardBase card, Action<CardBase> uiAction);
+        
         public CardEventHandler CardsInHandHandler { get; set; }
 
         /// <summary>
@@ -330,10 +330,12 @@ namespace Logic.Model.Player
             if (panel.IsGlobal)
             {
                 BindPlayer.GameLevel.Panel = panel;
+                BindPlayer.PlayerUiState.Panel = null;
             }
             else
             {
                 BindPlayer.PlayerUiState.Panel = panel;
+                BindPlayer.GameLevel.Panel = null;
             }
         }
 
