@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Logic.Annotations;
 using Logic.Cards;
@@ -19,14 +20,29 @@ namespace Logic.Model.Player
     /// <summary>
     /// 卡牌被单击的事件
     /// </summary>
-    public delegate void CardEventHandler(CardBase card, Action<CardBase> uiAction);
+    public delegate Task CardEventHandler(CardBase card, Action<CardBase> uiAction);
 
     public class PlayerUIState : INotifyPropertyChanged
     {
         /// <summary>
         /// 面板，如探囊取物、五谷丰登
         /// </summary>
-        public PanelBase Panel { get; set; }
+        private PanelBase _panel;
+
+        public PanelBase Panel
+        {
+            get
+            {
+                return _panel;
+            }
+            set
+            {
+                _panel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Func<Action, Task> UiAction { get; set; }
 
         private ActionBar _actionBar;
         public ActionBar ActionBar
@@ -58,7 +74,7 @@ namespace Logic.Model.Player
         /// 玩家被单击的事件
         /// </summary>
         public BtnRoutedEventHandler OnPlayerClicked { get; set; }
-        
+
         public CardEventHandler CardsInHandHandler { get; set; }
 
         /// <summary>
@@ -167,7 +183,7 @@ namespace Logic.Model.Player
             ActionBar.BtnAction3.IsVisible = false;
         }
 
-        public async void DefaultCardInHandClicked(CardBase card, Action<CardBase> uiAction)
+        public async Task DefaultCardInHandClicked(CardBase card, Action<CardBase> uiAction)
         {
             //手牌被单击，则检查手牌是否可以打出
             //检查最大可以弹出的手牌数 maxPopCardCount（默认1）
@@ -262,7 +278,7 @@ namespace Logic.Model.Player
         /// </summary>
         /// <param name="card"></param>
         /// <param name="uiAction"></param>
-        public async void ThrowCardCardInHandClicked(CardBase card, Action<CardBase> uiAction)
+        public async Task ThrowCardCardInHandClicked(CardBase card, Action<CardBase> uiAction)
         {
             //手牌被单击，则检查手牌是否可以打出
             //检查最大可以弹出的手牌数 maxPopCardCount（默认1）
@@ -321,22 +337,61 @@ namespace Logic.Model.Player
         /// 显示面板
         /// </summary>
         /// <param name="panel"></param>
-        public void ShowPanel(PanelBase panel)
+        public async Task ShowPanel(PanelBase panel)
         {
             if (BindPlayer.IsAi())
             {
                 return;
             }
-            if (panel.IsGlobal)
-            {
-                BindPlayer.GameLevel.Panel = panel;
-                BindPlayer.PlayerUiState.Panel = null;
-            }
-            else
-            {
-                BindPlayer.PlayerUiState.Panel = panel;
-                BindPlayer.GameLevel.Panel = null;
-            }
+
+            await UiAction((() =>
+             {
+                 if (panel.IsGlobal)
+                 {
+                     BindPlayer.GameLevel.Panel = panel;
+                     BindPlayer.PlayerUiState.Panel = null;
+                 }
+                 else
+                 {
+                     BindPlayer.GameLevel.Panel = null;
+                     BindPlayer.PlayerUiState.Panel = panel;
+                 }
+             }));
+            //Application.Current.Dispatcher.Invoke((Action)delegate {
+            //    // your code
+            //});
+
+            //Thread t = new Thread(() =>
+            //{
+            //    if (panel.IsGlobal)
+            //    {
+            //        BindPlayer.GameLevel.Panel = panel;
+            //        BindPlayer.PlayerUiState.Panel = null;
+            //    }
+            //    else
+            //    {
+            //        BindPlayer.GameLevel.Panel = null;
+            //        BindPlayer.PlayerUiState.Panel = panel;
+            //    }
+            //});
+            //t.SetApartmentState(ApartmentState.STA);
+            //t.Start();
+
+            //await Task.Run(() =>
+            // {
+            //     if (panel.IsGlobal)
+            //     {
+            //         BindPlayer.GameLevel.Panel = panel;
+            //         BindPlayer.PlayerUiState.Panel = null;
+            //     }
+            //     else
+            //     {
+            //         BindPlayer.GameLevel.Panel = null;
+            //         BindPlayer.PlayerUiState.Panel = panel;
+            //     }
+            // },CancellationToken.None);
+
+            await Task.FromResult(0);
         }
 
         /// <summary>

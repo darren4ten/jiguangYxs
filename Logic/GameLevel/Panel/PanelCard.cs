@@ -9,9 +9,12 @@ namespace Logic.GameLevel.Panel
     /// </summary>
     public class PanelCard
     {
-        /// <summary>
-        /// 卡牌
-        /// </summary>
+        public PanelCard(CardBase card,bool isViewable)
+        {
+            Card = card;
+            card.IsViewableForOthers = isViewable;
+        }
+
         public CardBase Card { get; }
 
         /// <summary>
@@ -23,16 +26,5 @@ namespace Logic.GameLevel.Panel
         /// 选中该卡牌的人
         /// </summary>
         public Player SelectedBy { get; set; }
-
-        /// <summary>
-        /// 是否对所有人可见
-        /// </summary>
-        public bool IsViewable { get; }
-
-        public PanelCard(CardBase card, bool isViewable)
-        {
-            Card = card;
-            IsViewable = isViewable;
-        }
     }
 }

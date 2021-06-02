@@ -102,28 +102,26 @@ namespace Logic.ActionManger
         {
             request.RequestTaskCompletionSource =
                 request.RequestTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
-            //弹出窗体，提示选择牌，
-            PlayerContext.Player.PlayerUiState.ShowPanel(request.Panel);
-            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(request.RequestTaskCompletionSource, request.Panel.DisplayMessage, null, null);
-            PlayerContext.Player.PlayerUiState.Panel.OnClickedHandler = (card, uiAction) =>
+            request.Panel.OnClickedHandler = async (card, uiAction) =>
+            {
+                card.IsPopout = true;
+                //检查选中的卡牌数量是不是match
+                var cards = request.Panel.GetSelectedCards().ToList();
+                if (request.IsMatch(cards))
                 {
-                    //if (sender is PanelCard card)
-                    //{
-                    //    if (CanSelectPanelCard(card))
-                    //    {
-                    //        request.RequestTaskCompletionSource.SetResult(new CardResponseContext()
-                    //        {
-                    //            Cards = new List<CardBase>() { card.Card }
-                    //        });
-                    //    }
-                    //    else
-                    //    {
+                    request.RequestTaskCompletionSource.SetResult(new CardResponseContext()
+                    {
+                        ResponseResult = ResponseResultEnum.Success,
+                        Cards = cards
+                    });
+                }
 
-                    //    }
-                    //}
-                    //return await Task.FromResult(false);
-                };
+                await Task.FromResult(0);
+            };
+            //弹出窗体，提示选择牌，
+            await PlayerContext.Player.PlayerUiState.ShowPanel(request.Panel);
             var r = await request.RequestTaskCompletionSource.Task;
+
             return r;
         }
 
@@ -177,33 +175,6 @@ namespace Logic.ActionManger
             PlayerContext.Player.PlayerUiState.CardsInHandHandler =
                 PlayerContext.Player.PlayerUiState.ThrowCardCardInHandClicked;
             PlayerContext.Player.PlayerUiState.ActionBar.BtnAction1.IsEnabled = false;
-            ////设置手牌的点击事件为选择牌
-
-            ////PlayerContext.Player.PlayerUiState.OnCardInHandClicked = async (sender) =>
-            ////{
-            ////    if (sender is CardBase card)
-            ////    {
-            ////        card.IsPopout = !card.IsPopout;
-            ////        //检查手牌所有IsPopout的牌
-            ////        if (CanShowThrowButton(throwCount))
-            ////        {
-            ////            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, "", "确定", null, (async () =>
-            ////                {
-            ////                    tcs.SetResult(new CardResponseContext()
-            ////                    {
-            ////                        ResponseResult = ResponseResultEnum.Success,
-            ////                        Cards = PlayerContext.Player.CardsInHand.Where(p => p.IsPopout).ToList()
-            ////                    });
-            ////                    return await Task.FromResult(true);
-            ////                }));
-            ////        }
-            ////        else
-            ////        {
-            ////            PlayerContext.Player.PlayerUiState.SetupOkCancelActionBar(tcs, $"请选择{throwCount}张牌", null, null);
-            ////        }
-            ////    }
-            ////    return await Task.FromResult(false);
-            ////};
             var res = await newCardRequestContext.RequestTaskCompletionSource.Task;
             return res.Cards;
         }
@@ -236,21 +207,6 @@ namespace Logic.ActionManger
             //2. 完成目标选择之后（取消或者确定），恢复玩家的选中状态为idle.
             PlayerContext.Player.PlayerUiState.RestoreSelectStatus(SelectStatusEnum.Idle);
             return response;
-
-            //if (response.Status == ResponseResultEnum.Success)
-            //{
-            //    return new SelectedTargetsResponse()
-            //    {
-            //        Status = ResponseResultEnum.Success,
-            //        Targets = PlayerContext.Player.PlayerUiState.GetSelectedTargets()
-            //    };
-            //}
-
-            ////  1.1 如果满足了要求，则弹窗显示确定、取消按钮，如果确定，则返回selecte目标，如果取消，则返回失败
-            //return new SelectedTargetsResponse()
-            //{
-            //    Status = ResponseResultEnum.Failed,
-            //};
         }
 
         #region 私有逻辑
@@ -286,49 +242,6 @@ namespace Logic.ActionManger
             return pCard != null && pCard.SelectedBy == null;
         }
 
-        ///// <summary>
-        ///// 是否显示主动出牌的“确认”按钮
-        ///// </summary>
-        ///// <param name="cardRequestContext"></param>
-        ///// <returns></returns>
-        //private bool CanShowPlayButton(CardRequestContext cardRequestContext)
-        //{
-        //    //检查手牌所有IsPopout的牌
-        //    var pendingPlayCards = PlayerContext.Player.CardsInHand.Where(p => p.IsPopout).ToList();
-        //    if (
-        //         pendingPlayCards.Count() <= cardRequestContext.MaxCardCountToPlay && pendingPlayCards.Count() >= cardRequestContext.MinCardCountToPlay
-        //    )
-        //    {
-        //        foreach (var p in pendingPlayCards)
-        //        {
-        //            if (cardRequestContext.RequestCard.GetType() != p.GetType())
-        //            {
-        //                return false;
-        //            }
-        //            if (cardRequestContext.FlowerKind != Enums.FlowerKindEnum.Any)
-        //            {
-        //                if (cardRequestContext.FlowerKind != p.FlowerKind)
-        //                {
-        //                    return false;
-        //                }
-        //            }
-        //        }
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
-
-        ///// <summary>
-        ///// 是否显示弃牌按钮
-        ///// </summary>
-        ///// <param name="throwCount"></param>
-        ///// <returns></returns>
-        //private bool CanShowThrowButton(int throwCount)
-        //{
-        //    var popedCount = PlayerContext.Player.CardsInHand.Count(p => p.IsPopout);
-        //    return popedCount == throwCount;
-        //}
         #endregion
     }
 }

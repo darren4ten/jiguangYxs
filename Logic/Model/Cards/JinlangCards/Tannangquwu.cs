@@ -65,7 +65,7 @@ namespace Logic.Model.Cards.JinlangCards
                 MarkCards = PanelBase.ConvertToPanelCard(target.Marks, true),
                 CardOwner = target,
             };
-            PlayerContext.Player.PlayerUiState.ShowPanel(panel);
+            //PlayerContext.Player.PlayerUiState.ShowPanel(panel);
             var res = await PlayerContext.Player.ResponseCard(new CardRequestContext()
             {
                 MaxCardCountToPlay = 1,
@@ -75,6 +75,8 @@ namespace Logic.Model.Cards.JinlangCards
                 Message = panel.DisplayMessage,
                 Panel = panel
             }, cardResponseContext, roundContext, false);
+            //该牌状态改为可以查看
+            res.Cards?.ForEach(c => c.IsViewableForOthers = true);
             //移除Panel中SelectedBy为当前player的牌
             await RemoveCardsFromPanel(panel, cardRequestContext, cardResponseContext, roundContext);
             PlayerContext.Player.PlayerUiState.ClosePanel(panel);
@@ -117,7 +119,7 @@ namespace Logic.Model.Cards.JinlangCards
                 await panel.CardOwner.MoveCardToTargetHand(PlayerContext.Player, new List<CardBase>() { p.Card });
             });
             //检查手牌
-            panelCards = panel.InHandCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
+            panelCards = panel.InHandCards?.Where(p => p.SelectedBy == PlayerContext.Player || p.Card.IsPopout).ToList();
             panelCards?.ForEach(async p =>
             {
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card}");

@@ -25,6 +25,7 @@ namespace Logic.GameLevel.Panel
         /// </summary>
         public bool IsGlobal { get; set; }
 
+        public PanelTypeEnum PanelType { get; set; }
         /// <summary>
         /// 装备栏
         /// </summary>
@@ -64,6 +65,17 @@ namespace Logic.GameLevel.Panel
         /// </summary>
         public CardEventHandler OnClickedHandler { get; set; }
 
+        /// <summary>
+        /// 获取所有选中的卡牌
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<CardBase> GetSelectedCards()
+        {
+            var mc = MarkCards.Where(p => p.Card.IsPopout).Select(p => p.Card);
+            var wp = EquipmentCards.Where(p => p.Card.IsPopout).Select(p => p.Card);
+            var ih = InHandCards.Where(p => p.Card.IsPopout).Select(p => p.Card);
+            return mc.Concat(wp).Concat(ih);
+        }
 
         /// <summary>
         /// 将CardBase转成PanelCard

@@ -36,8 +36,9 @@ namespace JgYxs.UI
             //testWindow.Show();
             //Close();
             //return;
-            Test();
-            //InitLevel(2);
+
+            //Test();
+            InitLevel(2);
         }
 
         private void Test()
@@ -56,10 +57,11 @@ namespace JgYxs.UI
                     new PanelCard(new Luyeqiang(),true),
                     new PanelCard(new Hufu(),true),
                 },
-                OnClickedHandler = ((card, action) =>
+                OnClickedHandler =  (async (card, action) =>
                 {
                     card.IsPopout = !card.IsPopout;
                     action(card);
+                    await Task.FromResult(0);
                 })
             };
 

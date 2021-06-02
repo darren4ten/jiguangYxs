@@ -65,7 +65,7 @@ namespace Logic.Model.Cards.JinlangCards
                 MarkCards = PanelBase.ConvertToPanelCard(target.Marks, true),
                 CardOwner = target
             };
-            PlayerContext.Player.PlayerUiState.ShowPanel(panel);
+            //PlayerContext.Player.PlayerUiState.ShowPanel(panel);
             var res = await PlayerContext.Player.ResponseCard(new CardRequestContext()
             {
                 MaxCardCountToPlay = 1,
@@ -75,6 +75,8 @@ namespace Logic.Model.Cards.JinlangCards
                 Message = panel.DisplayMessage,
                 Panel = panel
             }, cardResponseContext, roundContext);
+            //该牌状态改为可以查看
+            res.Cards?.ForEach(c => c.IsViewableForOthers = true);
             //移除Panel中SelectedBy为当前player的牌
             await RemoveCardsFromPanel(panel, cardRequestContext, cardResponseContext, roundContext);
             PlayerContext.Player.PlayerUiState.ClosePanel(panel);
@@ -114,8 +116,8 @@ namespace Logic.Model.Cards.JinlangCards
                                  new RichTextWrapper("抽取了装备"),
                                  new RichTextWrapper(p.Card.ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
                                  new RichTextWrapper("。")
-                              )); 
-                
+                              ));
+
                 await panel.CardOwner.RemoveEquipment(p.Card, request, response, roundContext);
                 panel.EquipmentCards.Remove(p);
                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);
@@ -133,8 +135,8 @@ namespace Logic.Model.Cards.JinlangCards
                                   new RichTextWrapper("抽取了手牌"),
                                   new RichTextWrapper(p.Card.ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
                                   new RichTextWrapper("。")
-                               )); 
-                
+                               ));
+
                 await panel.CardOwner.RemoveCardsInHand(new List<CardBase>() { p.Card }, request, response, roundContext);
                 //将牌置于弃牌堆
                 PlayerContext.GameLevel.TempCardDesk.Add(p.Card);

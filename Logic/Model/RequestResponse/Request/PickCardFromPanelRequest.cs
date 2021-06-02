@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Logic.Cards;
 using Logic.GameLevel.Panel;
 using Logic.Model.Player;
@@ -18,5 +19,15 @@ namespace Logic.Model.RequestResponse.Request
         /// 取牌的最小数量
         /// </summary>
         public int MinCount { get; set; }
+
+        public bool IsMatch(IEnumerable<CardBase> cards)
+        {
+            if (cards != null && cards.Count()  >= MinCount && cards.Count() <= MaxCount)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

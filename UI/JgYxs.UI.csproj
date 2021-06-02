@@ -13,6 +13,7 @@
     <None Remove="Resources\bg\bg_history_header.png" />
     <None Remove="Resources\bg\cardHistoryBg.png" />
     <None Remove="Resources\bg\dragon.jpg" />
+    <None Remove="Resources\card\card_back.jpg" />
     <None Remove="Resources\card\card_sha.jpg" />
     <None Remove="Resources\card\card_shan.jpg" />
     <None Remove="Resources\card\card_yao.jpg" />
@@ -59,6 +60,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\bg\dragon.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\card\card_back.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\card\equipment\card_bawanggong.jpg">

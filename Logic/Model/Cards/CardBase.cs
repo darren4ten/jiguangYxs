@@ -49,7 +49,7 @@ namespace Logic.Cards
         /// <summary>
         /// 是否对别人可见
         /// </summary>
-        private bool _isViewableForOthers;
+        private bool _isViewableForOthers = true;
         public bool IsViewableForOthers
         {
             get { return _isViewableForOthers; }
@@ -157,13 +157,14 @@ namespace Logic.Cards
             }
         }
 
+        private const string CardBackImage = "\\Resources\\card\\card_back.jpg";
         /// <summary>
         /// 图像path
         /// </summary>
         private string _img;
         public string Image
         {
-            get { return _img; }
+            get { return IsViewableForOthers ? _img : CardBackImage; }
             set
             {
                 _img = value;

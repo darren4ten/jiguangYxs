@@ -31,7 +31,7 @@ namespace JgYxs.UI.UserCtrl.Panel
             }
             else
             {
-             
+
                 item.BorderThickness = new Thickness(0, 0, 0, 0);
                 item.BorderBrush = new SolidColorBrush(Color.FromRgb(11, 11, 11));
             }
@@ -46,16 +46,16 @@ namespace JgYxs.UI.UserCtrl.Panel
             return parentT ?? FindParent<T>(parent);
         }
 
-        private void OnCardInHandClicked(object sender, RoutedEventArgs e)
+        private async void OnCardInHandClicked(object sender, RoutedEventArgs e)
         {
             var cardCtrl = (ListBoxItem)sender;
             //var lb= FindParent<ListBox>(cardCtrl);
             var pCard = (PanelCard)cardCtrl.DataContext;
             var btn = e.OriginalSource is Button ? (Button)e.OriginalSource : null;
-            panel.OnClickedHandler(pCard.Card, (c =>
-             {
-                 RefreshCardPopoutStatus(btn, c);
-             }));
+            await panel.OnClickedHandler(pCard.Card, (c =>
+              {
+                  RefreshCardPopoutStatus(btn, c);
+              }));
         }
     }
 }

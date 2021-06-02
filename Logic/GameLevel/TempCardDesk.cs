@@ -18,6 +18,12 @@ namespace Logic.GameLevel
 
         public void Clear()
         {
+            //恢复卡牌原有状态
+            foreach (var card in Cards)
+            {
+                card.IsViewableForOthers = false;
+                card.IsPopout = false;
+            }
             Cards.Clear();
         }
 
@@ -27,6 +33,7 @@ namespace Logic.GameLevel
             {
                 //todo:将所有Card的上下文注销掉
                 //card.AttachPlayerContext(null);
+              
                 Cards.Add(card);
             }
         }

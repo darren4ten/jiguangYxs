@@ -1,8 +1,9 @@
-﻿<Window xmlns:UserCtrl="clr-namespace:JgYxs.UI.UserCtrl" x:Class="UI.Levels.Level_002_NoFriend2Enemies_Human"
+﻿<levels:LevelWindow xmlns:UserCtrl="clr-namespace:JgYxs.UI.UserCtrl" x:Class="UI.Levels.Level_002_NoFriend2Enemies_Human"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:levels="clr-namespace:JgYxs.UI.Levels"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize"
@@ -33,4 +34,4 @@
             HorizontalAlignment="Center" Margin="-10,334,0,0" VerticalAlignment="Top"/>
         <UserCtrl:TempCardDesk x:Name="TempCardDesk" HorizontalAlignment="Left" Margin="176,186,0,0" VerticalAlignment="Top"/>
     </Grid>
-</Window>
+</levels:LevelWindow>
