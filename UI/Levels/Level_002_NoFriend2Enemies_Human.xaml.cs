@@ -54,14 +54,15 @@ namespace UI.Levels
             //GameDataContext.Player2.AddMark(new HuadiweilaoMark()).GetAwaiter().GetResult();
             GameDataContext.Player2.AddEquipment(new Fangyuma()).GetAwaiter().GetResult();
             GameDataContext.Player2.AddEquipment(new Yuchangjian()).GetAwaiter().GetResult();
+            GameDataContext.CurrentPlayer.CardsInHand.Clear();
             GameDataContext.CurrentPlayer.AddCardsInHand(new List<CardBase>()
             {
                 new Wuzhongshengyou(),
                 new Fudichouxin(),
                 new Tannangquwu(),
                 new Bolangchui(),
-                new Sha(),
-                new Shan()
+                //new Sha(),
+                //new Shan()
             }).GetAwaiter().GetResult();
             GameDataContext.Player2.AddCardsInHand(new List<CardBase>()
             {
