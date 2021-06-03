@@ -23,6 +23,12 @@ namespace Logic.Model.Cards.JinlangCards
             RoundContext roundContext)
         {
             cardRequestContext.AttackType = AttackTypeEnum.Wuzhongshengyou;
+            return await base.OnBeforePlayCard(cardRequestContext, cardResponseContext, roundContext);
+        }
+
+        protected override async Task<CardResponseContext> OnAfterPlayCard(CardRequestContext cardRequestContext, CardResponseContext cardResponseContext,
+            RoundContext roundContext)
+        {
             return await ExecuteAction(cardRequestContext, cardResponseContext, roundContext);
         }
 

@@ -70,7 +70,7 @@ namespace Logic.Model.Cards.EquipmentCards
                                 },
                             };
 
-                            PlayerContext.Player.PlayerUiState.ShowPanel(panelRequest.Panel);
+                            //PlayerContext.Player.PlayerUiState.ShowPanel(panelRequest.Panel);
                             var response = await PlayerContext.Player.ActionManager.OnRequestPickCardFromPanel(panelRequest);
 
                             //从装备栏中移除 

@@ -55,6 +55,7 @@ namespace UI.Levels
 
             GameDataContext.CurrentPlayer.AddCardsInHand(new List<CardBase>()
             {
+                new Wuzhongshengyou(),
                 new Fudichouxin(),
                 new Tannangquwu(),
                 new Bolangchui(),

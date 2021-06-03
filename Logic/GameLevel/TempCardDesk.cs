@@ -21,7 +21,7 @@ namespace Logic.GameLevel
             //恢复卡牌原有状态
             foreach (var card in Cards)
             {
-                card.IsViewableForOthers = false;
+                card.IsViewableForOthers = true;
                 card.IsPopout = false;
             }
             Cards.Clear();

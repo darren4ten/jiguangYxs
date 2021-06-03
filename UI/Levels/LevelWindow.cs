@@ -47,10 +47,11 @@ namespace JgYxs.UI.Levels
             });
         }
 
-        private async Task UiAction(Action act)
+        private Task UiAction(Action act)
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
+                //这个地方不能用await,否则线程会被block
                 this.Dispatcher.BeginInvoke(new Action(async () =>
                 {
                     act();

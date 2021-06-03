@@ -343,7 +343,8 @@ namespace Logic.Model.Player
             {
                 return;
             }
-
+            //todo:这个地方可以使用SynchronizationContext来实现： https://stackoverflow.com/questions/24824720/avoid-calling-begininvoke-from-viewmodel-objects-in-multi-threaded-c-sharp-mvv/24827161#24827161
+            //但是ViewContext.Post方法也只是一个异步调用，会导致一个UI线程没有终止
             await UiAction((() =>
              {
                  if (panel.IsGlobal)
@@ -357,39 +358,6 @@ namespace Logic.Model.Player
                      BindPlayer.PlayerUiState.Panel = panel;
                  }
              }));
-            //Application.Current.Dispatcher.Invoke((Action)delegate {
-            //    // your code
-            //});
-
-            //Thread t = new Thread(() =>
-            //{
-            //    if (panel.IsGlobal)
-            //    {
-            //        BindPlayer.GameLevel.Panel = panel;
-            //        BindPlayer.PlayerUiState.Panel = null;
-            //    }
-            //    else
-            //    {
-            //        BindPlayer.GameLevel.Panel = null;
-            //        BindPlayer.PlayerUiState.Panel = panel;
-            //    }
-            //});
-            //t.SetApartmentState(ApartmentState.STA);
-            //t.Start();
-
-            //await Task.Run(() =>
-            // {
-            //     if (panel.IsGlobal)
-            //     {
-            //         BindPlayer.GameLevel.Panel = panel;
-            //         BindPlayer.PlayerUiState.Panel = null;
-            //     }
-            //     else
-            //     {
-            //         BindPlayer.GameLevel.Panel = null;
-            //         BindPlayer.PlayerUiState.Panel = panel;
-            //     }
-            // },CancellationToken.None);
 
             await Task.FromResult(0);
         }
