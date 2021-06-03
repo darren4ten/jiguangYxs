@@ -86,7 +86,7 @@ namespace Logic.Model.Cards.JinlangCards
         protected async Task RemoveCardsFromPanel(PanelBase panel, CardRequestContext request, CardResponseContext response, RoundContext roundContext)
         {
             //检查标记
-            var panelCards = panel.MarkCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
+            var panelCards = panel.MarkCards?.Where(p => p.SelectedBy == PlayerContext.Player || p.Card.IsPopout).ToList();
             panelCards?.ForEach(async p =>
             {
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card.DisplayName}");
@@ -103,7 +103,7 @@ namespace Logic.Model.Cards.JinlangCards
                 await panel.CardOwner.RemoveMark(p.Mark);
             });
             //检查装备
-            panelCards = panel.EquipmentCards?.Where(p => p.SelectedBy == PlayerContext.Player).ToList();
+            panelCards = panel.EquipmentCards?.Where(p => p.SelectedBy == PlayerContext.Player || p.Card.IsPopout).ToList();
             panelCards?.ForEach(async p =>
             {
                 Console.WriteLine($"{PlayerContext.Player.PlayerId}的【{PlayerContext.Player.CurrentPlayerHero.Hero.DisplayName}】从{panel.CardOwner.PlayerId}的【{panel.CardOwner.CurrentPlayerHero.Hero.DisplayName}】抽取了{p.Card}");

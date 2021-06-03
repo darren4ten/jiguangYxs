@@ -52,7 +52,8 @@ namespace UI.Levels
             ActionBar.DataContext = GameDataContext.GameLevel.CurrentPlayer.PlayerUiState.ActionBar;
             //GameDataContext.Player2.AddMark(new ShoupengleiMark()).GetAwaiter().GetResult();
             //GameDataContext.Player2.AddMark(new HuadiweilaoMark()).GetAwaiter().GetResult();
-
+            GameDataContext.Player2.AddEquipment(new Fangyuma()).GetAwaiter().GetResult();
+            GameDataContext.Player2.AddEquipment(new Yuchangjian()).GetAwaiter().GetResult();
             GameDataContext.CurrentPlayer.AddCardsInHand(new List<CardBase>()
             {
                 new Wuzhongshengyou(),
