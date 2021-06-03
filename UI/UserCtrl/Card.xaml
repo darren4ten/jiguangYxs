@@ -4,11 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:enums="clr-namespace:Logic.Model.Enums;assembly=Logic"
+             xmlns:converter="clr-namespace:JgYxs.UI.UserCtrl.Converter"
+             xmlns:ext="clr-namespace:JgYxs.UI.UserCtrl.Converter"
              mc:Ignorable="d" Width="80" Height="110">
     <UserControl.Resources>
         <Style TargetType="{x:Type Border}" x:Key="cardBorder">
             <Setter Property="BorderThickness" Value="0"></Setter>
         </Style>
+        <Style TargetType="Image" x:Key="cardBackImg">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsViewableForOthers}" Value="true">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsViewableForOthers}" Value="false">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <converter:VisibilityConverter x:Key="vc"/>
     </UserControl.Resources>
     <Grid  Background="Transparent">
         <Button Click="ButtonBase_OnClick" 
@@ -25,7 +38,10 @@
                 </Style>
             </Button.Style>
             <Grid>
-                <Image Source="{Binding Image}" Width="78" Height="108" Margin="-2"  Stretch="Fill"/>
+                <Image Source="{Binding Image}" 
+                       Visibility="{Binding Path=IsViewableForOthers,Converter={StaticResource vc},ConverterParameter={ext:Bool False}}"
+                       Width="78" Height="108" Margin="-2" 
+                       Stretch="Fill"/>
                 <Label x:Name="LblNumber"
                        Width="24"
                        Height="24"
@@ -38,7 +54,6 @@
                        Padding="0,0,0,0"
                        FontSize="16px" Margin="-1,-3,0,74">
                 </Label>
-
                 <Label  Width="28"
                         Height="28"
                         x:Name="LblFlower" Content="{Binding FlowerKindString}"  FontSize="16px" Margin="0,12,46,64"  FontWeight="Bold">
@@ -55,6 +70,10 @@
                         </Style>
                     </Label.Style>
                 </Label>
+                <Image Source="{Binding Image}" 
+                       Visibility="{Binding Path=IsViewableForOthers,Converter={StaticResource vc},ConverterParameter={ext:Bool True}}"
+                       Width="78" Height="108" Margin="-2" 
+                       Stretch="Fill"/>
             </Grid>
         </Button>
     </Grid>

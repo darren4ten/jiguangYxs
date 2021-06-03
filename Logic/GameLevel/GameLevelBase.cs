@@ -488,6 +488,7 @@ namespace Logic.GameLevel
                 {
                     AttackType = request.AttackType,
                     RequestCard = request.RequestCard,
+                    RequestId = Guid.NewGuid(),
                     SrcPlayer = request.SrcPlayer,
                     MaxCardCountToPlay = request.MaxCardCountToPlay,
                     MinCardCountToPlay = request.MinCardCountToPlay,

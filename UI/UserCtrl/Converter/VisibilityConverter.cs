@@ -12,9 +12,14 @@ namespace JgYxs.UI.UserCtrl.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            var reverse = false;
+            if (parameter != null && parameter is bool b)
+            {
+                reverse = b;
+            }
             if (value is bool v)
             {
-                return v ? System.Windows.Visibility.Visible : Visibility.Hidden;
+                return (reverse ? !v : v) ? System.Windows.Visibility.Visible : Visibility.Hidden;
             }
 
             return System.Windows.Visibility.Hidden;

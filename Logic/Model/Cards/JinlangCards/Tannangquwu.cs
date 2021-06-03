@@ -96,7 +96,7 @@ namespace Logic.Model.Cards.JinlangCards
                                   new RichTextWrapper("从"),
                                   new RichTextWrapper(panel.CardOwner.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
                                   new RichTextWrapper("抽取了标记"),
-                                  new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                  new RichTextWrapper(p.Card.ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
                                   new RichTextWrapper("。")
                                ));
                 await panel.CardOwner.MoveCardToTargetHand(PlayerContext.Player, new List<CardBase>() { p.Card });
@@ -113,7 +113,7 @@ namespace Logic.Model.Cards.JinlangCards
                                   new RichTextWrapper("从"),
                                   new RichTextWrapper(panel.CardOwner.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
                                   new RichTextWrapper("抽取了装备"),
-                                  new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                  new RichTextWrapper(p.Card.ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
                                   new RichTextWrapper("。")
                                ));
                 await panel.CardOwner.MoveCardToTargetHand(PlayerContext.Player, new List<CardBase>() { p.Card });
@@ -129,7 +129,7 @@ namespace Logic.Model.Cards.JinlangCards
                                    new RichTextWrapper("从"),
                                    new RichTextWrapper(panel.CardOwner.ToString(), RichTextWrapper.GetColor(ColorEnum.Blue)),
                                    new RichTextWrapper("抽取了手牌"),
-                                   new RichTextWrapper(ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
+                                   new RichTextWrapper(p.Card.ToString(), RichTextWrapper.GetColor(ColorEnum.Red)),
                                    new RichTextWrapper("。")
                                 ));
                 await panel.CardOwner.MoveCardToTargetHand(PlayerContext.Player, new List<CardBase>() { p.Card });
