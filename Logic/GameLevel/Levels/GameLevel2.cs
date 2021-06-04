@@ -23,7 +23,11 @@ namespace Logic.GameLevel.Levels
 
         public override async Task Start(Action action = null)
         {
-            var star5Chengyaojin = new PlayerHero(5, new Chengyaojin(), new List<SkillBase>() { new QiangyunSkill() },
+            var star5Chengyaojin = new PlayerHero(5, new Chengyaojin(), new List<SkillBase>()
+                {
+                    new QiangyunSkill(),
+                    new BaotouSkill()
+                },
                 new List<SkillBase>()
                 {
                     new Qianghua(5, 30),

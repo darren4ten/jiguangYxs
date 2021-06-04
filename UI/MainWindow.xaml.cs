@@ -106,6 +106,8 @@ namespace JgYxs.UI
                         gameDataContext.Player2 = gameDataContext.CurrentPlayer.GetNextPlayer(false);
                         gameDataContext.Player3 = gameDataContext.Player2.GetNextPlayer(false);
                         var level1 = new Level_002_NoFriend2Enemies_Human(gameDataContext);
+                        level1.Left = 0;
+                        level1.Top = 300;
                         this.Close();
                         level1.Show();
                     }));
