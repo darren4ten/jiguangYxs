@@ -127,10 +127,19 @@ namespace Logic.Model.Player
             }
         }
 
+        private HeroBase _hero;
         /// <summary>
         /// 具体的英雄
         /// </summary>
-        public HeroBase Hero { get; }
+        public HeroBase Hero
+        {
+            get => _hero;
+            private set
+            {
+                _hero = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 玩家英雄星级{1-5}

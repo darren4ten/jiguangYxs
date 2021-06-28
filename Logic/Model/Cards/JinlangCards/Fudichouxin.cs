@@ -65,7 +65,6 @@ namespace Logic.Model.Cards.JinlangCards
                 MarkCards = PanelBase.ConvertToPanelCard(target.Marks, true),
                 CardOwner = target
             };
-            //PlayerContext.Player.PlayerUiState.ShowPanel(panel);
             var res = await PlayerContext.Player.ResponseCard(new CardRequestContext()
             {
                 MaxCardCountToPlay = 1,

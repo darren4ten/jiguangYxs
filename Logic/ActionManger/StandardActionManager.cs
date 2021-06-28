@@ -106,7 +106,9 @@ namespace Logic.ActionManger
             {
                 card.IsPopout = true;
                 //检查选中的卡牌数量是不是match
-                var cards = request.Panel.GetSelectedCards().ToList();
+                var pCards = request.Panel.GetSelectedCards().ToList();
+                pCards.ForEach(p => p.SelectedBy = this.PlayerContext.Player);
+                var cards = pCards.Select(c => c.Card).ToList();
                 if (request.IsMatch(cards))
                 {
                     request.RequestTaskCompletionSource.SetResult(new CardResponseContext()

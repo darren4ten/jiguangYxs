@@ -61,7 +61,7 @@ namespace UI.Levels
                 new Fudichouxin(),
                 new Bolangchui(),
                 new Sha(),
-                //new Shan()
+                new Wugufengdeng()
             }).GetAwaiter().GetResult();
             GameDataContext.Player2.AddCardsInHand(new List<CardBase>()
             {

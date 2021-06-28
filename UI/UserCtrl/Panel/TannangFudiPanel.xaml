@@ -139,6 +139,38 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+
+            <!--<Label x:Name="LblRow4Description" 
+                   Tag="{Binding HasInHandCards}"
+                   Style="{StaticResource VisibilityCheck}"
+                   Content="手牌" HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="20,4" Width="414"/>-->
+            <ListBox Name="LbRow4" Height="142" Width="560"
+                     ItemsSource="{Binding  UnknownCards}"
+                     Tag="{Binding HasUnknownCards}"
+                     Style="{StaticResource VisibilityCheck}"
+                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                     Background="Transparent">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="0"/>
+                        <EventSetter Event="Button.Click" Handler="OnCardInHandClicked"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" IsItemsHost="True"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate >
+                        <StackPanel DataContext="{Binding }"  MouseLeftButtonDown="OnCardInHandClicked">
+                            <local:Card x:Name="cardCtrl" DataContext="{Binding Card}">
+                            </local:Card>
+                            <Label Content="{Binding    SelectedBy,Mode=TwoWay}"></Label>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </StackPanel>
     </Grid>
 </UserControl>

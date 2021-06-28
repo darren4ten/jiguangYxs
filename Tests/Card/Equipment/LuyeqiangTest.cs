@@ -33,11 +33,11 @@ namespace Tests.Card
             gameLevel1 = new GameLevel1();
             var qianghua1 = new Qianghua(5, 30);
             var shatan1 = new Shatan(5, 50);
-            var star2Zyz = new PlayerHero(2, new Zhuyuanzhang(), null,
+            var star2Zyz = new PlayerHero(2, new Chengyaojin(), null,
                 new List<SkillBase>(){
                     new Xixue(5,50),
                 });
-            var star3Zhuyuanzhang = new PlayerHero(3, new Zhuyuanzhang(), null,
+            var star3Zhuyuanzhang = new PlayerHero(3, new Chengyaojin(), null,
                 new List<SkillBase>(){
                     new Qianghua(1,50),
                     new Xixue(5,50),

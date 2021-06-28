@@ -1228,7 +1228,6 @@ namespace Logic.Model.Player
             return $"{PlayerId}【{CurrentPlayerHero.Hero.DisplayName}】";
         }
 
-
         #region 私有方法
         /// <summary>
         /// 根据指定的类型装备武器,如果装备成功/异常，则返回true

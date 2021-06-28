@@ -49,6 +49,7 @@ namespace Logic.GameLevel.Panel
         /// 自定义栏
         /// </summary>
         public ObservableCollection<PanelCard> UnknownCards { get; set; }
+        public bool HasUnknownCards => UnknownCards?.Any() == true;
 
         /// <summary>
         /// 卡牌来源
@@ -65,16 +66,32 @@ namespace Logic.GameLevel.Panel
         /// </summary>
         public CardEventHandler OnClickedHandler { get; set; }
 
+
         /// <summary>
         /// 获取所有选中的卡牌
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<CardBase> GetSelectedCards()
+        public IEnumerable<PanelCard> GetSelectedCards()
         {
-            var mc = MarkCards.Where(p => p.Card.IsPopout).Select(p => p.Card);
-            var wp = EquipmentCards.Where(p => p.Card.IsPopout).Select(p => p.Card);
-            var ih = InHandCards.Where(p => p.Card.IsPopout).Select(p => p.Card);
-            return mc.Concat(wp).Concat(ih);
+            var targetCards = new List<PanelCard>();
+            AddList(targetCards, MarkCards?.Where(p => p.Card.IsPopout));
+            AddList(targetCards, EquipmentCards?.Where(p => p.Card.IsPopout));
+            AddList(targetCards, InHandCards?.Where(p => p.Card.IsPopout));
+            AddList(targetCards, UnknownCards?.Where(p => p.Card.IsPopout));
+            return targetCards;
+        }
+
+        private void AddList(List<PanelCard> targetCards, IEnumerable<PanelCard> currentCards)
+        {
+            if (targetCards == null)
+            {
+                targetCards = new List<PanelCard>();
+            }
+
+            if (currentCards != null)
+            {
+                targetCards.AddRange(currentCards);
+            }
         }
 
         /// <summary>

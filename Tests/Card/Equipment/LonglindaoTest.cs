@@ -11,6 +11,7 @@ using Logic.Model.Cards.BaseCards;
 using Logic.Model.Cards.EquipmentCards;
 using Logic.Model.Cards.JinlangCards;
 using Logic.Model.Enums;
+using Logic.Model.Hero.Officer;
 using Logic.Model.Hero.Presizdent;
 using Logic.Model.Player;
 using Logic.Model.Skill;
@@ -32,7 +33,7 @@ namespace Tests.Card
                 new List<SkillBase>(){
                     new Xixue(5,50),
                 });
-            var star3Zhuyuanzhang = new PlayerHero(3, new Zhuyuanzhang(), null,
+            var star3Zhuyuanzhang = new PlayerHero(3, new Chengyaojin(), null,
                 new List<SkillBase>(){
                     new Qianghua(1,50),
                     new Xixue(5,50),

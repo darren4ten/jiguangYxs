@@ -35,7 +35,7 @@ namespace Tests.Card
                     qianghua1,
                     shatan1
                 });
-            var star3Zhuyuanzhang = new PlayerHero(3, new Zhuyuanzhang(), null,
+            var star3Zhuyuanzhang = new PlayerHero(3, new Chengyaojin(), null,
                 new List<SkillBase>(){
                     new Qianghua(1,50),
                     new Xixue(5,50),

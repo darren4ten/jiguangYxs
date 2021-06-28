@@ -21,7 +21,10 @@ namespace Logic.Model.Hero.Presizdent
             this.HeroGroup = HeroGroupEnum.Presizdent;
             this.Gender = GenderEnum.Male;
             this.SubSkillSet = new List<SkillBase>();
-            this.MainSkillSet = new List<SkillBase>() { new QiangyunSkill() };
+            this.MainSkillSet = new List<SkillBase>()
+            {
+                new QiangyunSkill()
+            };
         }
     }
 }

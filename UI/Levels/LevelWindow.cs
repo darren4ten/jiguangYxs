@@ -35,6 +35,7 @@ namespace JgYxs.UI.Levels
                 if (args.PropertyName == nameof(GameDataContext.CurrentPlayer.PlayerUiState.Panel))
                 {
                     var uiState = (PlayerUIState)sender;
+
                     if (uiState?.Panel != null)
                     {
                         await ShowPanel(uiState.Panel);
@@ -63,14 +64,19 @@ namespace JgYxs.UI.Levels
         public async Task ShowPanel(PanelBase panel)
         {
             ContentControl tn = null;
-            if (panel.PanelType == PanelTypeEnum.Fudichouxin || panel.PanelType == PanelTypeEnum.Longlindao || panel.PanelType == PanelTypeEnum.Tannangquwu)
+            if (
+                panel.PanelType == PanelTypeEnum.Fudichouxin
+                || panel.PanelType == PanelTypeEnum.Longlindao
+                || panel.PanelType == PanelTypeEnum.Tannangquwu
+                || panel.PanelType == PanelTypeEnum.Wugufengdeng
+            )
             {
                 tn = new TannangFudiPanel();
                 tn.DataContext = panel;
             }
             else
             {
-
+                throw new NotImplementedException();
             }
 
             var win = PopupWindow ?? new Window()
@@ -82,12 +88,13 @@ namespace JgYxs.UI.Levels
             };
             win.Content = tn;
             PopupWindow = win;
-            win.ShowDialog();
+            win.Show();
             await Task.FromResult(0);
         }
 
         public async Task ClosePanel()
         {
+            //todo:游戏结束时，清除PopupWindow
             PopupWindow.Hide();
             await Task.FromResult(0);
         }

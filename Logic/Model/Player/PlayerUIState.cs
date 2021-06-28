@@ -347,16 +347,8 @@ namespace Logic.Model.Player
             //但是ViewContext.Post方法也只是一个异步调用，会导致一个UI线程没有终止
             await UiAction((() =>
              {
-                 if (panel.IsGlobal)
-                 {
-                     BindPlayer.GameLevel.Panel = panel;
-                     BindPlayer.PlayerUiState.Panel = null;
-                 }
-                 else
-                 {
-                     BindPlayer.GameLevel.Panel = null;
-                     BindPlayer.PlayerUiState.Panel = panel;
-                 }
+                 BindPlayer.GameLevel.Panel = null;
+                 BindPlayer.PlayerUiState.Panel = panel;
              }));
 
             await Task.FromResult(0);
@@ -372,14 +364,7 @@ namespace Logic.Model.Player
             {
                 return;
             }
-            if (panel.IsGlobal)
-            {
-                BindPlayer.GameLevel.Panel = null;
-            }
-            else
-            {
-                BindPlayer.PlayerUiState.Panel = null;
-            }
+            BindPlayer.PlayerUiState.Panel = null;
         }
 
         /// <summary>

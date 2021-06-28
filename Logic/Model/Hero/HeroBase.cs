@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Logic.Annotations;
 using Logic.Enums;
 using Logic.GameLevel;
 using Logic.Model.Enums;
@@ -6,19 +9,38 @@ using Logic.Model.Skill;
 
 namespace Logic.Model.Hero
 {
-    public abstract class HeroBase : IHero
+    public abstract class HeroBase : IHero, INotifyPropertyChanged
     {
         public int Id { get; set; }
         public HeroGroupEnum HeroGroup { get; set; }
+
+        private string _name;
         /// <summary>
         /// 英雄名称
         /// </summary>
-        public string Name { get; set; }
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                OnPropertyChanged();
+            }
+        }
 
+        private string _displayName;
         /// <summary>
         /// 显示名称
         /// </summary>
-        public string DisplayName { get; set; }
+        public string DisplayName
+        {
+            get => _displayName;
+            set
+            {
+                _displayName = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 先手值
@@ -62,5 +84,12 @@ namespace Logic.Model.Hero
             return AttackFactor;
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

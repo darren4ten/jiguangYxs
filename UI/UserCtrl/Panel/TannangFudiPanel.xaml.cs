@@ -51,7 +51,7 @@ namespace JgYxs.UI.UserCtrl.Panel
             var cardCtrl = (ListBoxItem)sender;
             //var lb= FindParent<ListBox>(cardCtrl);
             var pCard = (PanelCard)cardCtrl.DataContext;
-            var btn = e.OriginalSource is Button ? (Button)e.OriginalSource : null;
+            var btn = e.OriginalSource is Button button ? button : null;
             await panel.OnClickedHandler(pCard.Card, (c =>
               {
                   RefreshCardPopoutStatus(btn, c);
