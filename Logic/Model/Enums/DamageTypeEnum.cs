@@ -7,6 +7,8 @@ namespace Logic.Model.Enums
 {
     public enum DamageTypeEnum
     {
+        [Description("无")]
+        None,
         [Description("杀")]
         Sha,
         [Description("决斗")]

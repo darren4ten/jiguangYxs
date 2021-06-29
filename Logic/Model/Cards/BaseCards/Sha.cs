@@ -108,7 +108,7 @@ namespace Logic.Model.Cards.BaseCards
             cardRequestContext.MinCardCountToPlay += phero.BaseAttackFactor.ShanCountAvoidSha - 1;
             cardRequestContext.AttackDynamicFactor = cardRequestContext.AttackDynamicFactor ??
                                                      AttackDynamicFactor.GetDefaultDeltaAttackFactor();
-            cardRequestContext.AttackType = AttackTypeEnum.Sha;
+            cardRequestContext.AttackType = cardRequestContext.AttackType == AttackTypeEnum.None ? AttackTypeEnum.Sha : cardRequestContext.AttackType;
             cardRequestContext.RequestCard = new Shan();
             await PlayerContext.Player.TriggerEvent(Enums.EventTypeEnum.BeforeSha, cardRequestContext, cardResponseContext, roundContext);
             return cardResponseContext;

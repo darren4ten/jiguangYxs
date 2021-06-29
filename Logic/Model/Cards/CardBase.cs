@@ -425,11 +425,11 @@ namespace Logic.Cards
         /// 主动打牌，弹出卡牌。即如果该牌可以打出，则打出
         /// </summary>
         /// <returns>返回是否出过牌</returns>
-        public virtual async Task<bool> Popup(TaskCompletionSource<CardResponseContext> taskCompletionSource = null)
+        public virtual async Task<bool> Popup(CardRequestContext request = null)
         {
             if (CanBePlayed())
             {
-                var request = CardRequestContext.GetBaseCardRequestContext(null);
+                request = request ?? CardRequestContext.GetBaseCardRequestContext(null);
                 if (this is INeedTargets)
                 {
                     var selectRequest = ((INeedTargets)this).GetSelectTargetRequest();
@@ -440,7 +440,7 @@ namespace Logic.Cards
                     {
                         request.SrcPlayer = PlayerContext.Player;
                         request.TargetPlayers = targetResponse.Targets;
-                        request.AttackType = selectRequest.TargetType;
+                        //request.AttackType = selectRequest.TargetType;
                         return await ShowPlayButton(async () =>
                         {
                             await PlayCard(request, PlayerContext.Player.RoundContext);

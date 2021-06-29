@@ -253,51 +253,57 @@ namespace Logic.Model.Player
             var actDamage = 0;
             var mergedRequest = PlayerContext.Player.GetCombindCardRequestContext(request.CardRequestContext,
                   null, request.SrcRoundContext);
-            //杀
-            if (request.DamageType == DamageTypeEnum.Sha)
+            switch (request.DamageType)
             {
-                actDamage = (mergedRequest.AttackDynamicFactor?.Damage?.ShaDamage ?? 0);
-            }
-            //决斗
-            else if (request.DamageType == DamageTypeEnum.Juedou)
-            {
-                actDamage = (mergedRequest.AttackDynamicFactor?.Damage?.JuedouDamage ?? 0);
-            }
-            //烽火狼烟
-            else if (request.DamageType == DamageTypeEnum.Fenghuolangyan)
-            {
-                actDamage = (mergedRequest.AttackDynamicFactor?.Damage?.FenghuolangyanDamage ?? 0);
-            }
-            //万箭齐发
-            else if (request.DamageType == DamageTypeEnum.Wanjianqifa)
-            {
-                actDamage = (mergedRequest.AttackDynamicFactor?.Damage?.WanjianqifaDamage ?? 0);
-            }
-            //三板斧
-            else if (request.DamageType == DamageTypeEnum.Sanbanfu)
-            {
-                //三板斧，判断杀的response到底是几个闪,如果没闪则伤害+1。
-                var shaDamage = (mergedRequest.AttackDynamicFactor?.Damage?.ShaDamage ?? 0);
-                if (request.CardResponseContext.Cards.Count == 0)
-                {
-                    shaDamage++;
-                }
-                actDamage = shaDamage;
-            }
-            //攻心
-            else if (request.DamageType == DamageTypeEnum.Gongxin)
-            {
-                actDamage = mergedRequest.AttackDynamicFactor.Damage.GongxinDamage;
-            }
-            //手捧雷
-            else if (request.DamageType == DamageTypeEnum.Shoupenglei)
-            {
-                actDamage = mergedRequest.AttackDynamicFactor.Damage.ShoupengleiDamage;
-            }
-            //未知攻击
-            else
-            {
-                actDamage -= 1;
+                //无源掉血请求，则直接掉血
+                case DamageTypeEnum.None:
+                    {
+                        actDamage = mergedRequest.AttackDynamicFactor?.Damage?.ShaDamage ?? 0;
+                    };
+                    break;
+                //杀
+                case DamageTypeEnum.Sha:
+                //决斗
+                case DamageTypeEnum.Sanbanfu:
+                    actDamage = (mergedRequest.AttackDynamicFactor?.Damage?.ShaDamage ?? 0);
+                    break;
+                //烽火狼烟
+                case DamageTypeEnum.Juedou:
+                    actDamage = (mergedRequest.AttackDynamicFactor?.Damage?.JuedouDamage ?? 0);
+                    break;
+                //万箭齐发
+                case DamageTypeEnum.Fenghuolangyan:
+                    actDamage = (mergedRequest.AttackDynamicFactor?.Damage?.FenghuolangyanDamage ?? 0);
+                    break;
+                ////三板斧
+                //else if (request.DamageType == DamageTypeEnum.Sanbanfu)
+                //{
+                //    //三板斧，判断杀的response到底是几个闪,如果没闪则伤害+1。
+                //    var shaDamage = (mergedRequest.AttackDynamicFactor?.Damage?.ShaDamage ?? 0);
+                //    if (request.CardResponseContext.Cards.Count == 0)
+                //    {
+                //        shaDamage++;
+                //    }
+                //    else if (request.CardResponseContext.Cards.Count == 1)
+                //    {
+                //    }
+                //    actDamage = shaDamage;
+                //}
+                //攻心
+                case DamageTypeEnum.Wanjianqifa:
+                    actDamage = (mergedRequest.AttackDynamicFactor?.Damage?.WanjianqifaDamage ?? 0);
+                    break;
+                //手捧雷
+                case DamageTypeEnum.Gongxin:
+                    actDamage = mergedRequest.AttackDynamicFactor.Damage.GongxinDamage;
+                    break;
+                //未知攻击
+                case DamageTypeEnum.Shoupenglei:
+                    actDamage = mergedRequest.AttackDynamicFactor.Damage.ShoupengleiDamage;
+                    break;
+                default:
+                    actDamage -= 1;
+                    break;
             }
 
             CurrentLife -= actDamage;

@@ -20,6 +20,7 @@ namespace Logic.Model.Cards.EquipmentCards
     /// </summary>
     public class Luyeqiang : EquipmentBase, IWeapon, ISkillButton
     {
+        private bool _isEquiped = false;
         public Luyeqiang()
         {
             this.Description = "芦叶枪";
@@ -31,6 +32,7 @@ namespace Logic.Model.Cards.EquipmentCards
 
         protected override async Task OnEquip()
         {
+            _isEquiped = true;
             PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance +=
                 BaseAttackFactor.ShaDistance - 1;
 
@@ -39,6 +41,7 @@ namespace Logic.Model.Cards.EquipmentCards
 
         protected override async Task OnUnEquip()
         {
+            _isEquiped = false;
             PlayerContext.Player.CurrentPlayerHero.BaseAttackFactor.ShaDistance -=
                 BaseAttackFactor.ShaDistance - 1;
             await Task.FromResult(0);
@@ -52,7 +55,7 @@ namespace Logic.Model.Cards.EquipmentCards
         public bool IsEnabled()
         {
             //能够出杀的时候
-            return Sha.CanBePlayed(PlayerContext); ;
+            return _isEquiped && Sha.CanBePlayed(PlayerContext); ;
         }
 
         public SkillButtonInfo GetButtonInfo()

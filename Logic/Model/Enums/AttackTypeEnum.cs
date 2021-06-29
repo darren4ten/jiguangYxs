@@ -102,5 +102,7 @@ namespace Logic.Model.Enums
         /// </summary>
         [Description("治愈")]
         Zhiyu,
+        [Description("三板斧")]
+        Sanbanfu,
     }
 }
