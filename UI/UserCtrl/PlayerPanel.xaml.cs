@@ -12,6 +12,7 @@ using Logic.Cards;
 using Logic.GameLevel;
 using Logic.Model.Enums;
 using Logic.Model.Player;
+using Logic.Model.Skill.Interface;
 
 namespace JgYxs.UI.UserCtrl
 {
@@ -55,6 +56,16 @@ namespace JgYxs.UI.UserCtrl
             var cardCtrl = (ListBoxItem)sender;
             var card = (CardBase)cardCtrl.DataContext;
             Player.PlayerUiState.CardsInHandHandler(card, RefreshCardPopoutStatus);
+        }
+
+        private void BtnSkill_OnClick(object sender, RoutedEventArgs e)
+        {
+            var btnSkill = (Button)sender;
+            var skill = (SkillButtonInfo)btnSkill.DataContext;
+            if (skill.IsEnabled)
+            {
+                skill.OnClick(new CardRequestContext(), Player.RoundContext, new CardResponseContext());
+            }
         }
     }
 }

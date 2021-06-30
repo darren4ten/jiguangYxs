@@ -74,7 +74,7 @@ namespace Logic.ActionManger
         {
             string displayMessage = string.IsNullOrEmpty(cardRequestContext?.Message) ? GetMessage(cardRequestContext) : cardRequestContext.Message;
             //todo:如果武器牌可选，则高亮武器牌
-            var tcs = cardRequestContext.RequestTaskCompletionSource;
+            var tcs = cardRequestContext.RequestTaskCompletionSource ?? new TaskCompletionSource<CardResponseContext>();
             //处理选择牌的请求
             if (cardRequestContext.AttackType == AttackTypeEnum.SelectCard)
             {

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
+using Logic.Annotations;
 using Logic.Event;
 using Logic.Model.Enums;
 
@@ -24,7 +27,7 @@ namespace Logic.Model.Skill.Interface
         SkillButtonInfo GetButtonInfo();
     }
 
-    public class SkillButtonInfo
+    public class SkillButtonInfo : INotifyPropertyChanged
     {
         public SkillTypeEnum SkillType { get; set; }
 
@@ -33,10 +36,23 @@ namespace Logic.Model.Skill.Interface
         /// </summary>
         public string Text { get; set; }
 
-        public bool IsEnabled { get; set; }
+
+        public bool IsEnabled => BtnEnableCheck != null && BtnEnableCheck();
+        
 
         public string Description { get; set; }
 
         public EventBus.RoundEventHandler OnClick { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// 检查按钮是否可用
+        /// </summary>
+        public Func<bool> BtnEnableCheck { get; set; }
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

@@ -84,6 +84,7 @@ namespace Logic.Model.Skill.Zhudong
                                 {
                                     var cardToThrowRes = await PlayerHero.PlayerContext.Player.ActionManager.OnRequestResponseCard(new CardRequestContext()
                                     {
+                                        Message = "请弃一张手牌",
                                         CardScope = CardScopeEnum.InHand,
                                         MinCardCountToPlay = 1,
                                         MaxCardCountToPlay = 1,
@@ -138,7 +139,7 @@ namespace Logic.Model.Skill.Zhudong
                 Text = "三板斧",
                 Description = "",
                 SkillType = SkillType(),
-                IsEnabled = IsEnabled(),
+                BtnEnableCheck = IsEnabled,
                 OnClick = async (context, roundContext, responseContext) =>
                 {
                     //请求出杀

@@ -59,7 +59,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel DataContext="{Binding }">
-                        <Button Content="{Binding Text}" Foreground="DarkRed" IsEnabled="{Binding IsEnabled}">
+                        <Button Content="{Binding Text}" Foreground="DarkRed" IsEnabled="{Binding IsEnabled,NotifyOnSourceUpdated=True}" DataContext="{Binding }" Click="BtnSkill_OnClick">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Style.Triggers>
