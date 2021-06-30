@@ -98,11 +98,7 @@ namespace Logic.Model.Skill.Zhudong
                                     await PlayerHero.PlayerContext.Player.RemoveCardsInHand(cardToThrowRes.Cards, null, null, null);
                                 }
                             }
-                            //对方出闪，则敌我各掉血1
-                            else if (responseContext.Cards.Count == 1)
-                            {
-                                await SelfLoseLife();
-                            }
+
                         }
                     }));
             //监听杀失败事件，如果杀失败，则自己掉1血
@@ -112,7 +108,24 @@ namespace Logic.Model.Skill.Zhudong
                     {
                         if (reqContext.AttackType == AttackTypeEnum.Sanbanfu)
                         {
-                            await SelfLoseLife();
+                            if (responseContext.Cards.Count == 2)
+                            {
+                                await SelfLoseLife();
+                            }
+                            //对方出闪，则敌我各掉血1
+                            else if (responseContext.Cards.Count == 1)
+                            {
+                                await SelfLoseLife();
+                                var req = CardRequestContext.GetBaseCardRequestContext(null);
+                                req.AttackDynamicFactor.Damage.ShaDamage = 1;
+                                req.AttackType = AttackTypeEnum.None;
+                                await reqContext.TargetPlayers.First().CurrentPlayerHero.LoseLife(new LoseLifeRequest()
+                                {
+                                    DamageType = DamageTypeEnum.Sanbanfu,
+                                    RequestTaskCompletionSource = new TaskCompletionSource<CardResponseContext>(),
+                                    CardRequestContext = req,
+                                });
+                            }
                         }
                     }));
         }
@@ -185,21 +198,17 @@ namespace Logic.Model.Skill.Zhudong
             return SkillTypeEnum.SanBanfu;
         }
 
-
         private async Task SelfLoseLife()
         {
+            var req = CardRequestContext.GetBaseCardRequestContext(null);
+            req.AttackDynamicFactor.Damage.ShaDamage = 1;
+            req.AttackType = AttackTypeEnum.None;
             await PlayerHero.LoseLife(new LoseLifeRequest()
             {
                 DamageType = DamageTypeEnum.None,
                 RequestTaskCompletionSource = new TaskCompletionSource<CardResponseContext>(),
-                CardRequestContext = new CardRequestContext()
-                {
-                    AttackDynamicFactor = new AttackDynamicFactor()
-                    {
-                        Damage = new Damage() { ShaDamage = 1 }
-                    },
-                    AttackType = AttackTypeEnum.None
-                },
+                CardRequestContext = req,
+                SrcRoundContext = PlayerHero.PlayerContext.Player.RoundContext
             });
         }
     }

@@ -88,6 +88,7 @@ namespace Logic.GameLevel
         /// <returns></returns>
         public AttackDynamicFactor DeepClone()
         {
+            var recover = Recover ?? new Recover();
             var newAttackDynamicFactor = new AttackDynamicFactor()
             {
                 DefenseDistance = DefenseDistance,
@@ -115,9 +116,9 @@ namespace Logic.GameLevel
                 },
                 Recover = new Recover()
                 {
-                    XiuyangshengxiLife = Recover.XiuyangshengxiLife,
-                    XixueLife = Recover.XixueLife,
-                    YaoLife = Recover.YaoLife
+                    XiuyangshengxiLife = recover.XiuyangshengxiLife,
+                    XixueLife = recover.XixueLife,
+                    YaoLife = recover.YaoLife
                 },
                 SkipOption = new SkipOption()
                 {

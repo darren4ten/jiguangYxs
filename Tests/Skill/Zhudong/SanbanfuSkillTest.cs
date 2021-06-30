@@ -31,7 +31,6 @@ namespace Tests.Skill.Zhudong
         public void Init()
         {
             _gameLevel = new GameLevel1();
-            var qianghua1 = new Qianghua(5, 30);
             var shatan1 = new Shatan(5, 50);
             var star2Chengyaojin = new PlayerHero(2, new Chengyaojin(), null,
                 new List<SkillBase>()
@@ -67,7 +66,7 @@ namespace Tests.Skill.Zhudong
         #endregion
 
         [Test]
-        public async Task Sanbanfu_Success()
+        public async Task Sanbanfu_Success_NoShan()
         {
             var sanbanfuSkill = _player1.CurrentPlayerHero.GetAllMainSkills().FirstOrDefault(p => p is ISkillButton) as ISkillButton;
             Assert.IsNotNull(sanbanfuSkill);
@@ -84,6 +83,34 @@ namespace Tests.Skill.Zhudong
             await btnInfo.OnClick(new CardRequestContext(), _player1.RoundContext, new CardResponseContext());
             Assert.AreEqual(4, _player2.CurrentPlayerHero.CurrentLife);
             Assert.AreEqual(0, _player1.CardsInHand.Count);
+            //触发过三板斧之后不会在
+            Assert.AreEqual(false, sanbanfuSkill.IsEnabled(), "回合内触发过三板斧就不会再触发了");
+        }
+
+        [Test]
+        public async Task Sanbanfu_Success_1Shan()
+        {
+            var sanbanfuSkill = _player1.CurrentPlayerHero.GetAllMainSkills().FirstOrDefault(p => p is ISkillButton) as ISkillButton;
+            Assert.IsNotNull(sanbanfuSkill);
+            await _player1.StartStep_EnterMyRound();
+            Assert.AreEqual(true, sanbanfuSkill.IsEnabled());
+            var btnInfo = sanbanfuSkill.GetButtonInfo();
+            await _player1.AddCardsInHand(new List<CardBase>()
+            {
+                new Sha(),
+                new Shan()
+            });
+            await _player2.AddCardsInHand(new List<CardBase>()
+            {
+                new Shan()
+            });
+
+            //对方1闪
+            Assert.AreEqual(true, btnInfo.IsEnabled);
+            await btnInfo.OnClick(new CardRequestContext(), _player1.RoundContext, new CardResponseContext());
+            Assert.AreEqual(4, _player1.CurrentPlayerHero.CurrentLife);
+            Assert.AreEqual(1, _player1.CardsInHand.Count);
+            Assert.AreEqual(5, _player2.CurrentPlayerHero.CurrentLife);
             //触发过三板斧之后不会在
             Assert.AreEqual(false, sanbanfuSkill.IsEnabled(), "回合内触发过三板斧就不会再触发了");
         }
